@@ -1,11 +1,11 @@
 import { TextField, Button, Container, Typography } from '@mui/material';
 import { Form as RouterForm, Link as RouterLink, redirect } from 'react-router-dom';
-import { register } from '../services/userService';
+import { userService } from '../services/UserService';
 
 export async function action(action: { request: Request, params: {} }) {
     const formData = await action.request.formData();
-    const response = await register(formData);
-    if(response.ok) {
+    const success = await userService.register(formData);
+    if(success) {
         return redirect('/login');
     }
     //Error handling could be added here

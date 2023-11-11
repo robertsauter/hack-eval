@@ -1,29 +1,35 @@
 import { Button } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { store } from './lib/Store.ts';
-import { setUserLoggedOut } from './lib/auth.ts';
+import { userService } from './services/UserService';
 
 export default function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
-
-  const logout = () => {
-    setUserLoggedOut();
-    navigate('/login');
-  };
 
   useEffect(() => {
     const accessToken: string | null = window.localStorage.getItem('access_token');
     if(accessToken) {
-      store.loggedIn = true;
+      userService.handleLoginSuccess(JSON.parse(accessToken));
+    }
+
+    const loggedInSubscription = userService.loggedIn$.subscribe((logged) => {
+      setLoggedIn(logged);
+      if(!logged) {
+        navigate('/login');
+      }
+    });
+
+    return () => {
+      loggedInSubscription.unsubscribe();
     }
   }, []);
 
   return (
     <>
       {
-        store.loggedIn 
-          ? <Button className="absolute top-5 right-5" variant="outlined" onClick={logout}>Logout</Button>
+        loggedIn 
+          ? <Button className="absolute top-5 right-5" variant="outlined" onClick={userService.logout}>Logout</Button>
           : <></>
       }
       <Outlet />

@@ -1,15 +1,11 @@
 import { TextField, Button, Container, Typography } from '@mui/material';
 import { Link as RouterLink, Form as RouterForm, redirect } from 'react-router-dom';
-import { login } from '../services/userService';
-import { setUserLoggedIn } from '../lib/auth';
-import { Token } from '../models/Token';
+import { userService } from '../services/UserService';
 
 export async function action(action: { request: Request, params: {} }) {
     const formData = await action.request.formData();
-    const response = await login(formData);
-    if(response.ok) {
-        const token: Token = await response.json();
-        setUserLoggedIn(token);
+    const success = await userService.login(formData);
+    if(success) {
         return redirect('/');
     }
     //Error handling could be added here
