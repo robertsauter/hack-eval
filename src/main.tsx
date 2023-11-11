@@ -1,14 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Login from './pages/Login.tsx';
-import Overview from './pages/Overview.tsx';
-import Register from './pages/Register.tsx';
 import App from './App.tsx';
 import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material';
+import { Overview } from './pages/Overview.tsx';
+import { redirectIfNotLoggedIn } from './lib/auth.ts';
+import Login from './pages/Login.tsx';
+import Register from './pages/Register.tsx';
 import { action as registerAction } from './pages/Register.tsx';
 import { action as loginAction } from './pages/Login.tsx';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const rootElement = document.getElementById('root');
 
@@ -44,8 +45,9 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
+        index: true,
         element: <Overview />,
-        index: true
+        loader: redirectIfNotLoggedIn
       },
       {
         path: '/login',
