@@ -7,6 +7,8 @@ import Overview from './pages/Overview.tsx';
 import Register from './pages/Register.tsx';
 import App from './App.tsx';
 import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material';
+import { action as registerAction } from './pages/Register.tsx';
+import { action as loginAction } from './pages/Login.tsx';
 
 const rootElement = document.getElementById('root');
 
@@ -42,16 +44,18 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: '/overview',
-        element: <Overview />
+        element: <Overview />,
+        index: true
       },
       {
         path: '/login',
-        element: <Login />
+        element: <Login />,
+        action: loginAction
       },
       {
         path: '/register',
-        element: <Register />
+        element: <Register />,
+        action: registerAction
       }
     ]
   }
