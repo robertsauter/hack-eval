@@ -2,6 +2,7 @@ import { TextField, Button, Container, Typography } from '@mui/material';
 import { Form as RouterForm, Link as RouterLink, redirect } from 'react-router-dom';
 import { userService } from '../services/UserService';
 
+/** Register a new user and redirect if successful */
 export async function action(action: { request: Request, params: {} }) {
     const formData = await action.request.formData();
     const success = await userService.register(formData);

@@ -52,12 +52,14 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <Login />,
-        action: loginAction
+        action: loginAction,
+        loader: userService.redirectIfLoggedIn
       },
       {
         path: '/register',
         element: <Register />,
-        action: registerAction
+        action: registerAction,
+        loader: userService.redirectIfLoggedIn
       }
     ]
   }
