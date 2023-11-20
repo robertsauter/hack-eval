@@ -2,6 +2,7 @@ import { Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { userService } from './services/UserService';
+import { googleFormsService } from './services/GoogleFormsService';
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -19,6 +20,8 @@ export default function App() {
         navigate('/login');
       }
     });
+
+    googleFormsService.initialize();
 
     return () => {
       loggedInSubscription.unsubscribe();
