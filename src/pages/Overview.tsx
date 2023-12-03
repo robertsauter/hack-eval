@@ -1,26 +1,14 @@
-import { Button, TextField } from '@mui/material';
-import { googleFormsService } from '../services/GoogleFormsService';
-import { FormEvent } from 'react';
+import { Button, Container } from '@mui/material';
+import { useState } from 'react';
+import { UploadHackathonDialog } from '../components/UploadHackathonDialog';
 
 export function Overview() {
-    const uploadForm = async () => {
-        const googleAccessToken = window.sessionStorage.getItem('google_access_token');
-        if(googleAccessToken) {
-            googleFormsService.getAndSaveSurvey(JSON.parse(googleAccessToken));
-        }
-        else {
-            googleFormsService.googleClient.requestAccessToken();
-        }
-    };
-
-    const setFormId = (event: FormEvent<HTMLDivElement>) => {
-        googleFormsService.setNewFormId((event.target as HTMLInputElement).value);
-    };
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     return (
-        <>
-            <TextField onInput={setFormId}></TextField>
-            <Button onClick={uploadForm}>Upload survey</Button>
-        </>
+        <Container className="pt-5" maxWidth="md">
+            <Button variant="contained" onClick={() => setIsDialogOpen(true)}>Upload a new hackathon</Button>
+            <UploadHackathonDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}></UploadHackathonDialog>
+        </Container>
     );
 }

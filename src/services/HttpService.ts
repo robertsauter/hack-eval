@@ -1,4 +1,5 @@
-import { Token } from "../models/Token";
+import type { RequestOptions } from '../models/RequestOptions';
+import type { Token } from '../models/Token';
 
 /** Service for handling http requests */
 class HttpService {
@@ -18,26 +19,40 @@ class HttpService {
     }
 
     /** A GET request to a relative URL, starting from the base URL */
-    get(relativeUrl: string, options: RequestInit) {
-        const processedOptions = this._addTokenToRequest(relativeUrl, options);
+    get(relativeUrl: string, options: RequestOptions, defaultContentType?: boolean): Promise<Response> {
+        let processedOptions = this._addTokenToRequest(relativeUrl, options);
+        if(defaultContentType) {
+            processedOptions = this._setDefaultContentType(processedOptions);
+        }
         return fetch(`${this._BASE_URL}${relativeUrl}`, processedOptions);
     }
 
     /** A POST request to a relative URL, starting from the base URL */
-    post(relativeUrl: string, options: RequestInit) {
-        const processedOptions = this._addTokenToRequest(relativeUrl, options);
+    post(relativeUrl: string, options: RequestOptions, defaultContentType?: boolean): Promise<Response> {
+        let processedOptions = this._addTokenToRequest(relativeUrl, options);
         processedOptions.method = 'POST';
+        if(defaultContentType) {
+            processedOptions = this._setDefaultContentType(processedOptions);
+        }
         return fetch(`${this._BASE_URL}${relativeUrl}`, processedOptions);
     }
 
+    /** Return new options object, with application/json added as content-type and body stringified */
+    private _setDefaultContentType(options: RequestOptions): RequestOptions {
+        const defaultContentTypeOptions = { ...options };
+        defaultContentTypeOptions.headers?.set('Content-Type', 'application/json');
+        defaultContentTypeOptions.body = JSON.stringify(defaultContentTypeOptions.body);
+        return defaultContentTypeOptions;
+    }
+
     /** Return new request with added access token, if the url is not in the blacklist */
-    private _addTokenToRequest(relativeUrl: string, options: RequestInit): RequestInit {
+    private _addTokenToRequest(relativeUrl: string, options: RequestOptions): RequestOptions {
         const token = localStorage.getItem('access_token');
         const isUrlInBlacklist = this._ADD_TOKEN_BLACKLIST.find((url) => relativeUrl === url);
         if(!isUrlInBlacklist && token) {
-            const parsed_token: Token = JSON.parse(token);
+            const parsedToken: Token = JSON.parse(token);
             const headers = new Headers(options.headers);
-            headers.append('Authorization', `Bearer ${parsed_token.access_token}`);
+            headers.append('Authorization', `Bearer ${parsedToken.access_token}`);
             return {
                 ...options,
                 headers

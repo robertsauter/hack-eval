@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { Token } from '../models/Token';
+import type { Token } from '../models/Token';
 import { redirect } from 'react-router-dom';
 import { httpService } from './HttpService';
 
