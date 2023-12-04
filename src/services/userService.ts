@@ -18,13 +18,8 @@ class UserService {
     }
 
     /** Register a new user */
-    async register(formData: FormData) {
-        const response = await httpService.post('/users', { body: formData });
-
-        if(response.ok) {
-            return true;
-        }
-        return false;
+    register(formData: FormData) {
+        return httpService.post('/users', { body: formData });
     }
 
     /** Login an existing user */
@@ -35,9 +30,8 @@ class UserService {
             const token: Token = await response.json();
             window.localStorage.setItem('access_token', JSON.stringify(token));
             this.handleLoginSuccess(token);
-            return true;
         }
-        return false;
+        return response;
     }
 
     /** Update loggedIn subject and set expiration timer */
