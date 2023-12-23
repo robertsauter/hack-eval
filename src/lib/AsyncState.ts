@@ -1,12 +1,17 @@
 import { Subject } from 'rxjs';
 
-type State = 'loading' | 'error' | 'success';
+export type State = 'initial' | 'loading' | 'error' | 'success';
 
+/** Base class for submitting loading state of an async call */
 class AsyncState {
     stateChanges$ = new Subject<{
         state: State,
         message?: string
     }>();
+
+    setInitial() {
+        this.stateChanges$.next({ state: 'initial' });
+    }
 
     setLoading() {
         this.stateChanges$.next({ state: 'loading' });
@@ -21,5 +26,5 @@ class AsyncState {
     }
 }
 
-export const loginState = new AsyncState();
-export const registerState = new AsyncState();
+export const asyncLoginState = new AsyncState();
+export const asyncRegisterState = new AsyncState();
