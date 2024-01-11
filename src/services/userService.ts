@@ -14,7 +14,7 @@ class UserService {
         this.login = this.login.bind(this);
         this.logout = this.logout.bind(this);
         this.handleLoginSuccess = this.handleLoginSuccess.bind(this);
-        this._setTokenExpirationTimer = this._setTokenExpirationTimer.bind(this);
+        this.setTokenExpirationTimer = this.setTokenExpirationTimer.bind(this);
     }
 
     /** Register a new user */
@@ -37,7 +37,7 @@ class UserService {
     /** Update loggedIn subject and set expiration timer */
     handleLoginSuccess(token: Token) {
         this.loggedIn$.next(true);
-        this._setTokenExpirationTimer(token.access_token);
+        this.setTokenExpirationTimer(token.access_token);
     }
 
     /** Logout a user */
@@ -68,7 +68,7 @@ class UserService {
     }
 
     /** Set timer to logout user, as soon as the token expires */
-    private _setTokenExpirationTimer(token: string) {
+    setTokenExpirationTimer(token: string) {
         //Get payload of jwt token and decode it
         const payloadEncoded = token.split('.')[1];
         const payload: { sub: string,  exp: number } = JSON.parse(atob(payloadEncoded));

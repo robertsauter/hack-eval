@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 
 export type State = 'initial' | 'loading' | 'error' | 'success';
 
-/** Base class for submitting loading state of an async call */
+/** Base class for submitting loading state of an async call, to be used when loading state needs to be set from outside a component */
 class AsyncState {
     stateChanges$ = new Subject<{
         state: State,

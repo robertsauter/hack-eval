@@ -20,5 +20,6 @@ export type RawResponses = {
 }
 
 export type RawHackathon = HackathonInformation & {
+    survey: any;
     results: RawResponses;
 };
