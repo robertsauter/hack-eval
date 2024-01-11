@@ -1,3 +1,4 @@
+import { HackathonInformation } from "../models/HackathonInformation";
 import type { RawHackathon } from "../models/RawHackathon";
 import { httpService } from "./HttpService";
 
@@ -10,8 +11,13 @@ class HackathonService {
     }
 
     /** Send a hackathon object from a CSV file to the backend to save it */
-    uploadHackathonCsv(form: HTMLFormElement) {
-        const formData = new FormData(form);
+    uploadHackathonCsv(title: string, venue: HackathonInformation['venue'], participants: number, type: HackathonInformation['type'], file: File) {
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('venue', venue);
+        formData.append('participants', participants.toString());
+        formData.append('type', type);
+        formData.append('file', file);
         return httpService.post('/hackathons/csv', { body: formData });
     }
 }

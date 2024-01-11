@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Button, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, Icon, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, TextField, Tooltip, Typography } from "@mui/material";
 import HelpIcon from '@mui/icons-material/Help';
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { googleFormsService } from '../services/GoogleFormsService';
@@ -6,11 +6,11 @@ import { hackathonService } from '../services/HackathonService';
 import type { HackathonInformation } from '../models/HackathonInformation';
 import { Subscription } from 'rxjs';
 import type { State } from '../lib/AsyncState';
-import { FileUpload } from '@mui/icons-material';
+import { Delete, FileUpload, InsertDriveFile } from '@mui/icons-material';
 import { RawHackathon } from '../models/RawHackathon';
 
-export function UploadHackathonDialog(props: { open: boolean, onClose: () => void }) {
-    const { open, onClose } = props;
+export function UploadHackathonDialog(props: { open: boolean, onClose: () => void, onSuccess: () => void }) {
+    const { open, onClose, onSuccess } = props;
 
     const [title, setTitle] = useState('');
     const [venue, setVenue] = useState<HackathonInformation['venue']>('in-person');
@@ -42,21 +42,22 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const handleSuccess = () => {
         setUploadState('success');
         onClose();
+        onSuccess();
         setTitle('');
         setVenue('in-person');
         setParticipants(0);
         setId('');
         setFile(undefined);
-    }
+    };
 
     /** Send CSV file to backend */
-    const uploadCsv = async (form: HTMLFormElement) => {
+    const uploadCsv = async () => {
         if(!file) {
             setFileError(true);
         }
         else {
             setUploadState('loading');
-            const response = await hackathonService.uploadHackathonCsv(form);
+            const response = await hackathonService.uploadHackathonCsv(title, venue, participants, type, file);
             if(response.ok) {
                 handleSuccess();
             }
@@ -97,7 +98,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             requestSurvey();
         }
         else {
-            uploadCsv(e.target as HTMLFormElement);
+            uploadCsv();
         }
     };
 
@@ -117,6 +118,10 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         const id = (e.target as HTMLInputElement).value;
         setId(id);
         googleFormsService.setFormId(id);
+    };
+
+    const deleteFile = () => {
+        setFile(undefined);
     };
 
     const handleFileUpload = (e: ChangeEvent) => {
@@ -248,7 +253,16 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                                 accept=".csv"
                                 onChange={handleFileUpload} />
                         </Button>
-                        <Typography>{file?.name}</Typography>
+                        {file
+                            ? <div className="flex items-center justify-center gap-x-2">
+                                <InsertDriveFile></InsertDriveFile>
+                                <Typography>{file?.name}</Typography>
+                                <IconButton onClick={deleteFile}>
+                                    <Delete></Delete>
+                                </IconButton>
+                            </div>
+                            : <></>
+                        }
                         <Fade in={fileError} unmountOnExit>
                             <Alert severity="error">Please provide a CSV file</Alert>
                         </Fade>
