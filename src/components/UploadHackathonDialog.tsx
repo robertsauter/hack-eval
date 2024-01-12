@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, Icon, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Button, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, TextField, Tooltip, Typography } from "@mui/material";
 import HelpIcon from '@mui/icons-material/Help';
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { googleFormsService } from '../services/GoogleFormsService';
@@ -13,6 +13,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const { open, onClose, onSuccess } = props;
 
     const [title, setTitle] = useState('');
+    const [incentives, setIncentives] = useState<HackathonInformation['incentives']>('collaboration');
     const [venue, setVenue] = useState<HackathonInformation['venue']>('in-person');
     const [participants, setParticipants] = useState(0);
     const [type, setType] = useState<HackathonInformation['type']>('prototype');
@@ -57,7 +58,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
         else {
             setUploadState('loading');
-            const response = await hackathonService.uploadHackathonCsv(title, venue, participants, type, file);
+            const response = await hackathonService.uploadHackathonCsv(title, incentives, venue, participants, type, file);
             if(response.ok) {
                 handleSuccess();
             }
@@ -74,6 +75,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             setUploadState('loading');
             const response = await hackathonService.uploadHackathonGoogle({
                 title,
+                incentives,
                 venue,
                 participants,
                 type,
@@ -100,6 +102,10 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         else {
             uploadCsv();
         }
+    };
+
+    const handleIncentivesChange = (e: SelectChangeEvent<string>) => {
+        setIncentives(e.target.value as HackathonInformation['incentives']);
     };
 
     const handleVenueChange = (e: SelectChangeEvent<string>) => {
@@ -161,6 +167,20 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 label="Title"
                 value={title}
                 onInput={(e) => setTitle((e.target as HTMLInputElement).value)} />
+            <FormControl fullWidth required>
+                <InputLabel id="incentives">Incentives</InputLabel>
+                <Select
+                    name="incentives"
+                    labelId="incentives"
+                    className="mb-5"
+                    variant="outlined"
+                    label="Incentives"
+                    value={incentives}
+                    onChange={handleIncentivesChange}>
+                    <MenuItem value="collaboration">Collaboration</MenuItem>
+                    <MenuItem value="competition">Competition</MenuItem>
+                </Select>
+            </FormControl>
             <FormControl fullWidth required>
                 <InputLabel id="venue">Venue</InputLabel>
                 <Select

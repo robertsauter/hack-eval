@@ -16,6 +16,7 @@ class HttpService {
     constructor() {
         this.get = this.get.bind(this);
         this.post = this.post.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     /** A GET request to a relative URL, starting from the base URL */
@@ -31,6 +32,16 @@ class HttpService {
     post(relativeUrl: string, options: RequestOptions, defaultContentType?: boolean): Promise<Response> {
         let processedOptions = this.#addTokenToRequest(relativeUrl, options);
         processedOptions.method = 'POST';
+        if(defaultContentType) {
+            processedOptions = this.#setDefaultContentType(processedOptions);
+        }
+        return fetch(`${this.#BASE_URL}${relativeUrl}`, processedOptions);
+    }
+
+    /** A POST request to a relative URL, starting from the base URL */
+    delete(relativeUrl: string, options: RequestOptions, defaultContentType?: boolean): Promise<Response> {
+        let processedOptions = this.#addTokenToRequest(relativeUrl, options);
+        processedOptions.method = 'DELETE';
         if(defaultContentType) {
             processedOptions = this.#setDefaultContentType(processedOptions);
         }

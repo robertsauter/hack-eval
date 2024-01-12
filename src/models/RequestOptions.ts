@@ -1,5 +1,5 @@
 export type RequestOptions = {
     headers?: Headers;
     body?: any;
-    method?: 'GET' | 'POST';
+    method?: 'GET' | 'POST' | 'DELETE';
 };
