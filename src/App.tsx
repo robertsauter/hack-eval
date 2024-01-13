@@ -32,7 +32,7 @@ export default function App() {
     <>
       {
         loggedIn 
-          ? <Button className="absolute top-5 right-5" variant="outlined" onClick={userService.logout}>Logout</Button>
+          ? <Button className="absolute top-5 left-5" variant="outlined" onClick={userService.logout}>Logout</Button>
           : <></>
       }
       <Outlet />

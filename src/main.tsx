@@ -65,12 +65,11 @@ const router = createBrowserRouter([
   }
 ]);
 
+//Add React strict mode later again
 ReactDOM.createRoot(rootElement!).render(
-  <React.StrictMode>
-    <StyledEngineProvider>
-      <ThemeProvider theme={theme}>
-        <RouterProvider router={router} />
-      </ThemeProvider>
-    </StyledEngineProvider>
-  </React.StrictMode>,
+  <StyledEngineProvider>
+    <ThemeProvider theme={theme}>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  </StyledEngineProvider>
 );

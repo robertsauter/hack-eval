@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { Token } from '../models/Token';
+import type { Token } from '../models/Token';
 import { redirect } from 'react-router-dom';
 import { httpService } from './HttpService';
 
@@ -14,17 +14,12 @@ class UserService {
         this.login = this.login.bind(this);
         this.logout = this.logout.bind(this);
         this.handleLoginSuccess = this.handleLoginSuccess.bind(this);
-        this._setTokenExpirationTimer = this._setTokenExpirationTimer.bind(this);
+        this.setTokenExpirationTimer = this.setTokenExpirationTimer.bind(this);
     }
 
     /** Register a new user */
-    async register(formData: FormData) {
-        const response = await httpService.post('/users', { body: formData });
-
-        if(response.ok) {
-            return true;
-        }
-        return false;
+    register(formData: FormData) {
+        return httpService.post('/users', { body: formData });
     }
 
     /** Login an existing user */
@@ -35,15 +30,14 @@ class UserService {
             const token: Token = await response.json();
             window.localStorage.setItem('access_token', JSON.stringify(token));
             this.handleLoginSuccess(token);
-            return true;
         }
-        return false;
+        return response;
     }
 
     /** Update loggedIn subject and set expiration timer */
     handleLoginSuccess(token: Token) {
         this.loggedIn$.next(true);
-        this._setTokenExpirationTimer(token.access_token);
+        this.setTokenExpirationTimer(token.access_token);
     }
 
     /** Logout a user */
@@ -74,7 +68,7 @@ class UserService {
     }
 
     /** Set timer to logout user, as soon as the token expires */
-    private _setTokenExpirationTimer(token: string) {
+    setTokenExpirationTimer(token: string) {
         //Get payload of jwt token and decode it
         const payloadEncoded = token.split('.')[1];
         const payload: { sub: string,  exp: number } = JSON.parse(atob(payloadEncoded));
