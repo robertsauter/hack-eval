@@ -59,11 +59,13 @@ export function Overview() {
                 </div>
             : hackathonsState === 'success'
                 ? <div className="grid grid-cols-3 gap-5">
-                    {hackathons.map((hackathon) => <HackathonCard
-                        hackathon={hackathon}
-                        selectEvent={addOrRemoveSelectedHackathon}
-                        deleteEvent={getHackathons}
-                        key={hackathon.id} />)}
+                    {hackathons.map((hackathon) =>
+                        <HackathonCard
+                            hackathon={hackathon}
+                            selectEvent={addOrRemoveSelectedHackathon}
+                            deleteEvent={getHackathons}
+                            key={hackathon.id} />
+                    )}
                 </div>
                 : <></>
             }

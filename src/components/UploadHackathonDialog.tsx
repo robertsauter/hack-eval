@@ -12,21 +12,41 @@ import { RawHackathon } from '../models/RawHackathon';
 export function UploadHackathonDialog(props: { open: boolean, onClose: () => void, onSuccess: () => void }) {
     const { open, onClose, onSuccess } = props;
 
-    const [title, setTitle] = useState('');
-    const [incentives, setIncentives] = useState<HackathonInformation['incentives']>('collaboration');
-    const [venue, setVenue] = useState<HackathonInformation['venue']>('in-person');
-    const [participants, setParticipants] = useState(0);
-    const [type, setType] = useState<HackathonInformation['type']>('prototype');
-    const [id, setId] = useState('');
     const [file, setFile] = useState<File>();
-
     const [uploadFrom, setUploadFrom] = useState<'forms' | 'csv'>('forms');
     const [fileError, setFileError] = useState(false);
 
     const [resultsSubscription, setResultsSubscription] = useState<Subscription>();
 
     const [uploadState, setUploadState] = useState<State>('initial');
-    const [uploadErrorMessage, setUploadErrorMessage] = useState('');
+
+    /** Reset all form values */
+    const resetForm = () => {
+        const form = document.getElementById('HackathonForm') as HTMLFormElement;
+        form.elements['title'].value = '';
+        form.elements['incentives'].value = '';
+        form.elements['venue'].value = '';
+        form.elements['participants'].value = undefined;
+        form.elements['type'].value = '';
+        const id = form.elements['id'];
+        if(id) {
+            form.elements['id'].value = '';
+        }
+        setFile(undefined);
+    };
+
+    /** Get all hackathon values of the form */
+    const getValuesOfForm = (): HackathonInformation => {
+        const form = document.getElementById('HackathonForm') as HTMLFormElement;
+        const formData = new FormData(form);
+        return {
+            title: formData.get('title') as string,
+            incentives: formData.get('incentives') as HackathonInformation['incentives'],
+            venue: formData.get('venue') as HackathonInformation['venue'],
+            participants: formData.get('participants') as unknown as number,
+            type: formData.get('type') as HackathonInformation['type']
+        };
+    };
 
     /** Try to get the survey, when an access token is still saved or request a new token */
     const requestSurvey = () => {
@@ -39,16 +59,17 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
     };
 
-    /** Close dialog and reset fields */
-    const handleSuccess = () => {
-        setUploadState('success');
-        onClose();
-        onSuccess();
-        setTitle('');
-        setVenue('in-person');
-        setParticipants(0);
-        setId('');
-        setFile(undefined);
+    /** React to the upload response */
+    const handleUploadResponse = (response: Response) => {
+        if(response.ok) {
+            setUploadState('success');
+            onClose();
+            onSuccess();
+            resetForm();
+        }
+        else {
+            setUploadState('error');
+        }
     };
 
     /** Send CSV file to backend */
@@ -58,14 +79,9 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
         else {
             setUploadState('loading');
-            const response = await hackathonService.uploadHackathonCsv(title, incentives, venue, participants, type, file);
-            if(response.ok) {
-                handleSuccess();
-            }
-            else {
-                setUploadState('error');
-                setUploadErrorMessage('Upload failed');
-            }
+            const values = getValuesOfForm();
+            const response = await hackathonService.uploadHackathonCsv(values, file);
+            handleUploadResponse(response);
         }
     };
 
@@ -73,23 +89,13 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const uploadGoogle = async (resultsData: Partial<RawHackathon>) => {
         if(resultsData && resultsData.results) {
             setUploadState('loading');
+            const values = getValuesOfForm();
             const response = await hackathonService.uploadHackathonGoogle({
-                title,
-                incentives,
-                venue,
-                participants,
-                type,
+                ...values,
                 survey: resultsData.survey,
                 results: resultsData.results
             });
-
-            if(response.ok) {
-                handleSuccess();
-            }
-            else {
-                setUploadState('error');
-                setUploadErrorMessage('Upload failed');
-            }
+            handleUploadResponse(response);
         }
     };
 
@@ -104,30 +110,9 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
     };
 
-    const handleIncentivesChange = (e: SelectChangeEvent<string>) => {
-        setIncentives(e.target.value as HackathonInformation['incentives']);
-    };
-
-    const handleVenueChange = (e: SelectChangeEvent<string>) => {
-        setVenue(e.target.value as HackathonInformation['venue']);
-    };
-
-    const handleParticipantsChange = (e: FormEvent<HTMLDivElement>) => {
-        setParticipants(+(e.target as HTMLInputElement).value);
-    };
-
-    const handleTypeChange = (e: SelectChangeEvent<string>) => {
-        setType(e.target.value as HackathonInformation['type']);
-    };
-
     const handleIdChange = (e: FormEvent<HTMLDivElement>) => {
         const id = (e.target as HTMLInputElement).value;
-        setId(id);
         googleFormsService.setFormId(id);
-    };
-
-    const deleteFile = () => {
-        setFile(undefined);
     };
 
     const handleFileUpload = (e: ChangeEvent) => {
@@ -164,9 +149,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 fullWidth
                 required
                 variant="outlined"
-                label="Title"
-                value={title}
-                onInput={(e) => setTitle((e.target as HTMLInputElement).value)} />
+                label="Title" />
             <FormControl fullWidth required>
                 <InputLabel id="incentives">Incentives</InputLabel>
                 <Select
@@ -174,9 +157,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     labelId="incentives"
                     className="mb-5"
                     variant="outlined"
-                    label="Incentives"
-                    value={incentives}
-                    onChange={handleIncentivesChange}>
+                    label="Incentives">
                     <MenuItem value="collaboration">Collaboration</MenuItem>
                     <MenuItem value="competition">Competition</MenuItem>
                 </Select>
@@ -188,9 +169,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     labelId="venue"
                     className="mb-5"
                     variant="outlined"
-                    label="Venue"
-                    value={venue}
-                    onChange={handleVenueChange}>
+                    label="Venue">
                     <MenuItem value="in-person">In-person</MenuItem>
                     <MenuItem value="virtual">Virtual</MenuItem>
                     <MenuItem value="hybrid">Hybrid</MenuItem>
@@ -203,9 +182,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 required
                 variant="outlined"
                 label="Number of participants"
-                type="number"
-                value={participants}
-                onInput={handleParticipantsChange} />
+                type="number" />
             <FormControl fullWidth required>
                 <InputLabel id="type">Type</InputLabel>
                 <Select
@@ -215,9 +192,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     fullWidth
                     required
                     variant="outlined"
-                    label="Type"
-                    value={type}
-                    onChange={handleTypeChange}>
+                    label="Type">
                     <MenuItem value="prototype">Prototype focused</MenuItem>
                     <MenuItem value="conceptual">Conceptual solution focused</MenuItem>
                     <MenuItem value="analysis">Analysis focused</MenuItem>
@@ -253,7 +228,6 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                             required
                             variant="outlined"
                             label="Google Forms ID of your survey"
-                            value={id}
                             onInput={handleIdChange} />
                         <Tooltip title="You can find the ID of your survey in the URL">
                             <HelpIcon></HelpIcon>
@@ -277,7 +251,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                             ? <div className="flex items-center justify-center gap-x-2">
                                 <InsertDriveFile></InsertDriveFile>
                                 <Typography>{file?.name}</Typography>
-                                <IconButton onClick={deleteFile}>
+                                <IconButton onClick={() => setFile(undefined)}>
                                     <Delete></Delete>
                                 </IconButton>
                             </div>
@@ -300,7 +274,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 }
             </Button>
             <Fade in={uploadState === 'error'} unmountOnExit>
-                <Alert severity="error" className="mb-5">{uploadErrorMessage}</Alert>
+                <Alert severity="error" className="mb-5">Upload failed</Alert>
             </Fade>
         </form>
     </Dialog>
