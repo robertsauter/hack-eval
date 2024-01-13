@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Container } from '@mui/material';
+import { Alert, Button, CircularProgress, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { UploadHackathonDialog } from '../components/UploadHackathonDialog';
 import { hackathonService } from '../services/HackathonService';
@@ -44,31 +44,34 @@ export function Overview() {
     }, []);
 
     return (
-        <Container className="pt-5" maxWidth="md">
-            <div className="mb-10">
-                <Button variant="contained" onClick={() => setIsDialogOpen(true)}>Upload a new hackathon</Button>
-                <UploadHackathonDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} onSuccess={handleUploadSuccess}></UploadHackathonDialog>
-            </div>
-            {hackathonsState === 'loading'
-                ? <div className="flex items-center justify-center p-10">
-                    <CircularProgress />
+        <>
+            <Container className="pt-5" maxWidth="md">
+                <div className="mb-10 flex justify-between items-center">
+                    <Typography variant="h4" className="font-bold">Your hackathons</Typography>
+                    <Button variant="contained" onClick={() => setIsDialogOpen(true)}>Upload a new hackathon</Button>
                 </div>
-            : hackathonsState === 'error'
-                ? <div className="flex items-center justify-center p-10">
-                    <Alert severity="error">Hackathons could not be loaded.</Alert>
-                </div>
-            : hackathonsState === 'success'
-                ? <div className="grid grid-cols-3 gap-5">
-                    {hackathons.map((hackathon) =>
-                        <HackathonCard
-                            hackathon={hackathon}
-                            selectEvent={addOrRemoveSelectedHackathon}
-                            deleteEvent={getHackathons}
-                            key={hackathon.id} />
-                    )}
-                </div>
-                : <></>
-            }
-        </Container>
+                {hackathonsState === 'loading'
+                    ? <div className="flex items-center justify-center p-10">
+                        <CircularProgress />
+                    </div>
+                : hackathonsState === 'error'
+                    ? <div className="flex items-center justify-center p-10">
+                        <Alert severity="error">Hackathons could not be loaded.</Alert>
+                    </div>
+                : hackathonsState === 'success'
+                    ? <div className="grid grid-cols-3 gap-5">
+                        {hackathons.map((hackathon) =>
+                            <HackathonCard
+                                hackathon={hackathon}
+                                selectEvent={addOrRemoveSelectedHackathon}
+                                deleteEvent={getHackathons}
+                                key={hackathon.id} />
+                        )}
+                    </div>
+                    : <></>
+                }
+            </Container>
+            <UploadHackathonDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} onSuccess={handleUploadSuccess}></UploadHackathonDialog>
+        </>
     );
 }
