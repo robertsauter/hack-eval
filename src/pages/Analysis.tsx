@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { analysisService } from '../services/AnalysisService';
-import { Alert, Button, CircularProgress, Collapse, Container, Divider, Typography } from '@mui/material';
+import { Alert, Button, CircularProgress, Collapse, Container, Typography } from '@mui/material';
 import { State } from '../lib/AsyncState';
 import { FiltersList } from '../components/FiltersList';
 
