@@ -17,7 +17,7 @@ class HackathonService {
         formData.append('incentives', information.incentives);
         formData.append('venue', information.venue);
         formData.append('participants', information.participants.toString());
-        formData.append('type', information.type);
+        formData.append('types', information.types.join(','));
         formData.append('file', file);
         return httpService.post('/hackathons/csv', { body: formData });
     }

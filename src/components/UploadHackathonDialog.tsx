@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Button, Chip, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, TextField, Tooltip, Typography } from "@mui/material";
 import HelpIcon from '@mui/icons-material/Help';
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { googleFormsService } from '../services/GoogleFormsService';
@@ -15,6 +15,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const [file, setFile] = useState<File>();
     const [uploadFrom, setUploadFrom] = useState<'forms' | 'csv'>('forms');
     const [fileError, setFileError] = useState(false);
+    const [types, setTypes] = useState<HackathonInformation['types']>([]);
 
     const [resultsSubscription, setResultsSubscription] = useState<Subscription>();
 
@@ -27,11 +28,11 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         form.elements['incentives'].value = '';
         form.elements['venue'].value = '';
         form.elements['participants'].value = undefined;
-        form.elements['type'].value = '';
         const id = form.elements['id'];
         if(id) {
             form.elements['id'].value = '';
         }
+        setTypes([]);
         setFile(undefined);
     };
 
@@ -44,7 +45,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             incentives: formData.get('incentives') as HackathonInformation['incentives'],
             venue: formData.get('venue') as HackathonInformation['venue'],
             participants: formData.get('participants') as unknown as number,
-            type: formData.get('type') as HackathonInformation['type']
+            types: (formData.get('types') as string).split(',') as HackathonInformation['types']
         };
     };
 
@@ -184,15 +185,25 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 label="Number of participants"
                 type="number" />
             <FormControl fullWidth required>
-                <InputLabel id="type">Type</InputLabel>
+                <InputLabel id="types">Type</InputLabel>
                 <Select
-                    name="type"
-                    labelId="type"
+                    name="types"
+                    labelId="types"
                     className="mb-5"
                     fullWidth
                     required
+                    multiple
                     variant="outlined"
-                    label="Type">
+                    label="Types"
+                    value={types}
+                    onChange={(e) => setTypes(e.target.value as HackathonInformation['types'])}
+                    renderValue={(selected: string[]) =>
+                        <div className="flex gap-1">
+                            {selected.map((value) =>
+                                <Chip key={value} label={value} />
+                            )}
+                        </div>
+                    }>
                     <MenuItem value="prototype">Prototype focused</MenuItem>
                     <MenuItem value="conceptual">Conceptual solution focused</MenuItem>
                     <MenuItem value="analysis">Analysis focused</MenuItem>
