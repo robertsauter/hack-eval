@@ -22,10 +22,12 @@ class HackathonService {
         return httpService.post('/hackathons/csv', { body: formData });
     }
 
+    /** Load all uploaded hackathons of the logged in user */
     getHackathonsOfLoggedInUser() {
         return httpService.get('/hackathons', {});
     }
 
+    /** Remove the hackathon with the given id */
     removeHackathon(id: string) {
         return httpService.delete(`/hackathons/${id}`, {});
     }

@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
@@ -10,6 +9,7 @@ import { action as registerAction } from './pages/Register.tsx';
 import { action as loginAction } from './pages/Login.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { userService } from './services/UserService.ts';
+import { Analysis } from './pages/Analysis.tsx';
 
 const rootElement = document.getElementById('root');
 
@@ -60,6 +60,11 @@ const router = createBrowserRouter([
         element: <Register />,
         action: registerAction,
         loader: userService.redirectIfLoggedIn
+      },
+      {
+        path: '/analysis/:ids',
+        element: <Analysis />,
+        loader: userService.redirectIfNotLoggedIn
       }
     ]
   }

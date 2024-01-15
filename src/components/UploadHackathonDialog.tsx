@@ -177,7 +177,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 </Select>
             </FormControl>
             <FormControl fullWidth required>
-                <InputLabel id="venue">Size of your hackathon</InputLabel>
+                <InputLabel id="size">Size of your hackathon</InputLabel>
                 <Select
                     name="size"
                     labelId="size"
