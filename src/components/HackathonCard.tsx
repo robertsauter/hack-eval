@@ -51,8 +51,8 @@ export function HackathonCard(props: { hackathon: HackathonInformation, selectEv
                     <Typography variant="body2">{ hackathon.venue }</Typography>
                 </div>
                 <div className="grid grid-cols-2">
-                    <Typography variant="body2" className="font-bold">Participants:</Typography>
-                    <Typography variant="body2">{ hackathon.participants }</Typography>
+                    <Typography variant="body2" className="font-bold">Size:</Typography>
+                    <Typography variant="body2">{ hackathon.size }</Typography>
                 </div>
                 <div className="grid grid-cols-2">
                     <Typography variant="body2" className="font-bold">Type:</Typography>

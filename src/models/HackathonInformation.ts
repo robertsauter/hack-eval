@@ -4,7 +4,7 @@ export type HackathonInformation = {
     title: string;
     incentives: 'collaboration' | 'competition';
     venue: 'in-person' | 'virtual' | 'hybrid';
-    participants: number;
+    size: 'small' | 'medium' | 'large';
     types: HackathonType[];
     id?: string;
 };

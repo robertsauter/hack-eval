@@ -71,6 +71,7 @@ export function Overview() {
                     : <></>
                 }
             </Container>
+            <Button className="absolute bottom-5 right-5">See analysis</Button>
             <UploadHackathonDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} onSuccess={handleUploadSuccess}></UploadHackathonDialog>
         </>
     );

@@ -27,7 +27,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         form.elements['title'].value = '';
         form.elements['incentives'].value = '';
         form.elements['venue'].value = '';
-        form.elements['participants'].value = undefined;
+        form.elements['size'].value = '';
         const id = form.elements['id'];
         if(id) {
             form.elements['id'].value = '';
@@ -44,7 +44,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             title: formData.get('title') as string,
             incentives: formData.get('incentives') as HackathonInformation['incentives'],
             venue: formData.get('venue') as HackathonInformation['venue'],
-            participants: formData.get('participants') as unknown as number,
+            size: formData.get('size') as HackathonInformation['size'],
             types: (formData.get('types') as string).split(',') as HackathonInformation['types']
         };
     };
@@ -141,7 +141,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
     }, []);
 
-    return <Dialog onClose={onClose} open={open}>
+    return <Dialog onClose={onClose} open={open} fullWidth>
         <DialogTitle variant="h5" className="font-bold">Upload a new hackathon</DialogTitle>
         <form onSubmit={handleSubmit} id="HackathonForm" className="pb-6 px-6">
             <TextField
@@ -176,14 +176,19 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     <MenuItem value="hybrid">Hybrid</MenuItem>
                 </Select>
             </FormControl>
-            <TextField
-                name="participants"
-                className="mb-5"
-                fullWidth
-                required
-                variant="outlined"
-                label="Number of participants"
-                type="number" />
+            <FormControl fullWidth required>
+                <InputLabel id="venue">Size of your hackathon</InputLabel>
+                <Select
+                    name="size"
+                    labelId="size"
+                    className="mb-5"
+                    variant="outlined"
+                    label="Size of your hackathon">
+                    <MenuItem value="small">Small (up to 50 participants)</MenuItem>
+                    <MenuItem value="medium">Medium (up to 150 participants)</MenuItem>
+                    <MenuItem value="large">Large (more than 150 participants)</MenuItem>
+                </Select>
+            </FormControl>
             <FormControl fullWidth required>
                 <InputLabel id="types">Type</InputLabel>
                 <Select
