@@ -1,16 +1,23 @@
-import { Add } from "@mui/icons-material";
-import { Button, Typography } from "@mui/material";
-import { useState } from "react";
-import { Filter } from "./Filter";
-import { FilterCombination } from "../models/FilterCombination";
+import { Add } from '@mui/icons-material';
+import { Button, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Filter } from './Filter';
+import type { FilterCombination } from '../models/FilterCombination';
+import { MouseEvent } from 'react';
 
-export function FiltersList() {
+export function FiltersList(props: { onUpdateFilters: (newFilters: FilterCombination[]) => void }) {
+
+    const { onUpdateFilters } = props;
+
     const [filters, setFilters] = useState<FilterCombination[]>([]);
 
     /** Add a new filter combination to the list */
     const addFilter = () => {
+        const ids = filters.map((filter) => filter.id ? filter.id : 0);
+        const highest = ids.sort((a, b) => a - b).pop() || 0;
         setFilters([...filters, {
-            id: filters.length,
+            name: '',
+            id: highest + 1,
             incentives: [],
             venue: [],
             size: [],
@@ -19,20 +26,24 @@ export function FiltersList() {
     };
 
     /** Set one of the filter combinations in the list */
-    const setFilter = (filter: FilterCombination) => {
-        setFilters(filters.map((old_filter) => old_filter.id === filter.id ? filter : old_filter));
+    const handleSetFilter = (filter: FilterCombination) => {
+        setFilters(filters.map((oldFilter) => oldFilter.id === filter.id ? filter : oldFilter));
     };
 
-    /** Load new data with the updated filters */
-    const updateAnalysis = () => {
-        console.log(filters);
-    };
+    const handleDeleteFilter = (e: MouseEvent<HTMLButtonElement>, filter: FilterCombination) => {
+        e.stopPropagation();
+        setFilters(filters.filter((oldFilter) => oldFilter.id !== filter.id));
+    }; 
 
     return <div className="p-5">
         <Typography variant="h5" className="font-bold mb-5">Filters</Typography>
         <div>
             {filters.map((filter) =>
-                <Filter key={filter.id} filter={filter} setFilter={setFilter} />
+                <Filter
+                    key={filter.id}
+                    filter={filter}
+                    onSetFilter={handleSetFilter}
+                    onDeleteFilter={handleDeleteFilter} />
             )}
         </div>
         <Button
@@ -46,7 +57,7 @@ export function FiltersList() {
         <Button
             fullWidth
             variant="contained"
-            onClick={updateAnalysis}>
+            onClick={() => onUpdateFilters(filters)}>
             Update analysis 
         </Button>
     </div>;

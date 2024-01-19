@@ -1,9 +1,13 @@
-import { httpService } from "./HttpService";
+import type { FilterCombination } from '../models/FilterCombination';
+import { httpService } from './HttpService';
 
 class AnalysisService {
 
     /** Get analysis objects, given a list of selected hackathons and a list of filters */
-    getAnalyses(ids: string, filters: any = []) {
+    getAnalyses(ids: string, filters: FilterCombination[] = []) {
+        filters.forEach((filter) => {
+            delete filter.id;
+        });
         return httpService.get(`/analyses?hackathons=${ids}&filters=${JSON.stringify(filters)}`, {});
     }
 }

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { analysisService } from '../services/AnalysisService';
-import { Alert, Button, CircularProgress, Collapse, Container, Typography } from '@mui/material';
-import { State } from '../lib/AsyncState';
+import { Alert, CircularProgress, Drawer, Typography } from '@mui/material';
+import type { State } from '../lib/AsyncState';
 import { FiltersList } from '../components/FiltersList';
+import type { FilterCombination } from '../models/FilterCombination';
 
 export function Analysis() {
     const { ids } = useParams();
@@ -11,9 +12,10 @@ export function Analysis() {
     const [analysisState, setAnalysisState] = useState<State>('initial');
     const [filtersShown, setFiltersShown] = useState(false);
 
-    const getAnalyses = async () => {
+    const getAnalyses = async (filters: FilterCombination[] = []) => {
+        setAnalysisState('loading');
         if(ids) {
-            const response = await analysisService.getAnalyses(ids);
+            const response = await analysisService.getAnalyses(ids, filters);
 
             if(response.ok) {
                 setAnalysisState('success');
@@ -23,18 +25,19 @@ export function Analysis() {
             }
         }
     };
+
+    const handleUpdateFilters = (filters: FilterCombination[]) => {
+        getAnalyses(filters);
+        setFiltersShown(false);
+    };
     
     useEffect(() => {
-        setAnalysisState('loading');
         getAnalyses();
     }, []);
 
-    return <div className="flex">
-        <Container className="pt-5" maxWidth="md">
-            <div className="flex items-center justify-between">
-                <Typography variant="h4" className="font-bold">Analysis</Typography>
-                <Button variant="contained" onClick={() => setFiltersShown(!filtersShown)}>Filters</Button>
-            </div>
+    return <>
+        <div className="pt-5 pl-40 pr-[200px] md:pr-[300px] lg:pr-[400px] xl:pr-[500px]">
+            <Typography variant="h4" className="font-bold">Analysis</Typography>
             {analysisState === 'loading'
                 ? <div className="flex items-center justify-center p-10">
                     <CircularProgress />
@@ -47,9 +50,15 @@ export function Analysis() {
                 ? <Typography>Success</Typography>
                 : <></>
             }
-        </Container>
-        <Collapse in={filtersShown} orientation="horizontal">
-            <FiltersList />
-        </Collapse>
-    </div>;
+        </div>
+        <Drawer
+            open={filtersShown}
+            onClose={() => setFiltersShown(false)}
+            anchor="right"
+            variant="permanent">
+            <div className="w-[200px] md:w-[300px] lg:w-[400px] xl:w-[500px]">
+                <FiltersList onUpdateFilters={handleUpdateFilters} />
+            </div>
+        </Drawer>
+    </>;
 };
