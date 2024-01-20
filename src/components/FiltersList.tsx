@@ -4,20 +4,23 @@ import { useState } from 'react';
 import { Filter } from './Filter';
 import type { FilterCombination } from '../models/FilterCombination';
 import { MouseEvent } from 'react';
+import { FilterPresetDialog } from './FilterPresetDialog';
 
 export function FiltersList(props: { onUpdateFilters: (newFilters: FilterCombination[]) => void }) {
 
     const { onUpdateFilters } = props;
 
     const [filters, setFilters] = useState<FilterCombination[]>([]);
+    const [dialogFilterIndex, setDialogFilterIndex] = useState(0);
+    const [presetDialogOpen, setPresetDialogOpen] = useState(false);
 
     /** Add a new filter combination to the list */
     const addFilter = () => {
-        const ids = filters.map((filter) => filter.id ? filter.id : 0);
-        const highest = ids.sort((a, b) => a - b).pop() || 0;
+        const indexes = filters.map((filter) => filter.index ? filter.index : 0);
+        const highest = indexes.sort((a, b) => a - b).pop() || 0;
         setFilters([...filters, {
             name: '',
-            id: highest + 1,
+            index: highest + 1,
             incentives: [],
             venue: [],
             size: [],
@@ -27,38 +30,55 @@ export function FiltersList(props: { onUpdateFilters: (newFilters: FilterCombina
 
     /** Set one of the filter combinations in the list */
     const handleSetFilter = (filter: FilterCombination) => {
-        setFilters(filters.map((oldFilter) => oldFilter.id === filter.id ? filter : oldFilter));
+        setFilters(filters.map((oldFilter) => oldFilter.index === filter.index ? filter : oldFilter));
     };
 
+    /** Delete a filter combination from the list */
     const handleDeleteFilter = (e: MouseEvent<HTMLButtonElement>, filter: FilterCombination) => {
         e.stopPropagation();
-        setFilters(filters.filter((oldFilter) => oldFilter.id !== filter.id));
-    }; 
+        setFilters(filters.filter((oldFilter) => oldFilter.index !== filter.index));
+    };
 
-    return <div className="p-5">
-        <Typography variant="h5" className="font-bold mb-5">Filters</Typography>
-        <div>
-            {filters.map((filter) =>
-                <Filter
-                    key={filter.id}
-                    filter={filter}
-                    onSetFilter={handleSetFilter}
-                    onDeleteFilter={handleDeleteFilter} />
-            )}
+    /** Open the preset dialog and set the index of the filter, where it was opened */
+    const handleOpenDialog = (filter: FilterCombination) => {
+        if(filter.index) {
+            setDialogFilterIndex(filter.index);
+            setPresetDialogOpen(true);
+        }
+    };
+
+    return <>
+        <div className="p-5">
+            <Typography variant="h5" className="font-bold mb-5">Filters</Typography>
+            <div>
+                {filters.map((filter) =>
+                    <Filter
+                        key={filter.index}
+                        filter={filter}
+                        onOpenDialog={handleOpenDialog}
+                        onSetFilter={handleSetFilter}
+                        onDeleteFilter={handleDeleteFilter} />
+                )}
+            </div>
+            <Button
+                fullWidth
+                variant="outlined"
+                endIcon={<Add />}
+                onClick={addFilter}
+                className="mb-5">
+                Add filter
+            </Button>
+            <Button
+                fullWidth
+                variant="contained"
+                onClick={() => onUpdateFilters(filters)}>
+                Update analysis 
+            </Button>
         </div>
-        <Button
-            fullWidth
-            variant="outlined"
-            endIcon={<Add />}
-            onClick={addFilter}
-            className="mb-5">
-            Add filter
-        </Button>
-        <Button
-            fullWidth
-            variant="contained"
-            onClick={() => onUpdateFilters(filters)}>
-            Update analysis 
-        </Button>
-    </div>;
-};
+        <FilterPresetDialog
+            index={dialogFilterIndex}
+            open={presetDialogOpen}
+            onClose={() => setPresetDialogOpen(false)}
+            onSelect={handleSetFilter} />
+    </>;
+}

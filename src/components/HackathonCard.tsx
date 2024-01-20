@@ -1,8 +1,8 @@
-import { Alert, Card, CardActionArea, CardContent, IconButton, Snackbar, Typography } from "@mui/material";
-import { HackathonInformation } from "../models/HackathonInformation";
-import { useState } from "react";
-import { Delete } from "@mui/icons-material";
-import { hackathonService } from "../services/HackathonService";
+import { Alert, Card, CardActionArea, CardContent, IconButton, Snackbar, Typography } from '@mui/material';
+import { HackathonInformation } from '../models/HackathonInformation';
+import { useState } from 'react';
+import { Delete } from '@mui/icons-material';
+import { hackathonService } from '../services/HackathonService';
 
 export function HackathonCard(props: { hackathon: HackathonInformation, selectEvent: (id: string, selected: boolean) => void, deleteEvent: () => void }) {
     const { hackathon, selectEvent, deleteEvent } = props;
@@ -10,12 +10,14 @@ export function HackathonCard(props: { hackathon: HackathonInformation, selectEv
     const [selected, setSelected] = useState(false);
     const [deleteErrorShown, setDeleteErrorShown] = useState(false);
 
+    /** Mark a hackathon as selected */
     const select = () => {
         const newValue = !selected;
         setSelected(newValue);
         selectEvent(hackathon.id || '', newValue);
     };
 
+    /** Delete a hackathon */
     const removeHackathon = async () => {
         if(hackathon.id) {
             const response = await hackathonService.removeHackathon(hackathon.id);
@@ -29,6 +31,7 @@ export function HackathonCard(props: { hackathon: HackathonInformation, selectEv
         }
     };
 
+    /** Hide the error message */
     const handleCloseError = () => {
         setDeleteErrorShown(false);
     };
@@ -36,12 +39,12 @@ export function HackathonCard(props: { hackathon: HackathonInformation, selectEv
     return <>
         <Card className="flex flex-col justify-between">
             <CardContent className="relative">
-                <div className="absolute top-1 right-1">
+                <div className="flex items-center justify-between mb-2">
+                    <Typography variant="h6" className="font-bold">{ hackathon.title }</Typography>
                     <IconButton onClick={removeHackathon}>
                         <Delete></Delete>
                     </IconButton>
                 </div>
-                <Typography variant="h6" className="font-bold mb-2">{ hackathon.title }</Typography>
                 <div className="grid grid-cols-2">
                     <Typography variant="body2" className="font-bold">Incentives:</Typography>
                     <Typography variant="body2">{ hackathon.incentives }</Typography>

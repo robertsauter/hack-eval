@@ -61,4 +61,4 @@ export function Analysis() {
             </div>
         </Drawer>
     </>;
-};
+}

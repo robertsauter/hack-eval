@@ -1,7 +1,8 @@
-import { HackathonInformation } from "./HackathonInformation";
+import type { HackathonInformation } from './HackathonInformation';
 
 export type FilterCombination = {
-    id?: number;
+    index?: number;
+    id?: string;
     name: string;
     incentives: HackathonInformation['incentives'][];
     venue: HackathonInformation['venue'][];
