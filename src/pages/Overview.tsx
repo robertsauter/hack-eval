@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Container, Typography } from '@mui/material';
+import { Alert, Button, CircularProgress, Container, Fab, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { UploadHackathonDialog } from '../components/UploadHackathonDialog';
 import { hackathonService } from '../services/HackathonService';
@@ -83,12 +83,13 @@ export function Overview() {
                 }
             </Container>
             <RouterLink to={`/analysis/${selectedHackathonIds.join(',')}`}>
-                <Button
-                    variant="contained"
-                    className="absolute bottom-5 right-5"
+                <Fab
+                    className="fixed bottom-5 right-5"
+                    variant="extended"
+                    color="primary"
                     disabled={selectedHackathonIds.length === 0}>
                     See analysis
-                </Button>
+                </Fab>
             </RouterLink>
             <UploadHackathonDialog
                 open={isDialogOpen}
