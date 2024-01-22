@@ -1,4 +1,4 @@
-import { Alert, Button, Chip, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Button, Chip, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Tooltip, Typography } from '@mui/material';
 import HelpIcon from '@mui/icons-material/Help';
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { googleFormsService } from '../services/GoogleFormsService';
@@ -28,6 +28,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         form.elements['incentives'].value = '';
         form.elements['venue'].value = '';
         form.elements['size'].value = '';
+        form.elements['link'].value = '';
         const id = form.elements['id'];
         if(id) {
             form.elements['id'].value = '';
@@ -45,7 +46,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             incentives: formData.get('incentives') as HackathonInformation['incentives'],
             venue: formData.get('venue') as HackathonInformation['venue'],
             size: formData.get('size') as HackathonInformation['size'],
-            types: (formData.get('types') as string).split(',') as HackathonInformation['types']
+            types: (formData.get('types') as string).split(',') as HackathonInformation['types'],
+            link: formData.get('link') as string
         };
     };
 
@@ -190,7 +192,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 </Select>
             </FormControl>
             <FormControl fullWidth required>
-                <InputLabel id="types">Type</InputLabel>
+                <InputLabel id="types">Types</InputLabel>
                 <Select
                     name="types"
                     labelId="types"
@@ -217,6 +219,12 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     <MenuItem value="ideation">Ideation focused</MenuItem>
                 </Select>
             </FormControl>
+            <TextField
+                name="link"
+                className="mb-5"
+                fullWidth
+                variant="outlined"
+                label="Link to your hackathon" />
             <div className="mb-5">
                 <FormControl fullWidth className="mb-2">
                     <FormLabel id="upload-source-label">Upload source</FormLabel>

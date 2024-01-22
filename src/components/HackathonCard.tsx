@@ -58,10 +58,14 @@ export function HackathonCard(props: { hackathon: HackathonInformation, selectEv
                     <Typography variant="body2">{ hackathon.size }</Typography>
                 </div>
                 <div className="grid grid-cols-2">
-                    <Typography variant="body2" className="font-bold">Type:</Typography>
+                    <Typography variant="body2" className="font-bold">Types:</Typography>
                     {hackathon.types.map((type) =>
                         <Typography variant="body2" className="col-start-2" key={type}>{ type }</Typography>
                     )}
+                </div>
+                <div className="grid grid-cols-2">
+                    <Typography variant="body2" className="font-bold">Link:</Typography>
+                    <Typography variant="body2">{ hackathon.link }</Typography>
                 </div>
             </CardContent>
             <CardActionArea onClick={select}>

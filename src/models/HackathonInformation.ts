@@ -7,4 +7,5 @@ export type HackathonInformation = {
     size: 'small' | 'medium' | 'large';
     types: HackathonType[];
     id?: string;
+    link?: string;
 };
