@@ -1,32 +1,30 @@
 import { ResponsiveRadar } from '@nivo/radar';
-import { AnalysisData, AnalysisSubQuestion } from '../../models/Analysis';
+import { MappedAnalysisQuestion } from '../../models/Analysis';
 
-export function RadarChart(props: { data: AnalysisData }) {
+export function RadarChart(props: { question: MappedAnalysisQuestion }) {
 
-    const { data } = props;
+    const { question } = props;
 
-    const typedQuestions = data.selected.results[0].sub_questions as AnalysisSubQuestion[];
-    const mappedData = typedQuestions.map((question, index) => {
-        const typedQuestion = question as AnalysisSubQuestion;
-        const subQuestion: Record<string, string | number> = { 'subQuestionTitle': typedQuestion.title };
-        subQuestion[data.selected.title] = typedQuestion.statistical_values?.average || 0;
-
-        data.comparisons.forEach((comparison) => {
-            const currentTypedQuestion = comparison.results[0].sub_questions?.[index] as AnalysisSubQuestion;
-            subQuestion[data.selected.title] = currentTypedQuestion.statistical_values?.average || 0;
+    const data = question.subQuestions?.map((subQuestion) => {
+        const mappedQuestion: Record<string, number | string> = { 'subQuestionTitle': subQuestion.title };
+        subQuestion.values.forEach((value) => {
+            mappedQuestion[value.hackathonTitle] = value.statisticalValues.average || 0;
         });
-        return subQuestion;
+        return mappedQuestion;
     });
 
-    const titles = [data.selected.title, ...data.comparisons.map((comparison) => comparison.title)];
+    const titles = question.subQuestions?.[0].values.map((value) => value.hackathonTitle);
 
     return <div className="h-80">
-        <ResponsiveRadar
-            data={mappedData}
-            indexBy="subQuestionTitle"
-            keys={titles}
-            maxValue={5}
-            margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-            valueFormat=">-.2f" />
+        {data && titles
+            ? <ResponsiveRadar
+                data={data}
+                indexBy="subQuestionTitle"
+                keys={titles}
+                maxValue={5}
+                margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+                valueFormat=">-.2f" />
+            : <></>
+        }
     </div>;
 }

@@ -9,7 +9,7 @@ import { action as registerAction } from './pages/Register.tsx';
 import { action as loginAction } from './pages/Login.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { userService } from './services/UserService.ts';
-import { Analysis } from './pages/Analysis.tsx';
+import { Analyses } from './pages/Analyses.tsx';
 
 const rootElement = document.getElementById('root');
 
@@ -63,7 +63,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/analysis/:ids',
-        element: <Analysis />,
+        element: <Analyses />,
         loader: userService.redirectIfNotLoggedIn
       }
     ]

@@ -75,7 +75,8 @@ export function Filter(props: {
                         variant="outlined"
                         value={filter.name}
                         onChange={(e) => updateFilters(e, 'name')}
-                        label="Name" />
+                        label="Name"
+                        required />
                 <FormControl fullWidth>
                     <InputLabel id="incentives">Incentives</InputLabel>
                     <Select

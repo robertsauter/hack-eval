@@ -1,6 +1,6 @@
-import { HackathonInformation } from "./HackathonInformation"
+import type { HackathonInformation } from './HackathonInformation';
 
-type StatisticalValues = {
+export type StatisticalValues = {
     participants: number;
     average?: number;
     deviation?: number;
@@ -12,19 +12,33 @@ export type AnalysisSubQuestion = {
     statistical_values?: StatisticalValues;
 };
 
-type AnalysisMeasure = {
+type AnalysisMeasureInformation = {
     title: string;
     question_type: 'single_question' | 'group_question' | 'score_question' | 'category_question';
     answer_type: 'string_to_int' | 'int' | 'string';
+};
+
+export type AnalysisMeasure = AnalysisMeasureInformation & {
     sub_questions?: string[] | AnalysisSubQuestion[];
     statistical_values?: StatisticalValues;
 };
 
-type Analysis = HackathonInformation & {
+export type Analysis = HackathonInformation & {
     results: AnalysisMeasure[];
 };
 
-export type AnalysisData = {
-    selected: Analysis;
-    comparisons: Analysis[];
+type MappedAnalysisSubquestion = {
+    title: string;
+    values: {
+        hackathonTitle: string;
+        statisticalValues : StatisticalValues;
+    }[]
+};
+
+export type MappedAnalysisQuestion = AnalysisMeasureInformation & {
+    values?: {
+        hackathonTitle: string;
+        statisticalValues?: StatisticalValues;
+    }[],
+    subQuestions?: MappedAnalysisSubquestion[]
 };
