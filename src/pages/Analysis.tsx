@@ -5,19 +5,23 @@ import { Alert, CircularProgress, Drawer, Typography } from '@mui/material';
 import type { State } from '../lib/AsyncState';
 import { FiltersList } from '../components/FiltersList';
 import type { FilterCombination } from '../models/FilterCombination';
+import { IndividualMeasures } from '../components/analysisSections/IndividualMeasures';
+import type { AnalysisData } from '../models/Analysis';
 
 export function Analysis() {
     const { ids } = useParams();
 
     const [analysisState, setAnalysisState] = useState<State>('initial');
-    const [filtersShown, setFiltersShown] = useState(false);
+    const [data, setData] = useState<AnalysisData>();
 
+    /** Load analyses for a filter combination */
     const getAnalyses = async (filters: FilterCombination[] = []) => {
         setAnalysisState('loading');
         if(ids) {
             const response = await analysisService.getAnalyses(ids, filters);
 
             if(response.ok) {
+                setData(await response.json());
                 setAnalysisState('success');
             }
             else {
@@ -25,19 +29,14 @@ export function Analysis() {
             }
         }
     };
-
-    const handleUpdateFilters = (filters: FilterCombination[]) => {
-        getAnalyses(filters);
-        setFiltersShown(false);
-    };
     
     useEffect(() => {
         getAnalyses();
     }, []);
 
     return <>
-        <div className="pt-5 pl-40 pr-[200px] md:pr-[300px] lg:pr-[400px] xl:pr-[500px]">
-            <Typography variant="h4" className="font-bold">Analysis</Typography>
+        <div className="pt-5 pl-40 pr-[220px] md:pr-[320px] lg:pr-[420px] xl:pr-[520px]">
+            <Typography variant="h4" className="font-bold mb-5">Analysis</Typography>
             {analysisState === 'loading'
                 ? <div className="flex items-center justify-center p-10">
                     <CircularProgress />
@@ -47,17 +46,15 @@ export function Analysis() {
                     <Alert severity="error">Analysis could not be loaded.</Alert>
                 </div>
             : analysisState === 'success'
-                ? <Typography>Success</Typography>
+                ? <IndividualMeasures data={data} />
                 : <></>
             }
         </div>
         <Drawer
-            open={filtersShown}
-            onClose={() => setFiltersShown(false)}
             anchor="right"
             variant="permanent">
             <div className="w-[200px] md:w-[300px] lg:w-[400px] xl:w-[500px]">
-                <FiltersList onUpdateFilters={handleUpdateFilters} />
+                <FiltersList onUpdateFilters={(filters) => getAnalyses(filters)} />
             </div>
         </Drawer>
     </>;
