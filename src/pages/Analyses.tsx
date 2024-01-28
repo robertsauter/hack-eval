@@ -19,6 +19,13 @@ export function Analyses() {
         'To what extent was your decision to participate in this hackathon motivated by...',
         'How many hackathons have you participated in the past?'
     ];
+    const teamCompositionQuestions = [
+        'How many people were in your team (including yourself)?',
+        'Was there a team leader?',
+        'Was there a project manager?',
+        'Was there a social-emotional leader?',
+        'How well did you know your team members?'
+    ];
 
     /** Load analyses for a filter combination */
     const getAnalyses = async (filters: FilterCombination[] = []) => {
@@ -68,6 +75,10 @@ export function Analyses() {
                         title="Individual measures"
                         analyses={analyses}
                         questionTitles={individualMeasuresQuestions} />
+                    <AnalysisSection
+                        title="Team composition"
+                        analyses={analyses}
+                        questionTitles={teamCompositionQuestions} />
                 </>
                 : <></>
             }

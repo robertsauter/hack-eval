@@ -58,7 +58,7 @@ export function Filter(props: {
     };
 
     return <>
-        <Accordion className="mb-2">
+        <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
                 <Typography className="font-bold">{filter.name !== '' ? filter.name : `Filter ${filter.index}`}</Typography>
             </AccordionSummary>

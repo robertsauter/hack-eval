@@ -4,6 +4,7 @@ import { Analysis } from '../models/Analysis';
 import { analysisService } from '../services/AnalysisService';
 import { BarChart } from './charts/BarChart';
 import { RadarChart } from './charts/RadarChart';
+import { PieChartList } from './charts/PieChartList';
 
 export function AnalysisSection(props: {
     title: string,
@@ -27,7 +28,7 @@ export function AnalysisSection(props: {
                         {question.question_type === 'single_question' || question.question_type === 'score_question'
                             ? <BarChart question={question} />
                         : question.question_type === 'category_question'
-                            ? <></>
+                            ? <PieChartList question={question} />
                         : question.question_type === 'group_question'
                             ? <RadarChart question={question} />
                             : <></>

@@ -4,7 +4,7 @@ export type StatisticalValues = {
     participants: number;
     average?: number;
     deviation?: number;
-    distribution: {};
+    distribution: Record<string, string | number>;
 };
 
 export type AnalysisSubQuestion = {

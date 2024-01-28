@@ -50,7 +50,7 @@ export function FiltersList(props: { onUpdateFilters: (newFilters: FilterCombina
     return <>
         <div className="p-5">
             <Typography variant="h5" className="font-bold mb-5">Filters</Typography>
-            <div>
+            <div className="mb-2">
                 {filters.map((filter) =>
                     <Filter
                         key={filter.index}
