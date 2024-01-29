@@ -19,6 +19,9 @@ class AnalysisService {
         return questionTitles.map((title) => {
             const foundQuestion = analyses[0].results.find((question) => question.title === title) as AnalysisMeasure;
             //Handle questions without subquestions
+            if (!foundQuestion) {
+                console.log(title);
+            }
             if(foundQuestion.question_type !== 'group_question') {
                 const values = analyses.map((analysis) => {
                     const currentQuestion = analysis.results.find((question) => question.title === title) as AnalysisMeasure;
