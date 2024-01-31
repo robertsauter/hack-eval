@@ -42,3 +42,13 @@ export type MappedAnalysisQuestion = AnalysisMeasureInformation & {
     }[],
     subQuestions?: MappedAnalysisSubquestion[]
 };
+
+export type AnalysisSectionType = {
+    sectionTitle: string;
+    questions: string[];
+};
+
+export type MappedAnalysisSection = {
+    sectionTitle: string;
+    questions: MappedAnalysisQuestion[];
+};

@@ -5,20 +5,17 @@ import { Alert, CircularProgress, Drawer, Snackbar, Typography } from '@mui/mate
 import type { State } from '../lib/AsyncState';
 import { FiltersList } from '../components/FiltersList';
 import type { FilterCombination } from '../models/FilterCombination';
-import { Analysis } from '../models/Analysis';
 import { AnalysisSection } from '../components/AnalysisSection';
+import { AnalysisSectionType, MappedAnalysisSection } from '../models/Analysis';
 
 export function Analyses() {
     const { ids } = useParams();
 
     const [analysisState, setAnalysisState] = useState<State>('initial');
-    const [analyses, setAnalyses] = useState<Analysis[]>([]);
+    const [filteredAnalyses, setFilteredAnalyses] = useState<MappedAnalysisSection[]>([]);
     const [missingNameErrorShown, setMissingNameErrorShown] = useState(false);
 
-    const questionTitles: {
-        sectionTitle: string;
-        questions: string[];
-    }[] = [
+    const questionTitles: AnalysisSectionType[] = [
         {
             sectionTitle: 'Individual measures',
             questions: [
@@ -108,7 +105,8 @@ export function Analyses() {
                 const response = await analysisService.getAnalyses(ids, filters);
 
                 if(response.ok) {
-                    setAnalyses(await response.json());
+                    const analyses = await response.json();
+                    setFilteredAnalyses(analysisService.getQuestionsFromAnalysis(analyses, questionTitles));
                     setAnalysisState('success');
                 }
                 else {
@@ -128,7 +126,7 @@ export function Analyses() {
     }, []);
 
     return <>
-        <div className="pt-5 pl-40 pr-[220px] md:pr-[320px] lg:pr-[420px] xl:pr-[520px]">
+        <div className="pt-5 pl-40 pr-[13rem] md:pr-[19rem] lg:pr-[26rem] xl:pr-[31rem]">
             <Typography variant="h4" className="font-bold mb-5">Analysis</Typography>
             {analysisState === 'loading'
                 ? <div className="flex items-center justify-center p-10">
@@ -139,11 +137,8 @@ export function Analyses() {
                     <Alert severity="error">Analysis could not be loaded.</Alert>
                 </div>
             : analysisState === 'success'
-                ? questionTitles.map((section) =>
-                    <AnalysisSection
-                        title={section.sectionTitle}
-                        analyses={analyses}
-                        questionTitles={section.questions} />
+                ? filteredAnalyses.map((section) =>
+                    <AnalysisSection section={section} key={section.sectionTitle} />
                 )
                 : <></>
             }
@@ -151,7 +146,7 @@ export function Analyses() {
         <Drawer
             anchor="right"
             variant="permanent">
-            <div className="w-[200px] md:w-[300px] lg:w-[400px] xl:w-[500px]">
+            <div className="w-[12rem] md:w-[18rem] lg:w-[25rem] xl:w-[30rem]">
                 <FiltersList onUpdateFilters={(filters) => getAnalyses(filters)} />
             </div>
         </Drawer>

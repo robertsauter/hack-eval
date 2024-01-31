@@ -1,41 +1,31 @@
 import { ExpandMore } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Card, CardContent, Typography } from '@mui/material';
-import { Analysis } from '../models/Analysis';
-import { analysisService } from '../services/AnalysisService';
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import type { MappedAnalysisSection } from '../models/Analysis';
 import { BarChart } from './charts/BarChart';
 import { RadarChart } from './charts/RadarChart';
 import { PieChartList } from './charts/PieChartList';
+import { memo } from 'react';
 
-export function AnalysisSection(props: {
-    title: string,
-    analyses: Analysis[],
-    questionTitles: string[],
-}) {
+export const AnalysisSection = memo((props: { section: MappedAnalysisSection }) => {
 
-    const { title, analyses, questionTitles } = props;
-
-    const filteredAnalyses = analysisService.getQuestionsFromAnalysis(analyses, questionTitles);
+    const { section } = props;
 
     return <Accordion>
         <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography variant="h5" className="font-bold">{title}</Typography>
+            <Typography variant="h5" className="font-bold">{section.sectionTitle}</Typography>
         </AccordionSummary>
         <AccordionDetails className="grid grid-cols-1 gap-2">
-            {filteredAnalyses.map((question) =>
-                <Card>
-                    <CardContent>
-                        <Typography variant="h6" className="text-center mb-2">{question.title}</Typography>
-                        {question.question_type === 'single_question' || question.question_type === 'score_question'
-                            ? <BarChart question={question} />
-                        : question.question_type === 'category_question'
-                            ? <PieChartList question={question} />
-                        : question.question_type === 'group_question'
-                            ? <RadarChart question={question} />
-                            : <></>
-                        }
-                    </CardContent>
-                </Card>
-            )}
+            {section.questions.map((question) => {
+                switch(question.question_type) {
+                    case 'single_question':
+                    case 'score_question':
+                        return <BarChart question={question} key={question.title} />;
+                    case 'category_question':
+                        return <PieChartList question={question} key={question.title} />;
+                    case 'group_question':
+                        return question.subQuestions?.length ? <RadarChart question={question} key={question.title} /> : <></>;
+                }
+            })}
         </AccordionDetails>
-    </Accordion>
-}
+    </Accordion>;
+})

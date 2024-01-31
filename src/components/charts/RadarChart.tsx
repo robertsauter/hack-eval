@@ -1,7 +1,9 @@
 import { ResponsiveRadar } from '@nivo/radar';
 import { MappedAnalysisQuestion } from '../../models/Analysis';
+import { Card, CardContent, Typography } from '@mui/material';
+import { memo } from 'react';
 
-export function RadarChart(props: { question: MappedAnalysisQuestion }) {
+export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) {
 
     const { question } = props;
 
@@ -13,18 +15,24 @@ export function RadarChart(props: { question: MappedAnalysisQuestion }) {
         return mappedQuestion;
     });
 
-    const titles = question.subQuestions?.[0].values.map((value) => value.hackathonTitle);
+    const titles = question.subQuestions?.[0]
+        ? question.subQuestions?.[0].values.map((value) => value.hackathonTitle)
+        : [];
 
-    return <div className="h-80">
-        {data && titles
-            ? <ResponsiveRadar
-                data={data}
-                indexBy="subQuestionTitle"
-                keys={titles}
-                maxValue={5}
-                margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                valueFormat=">-.2f" />
-            : <></>
-        }
-    </div>;
-}
+    return data
+        ? <Card>
+            <CardContent>
+                <Typography variant="h6" className="text-center mb-2">{question.title}</Typography>
+                <div className="h-80">
+                    <ResponsiveRadar
+                        data={data}
+                        indexBy="subQuestionTitle"
+                        keys={titles}
+                        maxValue={5}
+                        margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+                        valueFormat=">-.2f" />
+                </div>
+            </CardContent>
+        </Card>
+        : <></>;
+})
