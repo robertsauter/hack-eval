@@ -1,8 +1,8 @@
 import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, Chip, FormControl, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
-import type { FilterCombination } from '../models/FilterCombination';
+import type { FilterCombination } from '../../models/FilterCombination';
 import { Delete, ExpandMore, Save } from '@mui/icons-material';
 import { MouseEvent, useState } from 'react';
-import { filtersService } from '../services/FiltersService';
+import { filtersService } from '../../services/FiltersService';
 
 export function Filter(props: {
     filter: FilterCombination,

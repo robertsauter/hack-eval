@@ -1,8 +1,8 @@
 import { Alert, Button, Card, CardActions, CardContent, CircularProgress, Dialog, DialogTitle, IconButton, Snackbar, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { filtersService } from '../services/FiltersService';
-import type { FilterCombination } from '../models/FilterCombination';
-import type { State } from '../lib/AsyncState';
+import { filtersService } from '../../services/FiltersService';
+import type { FilterCombination } from '../../models/FilterCombination';
+import type { State } from '../../lib/AsyncState';
 import { Delete } from '@mui/icons-material';
 import { Subscription } from 'rxjs';
 

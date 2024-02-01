@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { analysisService } from '../services/AnalysisService';
 import { Alert, CircularProgress, Drawer, Snackbar, Typography } from '@mui/material';
 import type { State } from '../lib/AsyncState';
-import { FiltersList } from '../components/FiltersList';
+import { FiltersList } from '../components/filters/FiltersList';
 import type { FilterCombination } from '../models/FilterCombination';
 import { AnalysisSection } from '../components/AnalysisSection';
 import { AnalysisSectionType, MappedAnalysisSection } from '../models/Analysis';

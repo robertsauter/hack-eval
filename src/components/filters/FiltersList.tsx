@@ -2,7 +2,7 @@ import { Add } from '@mui/icons-material';
 import { Button, Typography } from '@mui/material';
 import { useState } from 'react';
 import { Filter } from './Filter';
-import type { FilterCombination } from '../models/FilterCombination';
+import type { FilterCombination } from '../../models/FilterCombination';
 import { MouseEvent } from 'react';
 import { FilterPresetDialog } from './FilterPresetDialog';
 
