@@ -5,8 +5,11 @@ import { httpService } from './HttpService';
 /** Service for handling the saved filter combinations */
 class FiltersService {
 
-    /** Can be used to listen for the deletion of a preset */
+    /** Can be used to listen for saving of a preset */
     filterSaved$ = new Subject<FilterCombination>();
+
+    /** Can be used to listen for when the filters have been updated */
+    filtersUpdated$ = new Subject<FilterCombination[]>();
 
     /** Save a filter combination */
     saveFilterCombination(filter: FilterCombination) {
@@ -23,9 +26,14 @@ class FiltersService {
         return httpService.delete(`/filters/${id}`, {});
     }
 
-    /** Emit a preset deleted event */
+    /** Emit a preset saved event */
     emitFilterSaved(filter: FilterCombination) {
         this.filterSaved$.next(filter);
+    }
+
+    /** Emit a filters updated event */
+    emitFiltersUpdated(filters: FilterCombination[]) {
+        this.filtersUpdated$.next(filters);
     }
 }
 

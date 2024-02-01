@@ -5,8 +5,9 @@ import { Filter } from './Filter';
 import type { FilterCombination } from '../../models/FilterCombination';
 import { MouseEvent } from 'react';
 import { FilterPresetDialog } from './FilterPresetDialog';
+import { filtersService } from '../../services/FiltersService';
 
-export function FiltersList(props: { onUpdateFilters: (newFilters: FilterCombination[]) => void }) {
+export function FiltersList(props: { onUpdateFilters?: (newFilters: FilterCombination[]) => void }) {
 
     const { onUpdateFilters } = props;
 
@@ -47,6 +48,14 @@ export function FiltersList(props: { onUpdateFilters: (newFilters: FilterCombina
         }
     };
 
+    /** Notify other parts of the application, when the filters have been updated */
+    const handleUpdateClick = () => {
+        if(onUpdateFilters) {
+            onUpdateFilters(filters);
+        }
+        filtersService.emitFiltersUpdated(filters);
+    };
+
     return <>
         <div className="p-5">
             <Typography variant="h5" className="font-bold mb-5">Filters</Typography>
@@ -71,8 +80,8 @@ export function FiltersList(props: { onUpdateFilters: (newFilters: FilterCombina
             <Button
                 fullWidth
                 variant="contained"
-                onClick={() => onUpdateFilters(filters)}>
-                Update analysis 
+                onClick={handleUpdateClick}>
+                Update analysis
             </Button>
         </div>
         <FilterPresetDialog
