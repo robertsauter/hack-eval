@@ -12,7 +12,7 @@ export const AnalysisSection = memo((props: { section: MappedAnalysisSection }) 
 
     return <Accordion>
         <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography variant="h5" className="font-bold">{section.sectionTitle}</Typography>
+            <Typography variant="h6" className="font-bold">{section.sectionTitle}</Typography>
         </AccordionSummary>
         <AccordionDetails className="grid grid-cols-1 gap-2">
             {section.questions.map((question) => {

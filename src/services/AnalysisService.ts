@@ -32,7 +32,8 @@ class AnalysisService {
                         title: foundQuestion.title,
                         answer_type: foundQuestion.answer_type,
                         question_type: foundQuestion.question_type,
-                        values: values
+                        values: values,
+                        answers: foundQuestion.answers
                     };
                 }
                 //Handle questions with subquestions
@@ -55,12 +56,14 @@ class AnalysisService {
                             title: typedQuestion.title,
                             values: values
                         };
-                    });
+                    //Filter out subquestions, where the selected hackathons don't have data
+                    }).filter((subQuestion) => subQuestion.values[0].statisticalValues.participants > 0);
                     return {
                         title: foundQuestion.title,
                         answer_type: foundQuestion.answer_type,
                         question_type: foundQuestion.question_type,
-                        subQuestions: subQuestionValues
+                        subQuestions: subQuestionValues,
+                        answers: foundQuestion.answers
                     };
                 }
             }).filter((question) => {

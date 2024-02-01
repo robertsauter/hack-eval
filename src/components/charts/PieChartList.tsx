@@ -10,13 +10,17 @@ export const PieChartList = memo((props: { question: MappedAnalysisQuestion }) =
     const data = question.values?.map((hackathon) => {
         const distribution = hackathon.statisticalValues?.distribution;
         if(distribution) {
+            const values = (question.answers as string[]).map((answer) => {
+                const value = distribution.hasOwnProperty(answer) ? distribution[answer] : 0
+                return {
+                    id: answer,
+                    label: answer,
+                    value
+                }
+            });
             return {
                 hackathonTitle: hackathon.hackathonTitle,
-                statisticalValues: Object.entries(distribution).map(([key, value]) => ({
-                    id: key,
-                    label: key,
-                    value: value
-                }))
+                statisticalValues: values
             };
         }
         return {
@@ -28,7 +32,7 @@ export const PieChartList = memo((props: { question: MappedAnalysisQuestion }) =
     return data
             ? <Card>
                 <CardContent>
-                    <Typography variant="h6" className="text-center mb-2">{question.title}</Typography>
+                    <Typography className="text-center mb-2">{question.title}</Typography>
                     <div className="grid grid-cols-1 gap-2">
                     {data.map((hackathon) =>
                         <div key={hackathon.hackathonTitle} className={hackathon.statisticalValues.length ? 'h-80' : 'flex items-center justify-center flex-col'}>

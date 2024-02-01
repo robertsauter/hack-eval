@@ -4,7 +4,7 @@ export type StatisticalValues = {
     participants: number;
     average?: number;
     deviation?: number;
-    distribution: Record<string, string | number>;
+    distribution: Record<string, number>;
 };
 
 export type AnalysisSubQuestion = {
@@ -16,6 +16,7 @@ type AnalysisMeasureInformation = {
     title: string;
     question_type: 'single_question' | 'group_question' | 'score_question' | 'category_question';
     answer_type: 'string_to_int' | 'int' | 'string';
+    answers: Record<string, string | number> | string[]
 };
 
 export type AnalysisMeasure = AnalysisMeasureInformation & {
