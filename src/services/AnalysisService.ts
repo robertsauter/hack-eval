@@ -1,8 +1,8 @@
-import type { Analysis, AnalysisMeasure, AnalysisSectionType, AnalysisSubQuestion, MappedAnalysisQuestion, MappedAnalysisSection, StatisticalValues } from '../models/Analysis';
+import type { Analysis, AnalysisMeasure, AnalysisSectionType, AnalysisSubQuestion, MappedAnalysisSection, StatisticalValues } from '../models/Analysis';
 import type { FilterCombination } from '../models/FilterCombination';
 import { httpService } from './HttpService';
 
-/** Service for fetching the analysis data */
+/** Service for fetching the analysis data and working with the data */
 class AnalysisService {
 
     /** Get analysis objects, given a list of selected hackathons and a list of filters */
