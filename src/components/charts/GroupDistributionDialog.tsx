@@ -32,8 +32,8 @@ export const GroupDistributionDialog = memo((props: {
                 </AccordionSummary>
                 <AccordionDetails>
                     <div className="grid grid-cols-1 gap-2">
-                        {subQuestion.values.map((hackathon) =>
-                            <Card key={hackathon.hackathonTitle}>
+                        {subQuestion.values.map((hackathon) => hackathon.statisticalValues.participants > 0
+                            ? <Card key={hackathon.hackathonTitle}>
                                 <CardContent>
                                     <Typography className="text-center">{hackathon.hackathonTitle}</Typography>
                                     <Typography>Answers: {hackathon.statisticalValues?.participants || 0}</Typography>
@@ -48,6 +48,7 @@ export const GroupDistributionDialog = memo((props: {
                                     </div>
                                 </CardContent>
                             </Card>
+                            : <></>
                         )}
                     </div>
                 </AccordionDetails>

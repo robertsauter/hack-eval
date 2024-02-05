@@ -2,6 +2,7 @@ import { ResponsivePie } from '@nivo/pie';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { Alert, Card, CardContent, Typography } from '@mui/material';
 import { memo } from 'react';
+import { analysisService } from '../../services/AnalysisService';
 
 export const PieChartList = memo((props: { question: MappedAnalysisQuestion }) => {
 
@@ -29,25 +30,34 @@ export const PieChartList = memo((props: { question: MappedAnalysisQuestion }) =
         }
     });
 
+    const hackathonsAmount = analysisService.getAmountOfNonEmptyAnalysesFromQuestion(question.values || []);
+
     return data
-            ? <Card>
-                <CardContent>
-                    <Typography className="text-center mb-2">{question.title}</Typography>
-                    <div className="grid grid-cols-1 gap-2">
-                    {data.map((hackathon) =>
-                        <div key={hackathon.hackathonTitle} className={hackathon.statisticalValues.length ? 'h-80' : 'flex items-center justify-center flex-col'}>
-                            <Typography className="text-center">{hackathon.hackathonTitle}</Typography>
-                            {hackathon.statisticalValues.length
-                                ? <ResponsivePie
-                                    data={hackathon.statisticalValues}
-                                    margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                                    valueFormat=">-.2f" />
-                                : <Alert severity="info">Sadly, we don't have enough data to display a chart here :(</Alert>
-                            }
+            ? hackathonsAmount > 1
+                ? <Card>
+                    <CardContent>
+                        <Typography className="text-center mb-2">{question.title}</Typography>
+                        <div className="grid grid-cols-1 gap-2">
+                            {data.map((hackathon) =>
+                                <div key={hackathon.hackathonTitle} className={hackathon.statisticalValues.length ? 'h-80' : 'flex items-center justify-center flex-col'}>
+                                    <Typography className="text-center">{hackathon.hackathonTitle}</Typography>
+                                    {hackathon.statisticalValues.length
+                                        ? <ResponsivePie
+                                            data={hackathon.statisticalValues}
+                                            margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+                                            valueFormat=">-.2f" />
+                                        : <Alert severity="info">Your filter combination "{hackathon.hackathonTitle}" did not return answers for this question.</Alert>
+                                    }
+                                </div>
+                            )}
                         </div>
-                    )}
-                    </div>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
+                : <Card>
+                    <CardContent>
+                        <Typography className="text-center mb-2">{question.title}</Typography>
+                        <Alert severity="info">Your filter combinations did not return answers for this question.</Alert>
+                    </CardContent>
+                </Card>
             : <></>;
 })

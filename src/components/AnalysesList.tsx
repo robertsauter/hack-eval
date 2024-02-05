@@ -3,7 +3,7 @@ import { AnalysisSection } from './AnalysisSection';
 import { FilterCombination } from '../models/FilterCombination';
 import { analysisService } from '../services/AnalysisService';
 import { useParams } from 'react-router-dom';
-import { AnalysisSectionType, MappedAnalysisSection } from '../models/Analysis';
+import { Analysis, AnalysisSectionType, MappedAnalysisSection } from '../models/Analysis';
 import { useEffect, useState } from 'react';
 import { State } from '../lib/AsyncState';
 import { filtersService } from '../services/FiltersService';
@@ -17,6 +17,8 @@ export function AnalysesList() {
     const [filteredAnalyses, setFilteredAnalyses] = useState<MappedAnalysisSection[]>([]);
     const [missingNameErrorShown, setMissingNameErrorShown] = useState(false);
     const [filtersSubscription, setFiltersSubscription] = useState<Subscription>();
+    const [emptyAnalyses, setEmptyAnalyses] = useState<Analysis[]>([]);
+    const [numberOfAnalyses, setNumberOfAnalyses] = useState(0);
 
     const questionTitles: AnalysisSectionType[] = [
         {
@@ -109,7 +111,10 @@ export function AnalysesList() {
 
                 if(response.ok) {
                     const analyses = await response.json();
-                    setFilteredAnalyses(analysisService.getQuestionsFromAnalysis(analyses, questionTitles));
+                    setEmptyAnalyses(analyses.filter((analysis: Analysis) => !analysis.results.length));
+                    const nonEmptyAnalyses = analyses.filter((analysis: Analysis) => analysis.results.length);
+                    setNumberOfAnalyses(nonEmptyAnalyses.length);
+                    setFilteredAnalyses(analysisService.getQuestionsFromAnalysis(nonEmptyAnalyses, questionTitles));
                     setAnalysisState('success');
                 }
                 else {
@@ -146,9 +151,16 @@ export function AnalysesList() {
                 <Alert severity="error">Analysis could not be loaded.</Alert>
             </div>
         : analysisState === 'success'
-            ? filteredAnalyses.map((section) =>
-                <AnalysisSection section={section} key={section.sectionTitle} />
-            )
+            ? numberOfAnalyses > 1
+                ? <>
+                    {emptyAnalyses.map((analysis) =>
+                        <Alert className="mb-2" severity="warning">We could not find any hackathons, that match your filter combination <b>{analysis.title}</b>. Please consider changing this filter combination.</Alert>
+                    )}
+                    {filteredAnalyses.map((section) =>
+                        <AnalysisSection section={section} key={section.sectionTitle} />
+                    )}
+                </>
+                : <Alert severity="warning">We could not find any hackathons, that match your filter combinations. Please consider changing or deleting your filter combinations.</Alert>
             : <></>
         }
         <Snackbar

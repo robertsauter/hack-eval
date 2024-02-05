@@ -12,7 +12,7 @@ class AnalysisService {
             incentives: filter.incentives,
             venue: filter.venue,
             size: filter.size,
-            types: filter.size
+            types: filter.types
         }));
         return httpService.get(`/analyses?hackathons=${ids}&filters=${JSON.stringify(requestFilters)}`, {});
     }
@@ -83,6 +83,27 @@ class AnalysisService {
                 questions: questions
             }
         }).filter((section) => section.questions.length);
+    }
+
+    /** For a given question return all analyses, that don't have values for this question */
+    getEmptyAnalysesFromQuestion(values: {
+        hackathonTitle: string;
+        statisticalValues?: StatisticalValues;
+    }[]) {
+        return values.filter((hackathon) => hackathon.statisticalValues?.participants === 0);
+    }
+
+    /** Get the amount of analyses, that don't have values for this question */
+    getAmountOfNonEmptyAnalysesFromQuestion(values: {
+        hackathonTitle: string;
+        statisticalValues?: StatisticalValues;
+    }[]) {
+        return values.reduce((amount, hackathon) => {
+            if(hackathon.statisticalValues) {
+                return hackathon.statisticalValues?.participants > 0 ? amount + 1 : amount;
+            }
+            return amount;
+        }, 0);
     }
 }
 

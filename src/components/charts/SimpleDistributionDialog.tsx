@@ -34,8 +34,8 @@ export const SimpleDistributionDialog = memo((props: {
         <DialogTitle className="font-bold">{question.title}</DialogTitle>
         <DialogContent>
             <div className="grid grid-cols-1 gap-2">
-                {question.values?.map((hackathon) =>
-                    <Card key={hackathon.hackathonTitle}>
+                {question.values?.map((hackathon) => hackathon.statisticalValues?.participants || 0 > 0
+                    ? <Card key={hackathon.hackathonTitle}>
                         <CardContent>
                             <Typography variant="h6" className="text-center">{hackathon.hackathonTitle}</Typography>
                             <Typography>Answers: {hackathon.statisticalValues?.participants || 0}</Typography>
@@ -53,6 +53,7 @@ export const SimpleDistributionDialog = memo((props: {
                             }
                         </CardContent>
                     </Card>
+                    : <></>
                 )}
             </div>
         </DialogContent>
