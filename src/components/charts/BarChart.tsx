@@ -29,8 +29,8 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
             {bars.map((bar, i) => {
                 const xTop = bar.x + bar.width / 2;
                 const xBottom = bar.x + bar.width / 2;
-                const yTop = yScale((data?.[i].average || 0) + (data?.[i].error || 0 / 2));
-                const yBottom = yScale((data?.[i].average || 0) - (data?.[i].error || 0 / 2));
+                const yTop = yScale((data?.[i].average || 0) + (data?.[i].error || 0));
+                const yBottom = yScale((data?.[i].average || 0) - (data?.[i].error || 0));
                 return <g key={i}>
                     <line
                         x1={xTop - 5}
