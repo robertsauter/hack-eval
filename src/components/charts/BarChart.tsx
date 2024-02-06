@@ -40,21 +40,21 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
                         y1={yTop}
                         x2={xTop + 5}
                         y2={yTop}
-                        stroke="red"
+                        stroke="black"
                         strokeWidth="2" />
                     <line
                         x1={xTop}
                         y1={yTop}
                         x2={xBottom}
                         y2={yBottom}
-                        stroke="red"
+                        stroke="black"
                         strokeWidth="2" />
                     <line
                         x1={xBottom - 5}
                         y1={yBottom}
                         x2={xBottom + 5}
                         y2={yBottom}
-                        stroke="red"
+                        stroke="black"
                         strokeWidth="2" />
                 </g>
             })}
@@ -65,7 +65,10 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
         const roundedAverage = props.data.average > 0 ? (Math.round(props.data.average * 100) / 100).toFixed(2) : 0;
         const roundedDeviation = props.data.deviation > 0 ? (Math.round(props.data.deviation * 100) / 100).toFixed(2) : 0;
         return <div className="p-2 bg-white shadow-md rounded-md">
-            <Typography variant="body2" className="font-bold">{props.data.hackathonTitle}</Typography>
+            <div className="flex items-center">
+                <div className="w-4 h-4 mr-1" style={{backgroundColor: props.color}}></div>
+                <Typography variant="body2" className="font-bold">{props.data.hackathonTitle}</Typography>
+            </div>
             <Typography variant="body2">Average: {roundedAverage}</Typography>
             <Typography variant="body2">Standard deviation: {roundedDeviation}</Typography>
             <Typography variant="body2">Participants: {props.data.participants}</Typography>

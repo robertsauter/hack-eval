@@ -1,8 +1,14 @@
-import { ResponsivePie } from '@nivo/pie';
+import { ComputedDatum, PieTooltipProps, ResponsivePie } from '@nivo/pie';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { Alert, Card, CardContent, Typography } from '@mui/material';
 import { memo } from 'react';
 import { analysisService } from '../../services/AnalysisService';
+
+type PieChartData = {
+    id: string;
+    label: string;
+    value: number;
+};
 
 export const PieChartList = memo((props: { question: MappedAnalysisQuestion }) => {
 
@@ -30,6 +36,20 @@ export const PieChartList = memo((props: { question: MappedAnalysisQuestion }) =
         }
     });
 
+    const customTooltip = (props: PieTooltipProps<PieChartData>) => {
+        return <div className="p-2 bg-white shadow-md rounded-md flex items-center gap-1">
+            <div className="w-4 h-4" style={{backgroundColor: props.datum.color}}></div>
+            <Typography variant="body2">{props.datum.data.label}:</Typography>
+            <Typography variant="body2" className="font-bold">{props.datum.data.value}</Typography>
+        </div>;
+    };
+
+    const truncateLabel = (props: ComputedDatum<PieChartData>) => {
+        const label = props.data.label;
+        if(label.length > 25) return `${props.data.label.substring(0, 22)}...`;
+        return label;
+    };
+
     const hackathonsAmount = analysisService.getAmountOfNonEmptyAnalysesFromQuestion(question.values || []);
 
     return data
@@ -45,7 +65,14 @@ export const PieChartList = memo((props: { question: MappedAnalysisQuestion }) =
                                         ? <ResponsivePie
                                             data={hackathon.statisticalValues}
                                             margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                                            valueFormat=">-.2f" />
+                                            valueFormat=">-.0f"
+                                            arcLinkLabelsThickness={2}
+                                            activeOuterRadiusOffset={4}
+                                            cornerRadius={4}
+                                            arcLinkLabelsSkipAngle={5}
+                                            arcLabelsSkipAngle={5}
+                                            tooltip={customTooltip}
+                                            arcLinkLabel={truncateLabel} />
                                         : <Alert severity="info">Your filter combination "{hackathon.hackathonTitle}" did not return answers for this question.</Alert>
                                     }
                                 </div>
