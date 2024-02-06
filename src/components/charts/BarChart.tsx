@@ -61,17 +61,23 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
         </g>
     };
 
+    /** Create a custom tooltip */
     const customTooltip = (props: BarTooltipProps<BarChartData>) => {
         const roundedAverage = props.data.average > 0 ? (Math.round(props.data.average * 100) / 100).toFixed(2) : 0;
         const roundedDeviation = props.data.deviation > 0 ? (Math.round(props.data.deviation * 100) / 100).toFixed(2) : 0;
         return <div className="p-2 bg-white shadow-md rounded-md">
             <div className="flex items-center">
-                <div className="w-4 h-4 mr-1" style={{backgroundColor: props.color}}></div>
-                <Typography variant="body2" className="font-bold">{props.data.hackathonTitle}</Typography>
+                <div className="w-3 h-3 mr-2" style={{backgroundColor: props.color}}></div>
+                <Typography className="font-bold">{props.data.hackathonTitle}</Typography>
             </div>
-            <Typography variant="body2">Average: {roundedAverage}</Typography>
-            <Typography variant="body2">Standard deviation: {roundedDeviation}</Typography>
-            <Typography variant="body2">Participants: {props.data.participants}</Typography>
+            <div className="grid grid-cols-3 gap-2">
+                <Typography className="col-span-2">Average:</Typography>
+                <Typography>{roundedAverage}</Typography>
+                <Typography className="col-span-2">Standard deviation:</Typography>
+                <Typography>{roundedDeviation}</Typography>
+                <Typography className="col-span-2">Participants:</Typography>
+                <Typography>{props.data.participants}</Typography>
+            </div>
         </div>;
     };
 

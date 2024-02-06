@@ -1,4 +1,4 @@
-import { ResponsiveRadar } from '@nivo/radar';
+import { GridLabelProps, ResponsiveRadar } from '@nivo/radar';
 import { MappedAnalysisQuestion } from '../../models/Analysis';
 import { Alert, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import { memo, useState } from 'react';
@@ -33,6 +33,19 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
         };
     });
 
+    /** Truncate the label, if it is too long and compute label position */
+    const truncateLabel = (props: GridLabelProps) => {
+        let label = props.id;
+        const translateEnd = label.length > 25 ? -120 : -(label.length * 4);
+        const translateMiddle = label.length > 25 ? -60 : -(label.length * 2.5);
+        if(label.length > 25) label = `${label.substring(0, 22)}...`;
+        return <g transform={`translate(${props.x}, ${props.y})`}>
+            <g transform={`translate(${props.anchor === 'end' ? translateEnd : props.anchor === 'middle' ? translateMiddle : 0})`}>
+                <text fontSize={11}>{label}</text>
+            </g>
+        </g>;
+    };
+
     return data
         ? data.length
             ? <>
@@ -46,7 +59,12 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
                                 keys={titles}
                                 maxValue={5}
                                 margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                                valueFormat=">-.2f" />
+                                valueFormat=">-.2f"
+                                gridShape="linear"
+                                dotColor="white"
+                                dotBorderWidth={2}
+                                dotSize={8}
+                                gridLabel={truncateLabel} />
                         </div>
                         {emptySubQuestions?.map((subQuestion) =>
                             subQuestion.values.map((hackathon) =>

@@ -36,17 +36,19 @@ export const PieChartList = memo((props: { question: MappedAnalysisQuestion }) =
         }
     });
 
+    /** Create a custom tooltip */
     const customTooltip = (props: PieTooltipProps<PieChartData>) => {
-        return <div className="p-2 bg-white shadow-md rounded-md flex items-center gap-1">
-            <div className="w-4 h-4" style={{backgroundColor: props.datum.color}}></div>
-            <Typography variant="body2">{props.datum.data.label}:</Typography>
-            <Typography variant="body2" className="font-bold">{props.datum.data.value}</Typography>
+        return <div className="p-2 bg-white shadow-md rounded-md flex items-center gap-2">
+            <div className="w-3 h-3" style={{backgroundColor: props.datum.color}}></div>
+            <Typography>{props.datum.data.label}:</Typography>
+            <Typography className="font-bold">{props.datum.data.value}</Typography>
         </div>;
     };
 
+    /** Truncate the label, if it is too long */
     const truncateLabel = (props: ComputedDatum<PieChartData>) => {
         const label = props.data.label;
-        if(label.length > 25) return `${props.data.label.substring(0, 22)}...`;
+        if(label.length > 25) return `${label.substring(0, 22)}...`;
         return label;
     };
 
