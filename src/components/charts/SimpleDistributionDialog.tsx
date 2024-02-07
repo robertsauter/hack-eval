@@ -2,7 +2,12 @@ import { memo } from 'react';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { Card, CardContent, Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { ResponsiveBar } from '@nivo/bar';
-import { ResponsiveScatterPlot } from '@nivo/scatterplot';
+import { ResponsiveScatterPlot, ScatterPlotTooltipProps } from '@nivo/scatterplot';
+
+type ScatterPlotData = {
+    x: number;
+    y: number;
+};
 
 export const SimpleDistributionDialog = memo((props: {
     question: MappedAnalysisQuestion,
@@ -52,10 +57,22 @@ export const SimpleDistributionDialog = memo((props: {
         return maxInDistribution > maxOverall ? maxInDistribution : maxOverall;
     }, 0);
 
+    /** Create a custom tooltip */
+    const scatterPlotTooltip = (props: ScatterPlotTooltipProps<ScatterPlotData>) => {
+        return <div className="p-2 bg-white shadow-md rounded-md">
+            <div className="flex items-center gap-2">
+                <div className="w-3 h-3" style={{backgroundColor: props.node.color}}></div>
+                <Typography className="font-bold">{props.node.serieId}:</Typography>
+            </div>
+            <Typography>Answer: {props.node.formattedX}</Typography>
+            <Typography>Amount of answers: {props.node.formattedY}</Typography>
+        </div>;
+    };
+
     return <Dialog open={open} onClose={onClose} maxWidth="lg">
         <DialogTitle className="font-bold">{question.title}</DialogTitle>
-        <DialogContent className="w-full p-0">
-            <div className="grid grid-cols-2 gap-5 mx-5 mb-5">
+        <DialogContent>
+            <div className="grid grid-cols-2 gap-5">
                 {question.values?.map((hackathon) => hackathon.statisticalValues?.participants || 0 > 0
                     ? <Card key={hackathon.hackathonTitle}>
                         <CardContent>
@@ -91,7 +108,8 @@ export const SimpleDistributionDialog = memo((props: {
                                                 legend: 'Amount of answers',
                                                 legendPosition: 'middle',
                                                 legendOffset: -40
-                                            }} />
+                                            }}
+                                            tooltip={scatterPlotTooltip} />
                                     }
                                 </div>
                                 : <></>
