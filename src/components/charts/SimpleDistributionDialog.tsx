@@ -46,10 +46,16 @@ export const SimpleDistributionDialog = memo((props: {
         return maxInDistribution > maxOverall ? maxInDistribution : maxOverall;
     }, 0);
 
-    return <Dialog open={open} onClose={onClose}>
+    const highestAnswersAmount = question.values?.reduce((maxOverall, hackathon) => {
+        const distribution = hackathon.statisticalValues?.distribution as Record<string, number>;
+        const maxInDistribution = Math.max(...Object.values(distribution).map((key) => +key));
+        return maxInDistribution > maxOverall ? maxInDistribution : maxOverall;
+    }, 0);
+
+    return <Dialog open={open} onClose={onClose} maxWidth="lg">
         <DialogTitle className="font-bold">{question.title}</DialogTitle>
-        <DialogContent>
-            <div className="grid grid-cols-1 gap-2">
+        <DialogContent className="w-full p-0">
+            <div className="grid grid-cols-2 gap-5 mx-5 mb-5">
                 {question.values?.map((hackathon) => hackathon.statisticalValues?.participants || 0 > 0
                     ? <Card key={hackathon.hackathonTitle}>
                         <CardContent>
@@ -64,12 +70,16 @@ export const SimpleDistributionDialog = memo((props: {
                                             indexBy="answer"
                                             keys={['value']}
                                             valueFormat=">-.2f"
-                                            margin={{ top: 50, right: 50, bottom: 50, left: 50 }} />
+                                            margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+                                            maxValue={highestAnswersAmount}
+                                            axisBottom={{
+                                                truncateTickAt: 6
+                                            }} />
                                         : <ResponsiveScatterPlot
                                             data={mapDistribution(hackathon.statisticalValues.distribution, hackathon.hackathonTitle)}
                                             xScale={{ type: 'linear', min: 0, max: maxValue }}
                                             xFormat=">-.2f"
-                                            yScale={{ type: 'linear', min: 0, max: 'auto' }}
+                                            yScale={{ type: 'linear', min: 0, max: highestAnswersAmount }}
                                             yFormat=">-.2f"
                                             margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
                                             axisBottom={{

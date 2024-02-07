@@ -75,7 +75,7 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
                 <Typography>{roundedAverage}</Typography>
                 <Typography className="col-span-2">Standard deviation:</Typography>
                 <Typography>{roundedDeviation}</Typography>
-                <Typography className="col-span-2">Participants:</Typography>
+                <Typography className="col-span-2">Answers:</Typography>
                 <Typography>{props.data.participants}</Typography>
             </div>
         </div>;
