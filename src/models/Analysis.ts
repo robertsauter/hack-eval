@@ -28,7 +28,7 @@ export type Analysis = HackathonInformation & {
     results: AnalysisMeasure[];
 };
 
-type MappedAnalysisSubquestion = {
+export type MappedAnalysisSubquestion = {
     title: string;
     values: {
         hackathonTitle: string;
