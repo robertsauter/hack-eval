@@ -16,16 +16,21 @@ class HackathonService {
         formData.append('title', information.title);
         formData.append('incentives', information.incentives);
         formData.append('venue', information.venue);
-        formData.append('participants', information.participants.toString());
-        formData.append('type', information.type);
+        formData.append('size', information.size);
+        formData.append('types', information.types.join(','));
         formData.append('file', file);
+        if(information.link) {
+            formData.append('link', information.link);
+        }
         return httpService.post('/hackathons/csv', { body: formData });
     }
 
+    /** Load all uploaded hackathons of the logged in user */
     getHackathonsOfLoggedInUser() {
         return httpService.get('/hackathons', {});
     }
 
+    /** Remove the hackathon with the given id */
     removeHackathon(id: string) {
         return httpService.delete(`/hackathons/${id}`, {});
     }

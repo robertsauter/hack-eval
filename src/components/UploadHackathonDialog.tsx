@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Button, Chip, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Tooltip, Typography } from '@mui/material';
 import HelpIcon from '@mui/icons-material/Help';
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { googleFormsService } from '../services/GoogleFormsService';
@@ -15,6 +15,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const [file, setFile] = useState<File>();
     const [uploadFrom, setUploadFrom] = useState<'forms' | 'csv'>('forms');
     const [fileError, setFileError] = useState(false);
+    const [types, setTypes] = useState<HackathonInformation['types']>([]);
 
     const [resultsSubscription, setResultsSubscription] = useState<Subscription>();
 
@@ -26,12 +27,13 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         form.elements['title'].value = '';
         form.elements['incentives'].value = '';
         form.elements['venue'].value = '';
-        form.elements['participants'].value = undefined;
-        form.elements['type'].value = '';
+        form.elements['size'].value = '';
+        form.elements['link'].value = '';
         const id = form.elements['id'];
         if(id) {
             form.elements['id'].value = '';
         }
+        setTypes([]);
         setFile(undefined);
     };
 
@@ -43,8 +45,9 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             title: formData.get('title') as string,
             incentives: formData.get('incentives') as HackathonInformation['incentives'],
             venue: formData.get('venue') as HackathonInformation['venue'],
-            participants: formData.get('participants') as unknown as number,
-            type: formData.get('type') as HackathonInformation['type']
+            size: formData.get('size') as HackathonInformation['size'],
+            types: (formData.get('types') as string).split(',') as HackathonInformation['types'],
+            link: formData.get('link') as string
         };
     };
 
@@ -140,8 +143,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
     }, []);
 
-    return <Dialog onClose={onClose} open={open}>
-        <DialogTitle variant="h5" className="font-bold">Upload a new hackathon</DialogTitle>
+    return <Dialog onClose={onClose} open={open} fullWidth maxWidth="sm">
+        <DialogTitle className="font-bold">Upload a new hackathon</DialogTitle>
         <form onSubmit={handleSubmit} id="HackathonForm" className="pb-6 px-6">
             <TextField
                 name="title"
@@ -175,24 +178,39 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     <MenuItem value="hybrid">Hybrid</MenuItem>
                 </Select>
             </FormControl>
-            <TextField
-                name="participants"
-                className="mb-5"
-                fullWidth
-                required
-                variant="outlined"
-                label="Number of participants"
-                type="number" />
             <FormControl fullWidth required>
-                <InputLabel id="type">Type</InputLabel>
+                <InputLabel id="size">Size of your hackathon</InputLabel>
                 <Select
-                    name="type"
-                    labelId="type"
+                    name="size"
+                    labelId="size"
+                    className="mb-5"
+                    variant="outlined"
+                    label="Size of your hackathon">
+                    <MenuItem value="small">Small (up to 50 participants)</MenuItem>
+                    <MenuItem value="medium">Medium (up to 150 participants)</MenuItem>
+                    <MenuItem value="large">Large (more than 150 participants)</MenuItem>
+                </Select>
+            </FormControl>
+            <FormControl fullWidth required>
+                <InputLabel id="types">Types</InputLabel>
+                <Select
+                    name="types"
+                    labelId="types"
                     className="mb-5"
                     fullWidth
                     required
+                    multiple
                     variant="outlined"
-                    label="Type">
+                    label="Types"
+                    value={types}
+                    onChange={(e) => setTypes(e.target.value as HackathonInformation['types'])}
+                    renderValue={(selected: string[]) =>
+                        <div className="flex gap-1">
+                            {selected.map((value) =>
+                                <Chip key={value} label={value} />
+                            )}
+                        </div>
+                    }>
                     <MenuItem value="prototype">Prototype focused</MenuItem>
                     <MenuItem value="conceptual">Conceptual solution focused</MenuItem>
                     <MenuItem value="analysis">Analysis focused</MenuItem>
@@ -201,6 +219,12 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     <MenuItem value="ideation">Ideation focused</MenuItem>
                 </Select>
             </FormControl>
+            <TextField
+                name="link"
+                className="mb-5"
+                fullWidth
+                variant="outlined"
+                label="Link to your hackathon" />
             <div className="mb-5">
                 <FormControl fullWidth className="mb-2">
                     <FormLabel id="upload-source-label">Upload source</FormLabel>

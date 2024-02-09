@@ -1,10 +1,12 @@
-import { Alert, Button, CircularProgress, Container, Typography } from '@mui/material';
+import { Alert, Button, CircularProgress, Container, Fab, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { UploadHackathonDialog } from '../components/UploadHackathonDialog';
 import { hackathonService } from '../services/HackathonService';
 import { State } from '../lib/AsyncState';
 import { HackathonInformation } from '../models/HackathonInformation';
 import { HackathonCard } from '../components/HackathonCard';
+import { Link as RouterLink } from 'react-router-dom';
+import { Add } from '@mui/icons-material';
 
 export function Overview() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -12,12 +14,15 @@ export function Overview() {
     const [hackathonsState, setHackathonsState] = useState<State>('initial');
     const [selectedHackathonIds, setSelectedHackathonIds] = useState<string[]>([]);
 
+    /** Reload hackathons, when a new one was successfully uploaded */
     const handleUploadSuccess = () => {
         getHackathons();
     };
 
+    /** Load all uploaded hackathons of the logged in user */
     const getHackathons = async () => {
         setHackathonsState('loading');
+        setSelectedHackathonIds([]);
         const response = await hackathonService.getHackathonsOfLoggedInUser();
 
         if(response.ok) {
@@ -29,6 +34,7 @@ export function Overview() {
         }
     };
 
+    /** Update the list of selected hackathon ids */
     const addOrRemoveSelectedHackathon = (id: string, selected: boolean) => {
         if(selected) {
             setSelectedHackathonIds([...selectedHackathonIds, id]);
@@ -48,7 +54,12 @@ export function Overview() {
             <Container className="pt-5" maxWidth="md">
                 <div className="mb-10 flex justify-between items-center">
                     <Typography variant="h4" className="font-bold">Your hackathons</Typography>
-                    <Button variant="contained" onClick={() => setIsDialogOpen(true)}>Upload a new hackathon</Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => setIsDialogOpen(true)}
+                        endIcon={<Add />}>
+                        Upload a new hackathon
+                    </Button>
                 </div>
                 {hackathonsState === 'loading'
                     ? <div className="flex items-center justify-center p-10">
@@ -59,7 +70,7 @@ export function Overview() {
                         <Alert severity="error">Hackathons could not be loaded.</Alert>
                     </div>
                 : hackathonsState === 'success'
-                    ? <div className="grid grid-cols-3 gap-5">
+                    ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                         {hackathons.map((hackathon) =>
                             <HackathonCard
                                 hackathon={hackathon}
@@ -71,7 +82,19 @@ export function Overview() {
                     : <></>
                 }
             </Container>
-            <UploadHackathonDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} onSuccess={handleUploadSuccess}></UploadHackathonDialog>
+            <RouterLink to={`/analysis/${selectedHackathonIds.join(',')}`}>
+                <Fab
+                    className="fixed bottom-5 right-5"
+                    variant="extended"
+                    color="primary"
+                    disabled={selectedHackathonIds.length === 0}>
+                    See analysis
+                </Fab>
+            </RouterLink>
+            <UploadHackathonDialog
+                open={isDialogOpen}
+                onClose={() => setIsDialogOpen(false)}
+                onSuccess={handleUploadSuccess} />
         </>
     );
 }

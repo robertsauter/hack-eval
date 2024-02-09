@@ -25,7 +25,7 @@ class HttpService {
         if(defaultContentType) {
             processedOptions = this.#setDefaultContentType(processedOptions);
         }
-        return fetch(`${this.#BASE_URL}${relativeUrl}`, processedOptions);
+        return this.#doRequest(relativeUrl, processedOptions);
     }
 
     /** A POST request to a relative URL, starting from the base URL */
@@ -35,7 +35,7 @@ class HttpService {
         if(defaultContentType) {
             processedOptions = this.#setDefaultContentType(processedOptions);
         }
-        return fetch(`${this.#BASE_URL}${relativeUrl}`, processedOptions);
+        return this.#doRequest(relativeUrl, processedOptions);
     }
 
     /** A POST request to a relative URL, starting from the base URL */
@@ -45,7 +45,18 @@ class HttpService {
         if(defaultContentType) {
             processedOptions = this.#setDefaultContentType(processedOptions);
         }
-        return fetch(`${this.#BASE_URL}${relativeUrl}`, processedOptions);
+        return this.#doRequest(relativeUrl, processedOptions);
+    }
+
+    /** Return the request with error handling */
+    async #doRequest(relativeUrl: string, options: RequestOptions): Promise<Response> {
+        try {
+            return await fetch(`${this.#BASE_URL}${relativeUrl}`, options)
+        }
+        catch(error) {
+            const response = new Response(null, { status: 500 });
+            return Promise.resolve(response);
+        }
     }
 
     /** Return new options object, with application/json added as content-type and body stringified */

@@ -42,7 +42,7 @@ export default function Login() {
 
     return (
         <Container className="pt-5" maxWidth="sm">
-            <Typography className="mb-8 text-center" variant="h4">Login</Typography>
+            <Typography className="mb-8 text-center font-bold" variant="h4">Login</Typography>
             <RouterForm method="POST" onClick={() => asyncLoginState.setInitial()}>
                 <TextField
                     name="username"
