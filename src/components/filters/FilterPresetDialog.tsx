@@ -74,15 +74,15 @@ export function FilterPresetDialog(props: {
     }, []);
 
     return <>
-        <Dialog open={open} onClose={onClose}>
-            <DialogTitle variant="h5" className="font-bold">Select a filter preset</DialogTitle>
+        <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+            <DialogTitle className="font-bold">Select a filter preset</DialogTitle>
             {filterState === 'success'
-                ? <div className="grid grid-cols-2 gap-5 p-5">
+                ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 p-5">
                     {filters.map((filter) =>
                         <Card key={filter.id} className="flex flex-col justify-between">
                             <CardContent>
                                 <div className="flex items-center justify-between mb-2">
-                                    <Typography variant="h6" className="font-bold">{filter.name}</Typography>
+                                    <Typography className="font-bold">{filter.name}</Typography>
                                     <IconButton onClick={() => deletePreset(filter)}>
                                         <Delete></Delete>
                                     </IconButton>

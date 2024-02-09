@@ -49,9 +49,9 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
     return data
         ? data.length
             ? <>
-                <Card>
+                <Card className="flex flex-col justify-center h-full">
                     <CardContent>
-                        <Typography className="text-center mb-2">{question.title}</Typography>
+                        <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
                         <div className="h-80">
                             <ResponsiveRadar
                                 data={data}

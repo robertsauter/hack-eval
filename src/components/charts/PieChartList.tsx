@@ -10,9 +10,9 @@ type PieChartData = {
     value: number;
 };
 
-export const PieChartList = memo((props: { question: MappedAnalysisQuestion }) => {
+export const PieChartList = memo((props: { question: MappedAnalysisQuestion, filtersOpen: boolean }) => {
 
-    const { question } = props;
+    const { question, filtersOpen } = props;
 
     const data = question.values?.map((hackathon) => {
         const distribution = hackathon.statisticalValues?.distribution;
@@ -58,7 +58,7 @@ export const PieChartList = memo((props: { question: MappedAnalysisQuestion }) =
             ? hackathonsAmount > 1
                 ? <Card>
                     <CardContent>
-                        <Typography className="text-center mb-2">{question.title}</Typography>
+                        <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
                         <div className="grid grid-cols-1 gap-2">
                             {data.map((hackathon) =>
                                 <div key={hackathon.hackathonTitle} className={hackathon.statisticalValues.length ? 'h-80' : 'flex items-center justify-center flex-col'}>

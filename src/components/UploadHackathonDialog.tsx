@@ -143,8 +143,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
     }, []);
 
-    return <Dialog onClose={onClose} open={open} fullWidth>
-        <DialogTitle variant="h5" className="font-bold">Upload a new hackathon</DialogTitle>
+    return <Dialog onClose={onClose} open={open} fullWidth maxWidth="sm">
+        <DialogTitle className="font-bold">Upload a new hackathon</DialogTitle>
         <form onSubmit={handleSubmit} id="HackathonForm" className="pb-6 px-6">
             <TextField
                 name="title"

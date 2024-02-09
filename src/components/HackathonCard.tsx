@@ -40,7 +40,7 @@ export function HackathonCard(props: { hackathon: HackathonInformation, selectEv
         <Card className="flex flex-col justify-between">
             <CardContent className="relative">
                 <div className="flex items-center justify-between mb-2">
-                    <Typography variant="h6" className="font-bold">{ hackathon.title }</Typography>
+                    <Typography className="font-bold">{ hackathon.title }</Typography>
                     <IconButton onClick={removeHackathon}>
                         <Delete></Delete>
                     </IconButton>

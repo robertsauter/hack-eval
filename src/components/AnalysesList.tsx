@@ -9,9 +9,10 @@ import { State } from '../lib/AsyncState';
 import { filtersService } from '../services/FiltersService';
 import { Subscription } from 'rxjs';
 
-export function AnalysesList() {
+export function AnalysesList(props: { filtersOpen: boolean }) {
 
     const { ids } = useParams();
+    const { filtersOpen } = props;
 
     const [analysisState, setAnalysisState] = useState<State>('initial');
     const [filteredAnalyses, setFilteredAnalyses] = useState<MappedAnalysisSection[]>([]);
@@ -157,7 +158,10 @@ export function AnalysesList() {
                         <Alert className="mb-2" severity="warning">We could not find any hackathons, that match your filter combination <b>{analysis.title}</b>. Please consider changing this filter combination.</Alert>
                     )}
                     {filteredAnalyses.map((section) =>
-                        <AnalysisSection section={section} key={section.sectionTitle} />
+                        <AnalysisSection
+                            section={section}
+                            key={section.sectionTitle}
+                            filtersOpen={filtersOpen} />
                     )}
                 </>
                 : <Alert severity="warning">We could not find any hackathons, that match your filter combinations. Please consider changing or deleting your filter combinations.</Alert>

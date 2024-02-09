@@ -1,6 +1,6 @@
 import { Accordion, AccordionDetails, AccordionSummary, Card, CardContent, Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { memo } from 'react';
-import type { MappedAnalysisQuestion, Ma, MappedAnalysisSubquestion } from '../../models/Analysis';
+import type { MappedAnalysisQuestion, MappedAnalysisSubquestion } from '../../models/Analysis';
 import { ResponsiveBar } from '@nivo/bar';
 import { ExpandMore } from '@mui/icons-material';
 
@@ -12,6 +12,7 @@ export const GroupDistributionDialog = memo((props: {
 
     const { question, open, onClose } = props;
 
+    /** Map distribution values to bar chart data */
     const mapDistribution = (distribution: Record<string, number>) => {
         return Object.entries(question.answers).map(([answer, value]) => {
             const distributionValue = distribution.hasOwnProperty(value) ? distribution[value] : 0;
@@ -36,7 +37,7 @@ export const GroupDistributionDialog = memo((props: {
         }, 0);
     };
 
-    return <Dialog open={open} onClose={onClose} maxWidth="lg">
+    return <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
         <DialogTitle className="font-bold">{question.title}</DialogTitle>
         <DialogContent>
             {question.subQuestions?.map((subQuestion) => {
@@ -46,11 +47,11 @@ export const GroupDistributionDialog = memo((props: {
                         <Typography className="font-bold">{subQuestion.title}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <div className="grid grid-cols-2 gap-5">
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
                             {subQuestion.values.map((hackathon) => hackathon.statisticalValues.participants > 0
                                 ? <Card key={hackathon.hackathonTitle}>
                                     <CardContent>
-                                        <Typography className="text-center">{hackathon.hackathonTitle}</Typography>
+                                        <Typography className="text-center font-bold">{hackathon.hackathonTitle}</Typography>
                                         <Typography>Answers: {hackathon.statisticalValues?.participants || 0}</Typography>
                                         <Typography>Standard deviation: {roundValue(hackathon.statisticalValues?.deviation || 0)}</Typography>
                                         <div className="h-80">
@@ -63,7 +64,8 @@ export const GroupDistributionDialog = memo((props: {
                                                 axisBottom={{
                                                     truncateTickAt: 6
                                                 }}
-                                                maxValue={maxValue} />
+                                                maxValue={maxValue}
+                                                colorBy="indexValue" />
                                         </div>
                                     </CardContent>
                                 </Card>

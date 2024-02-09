@@ -70,7 +70,7 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
                 <div className="w-3 h-3 mr-2" style={{backgroundColor: props.color}}></div>
                 <Typography className="font-bold">{props.data.hackathonTitle}</Typography>
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-x-2">
                 <Typography className="col-span-2">Average:</Typography>
                 <Typography>{roundedAverage}</Typography>
                 <Typography className="col-span-2">Standard deviation:</Typography>
@@ -88,9 +88,9 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
     return data
         ? hackathonsAmount > 1
             ? <>
-                <Card>
+                <Card className="flex flex-col justify-center h-full">
                     <CardContent>
-                        <Typography className="text-center mb-2">{question.title}</Typography>
+                        <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
                         <div className="h-80">
                             <ResponsiveBar
                                 data={data}
