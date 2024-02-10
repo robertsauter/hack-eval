@@ -20,7 +20,7 @@ export function HackathonCard(props: {
         if(selectedAmount < 3 || (selectedAmount > 2 && selected)) {
             const newValue = !selected;
             setSelected(newValue);
-            onSelect(hackathon.id || '', newValue);
+            onSelect(hackathon.id ?? '', newValue);
         }
     };
 

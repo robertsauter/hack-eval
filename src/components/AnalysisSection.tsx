@@ -39,8 +39,7 @@ export const AnalysisSection = memo((props: { section: MappedAnalysisSection }) 
                     case 'category_question':
                         return <PieChartList
                             question={question}
-                            key={question.title}
-                            filtersOpen={filtersOpen} />;
+                            key={question.title} />;
                     case 'group_question':
                         return question.subQuestions?.length ? <RadarChart question={question} key={question.title} /> : <></>;
                 }

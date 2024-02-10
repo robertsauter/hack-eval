@@ -19,7 +19,7 @@ export function FiltersList() {
     /** Add a new filter combination to the list */
     const addFilter = () => {
         const indexes = filters.map((filter) => filter.index ? filter.index : 0);
-        const highest = indexes.sort((a, b) => a - b).pop() || 0;
+        const highest = indexes.sort((a, b) => a - b).pop() ?? 0;
         setFilters([...filters, {
             name: '',
             index: highest + 1,
@@ -55,7 +55,7 @@ export function FiltersList() {
     };
 
     useEffect(() => {
-        const urlFilters = JSON.parse(searchParams.get('filters') || '[]') as FilterCombination[];
+        const urlFilters = JSON.parse(searchParams.get('filters') ?? '[]') as FilterCombination[];
         const filterWithoutNameExists = urlFilters.find((filter) => filter.name === '');
         setFilters(urlFilters);
         if(!filterWithoutNameExists) {

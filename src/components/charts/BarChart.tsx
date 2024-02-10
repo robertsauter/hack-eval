@@ -26,6 +26,11 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
         participants: hackathon.statisticalValues?.participants ?? 0
     }));
 
+    const emptyHackathons = analysisService.getEmptyAnalysesFromQuestion(question.values ?? []);
+    const hackathonsAmount = analysisService.getAmountOfNonEmptyAnalysesFromQuestion(question.values ?? []);
+    const maxValue = question.answers ? Math.max(...Object.values(question.answers).map((answer) => +answer)) : null;
+    const titleAsId = question.title.replaceAll(' ', '').toLowerCase();
+
     /** Create error bars for every bar */
     const errorBars = (bars: readonly ComputedBarDatum<BarChartData>[], yScale: AnyScale) => {
         return <g>
@@ -81,42 +86,43 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
         </div>;
     };
 
-    const emptyHackathons = analysisService.getEmptyAnalysesFromQuestion(question.values ?? []);
-    const hackathonsAmount = analysisService.getAmountOfNonEmptyAnalysesFromQuestion(question.values ?? []);
-    const maxValue = question.answers ? Math.max(...Object.values(question.answers).map((answer) => +answer)) : null;
-
     return data
         ? hackathonsAmount > 1
             ? <>
                 <Card className="flex flex-col justify-center h-full">
                     <CardContent>
-                        <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
-                        <div className="h-80">
-                            <ResponsiveBar
-                                data={data}
-                                keys={['average']}
-                                indexBy="hackathonTitle"
-                                valueFormat=">-.2f"
-                                margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                                layers={[
-                                    'grid',
-                                    'axes',
-                                    'bars',
-                                    'markers',
-                                    'legends',
-                                    'annotations',
-                                    ({bars, yScale}) => errorBars(bars, yScale)
-                                ]}
-                                maxValue={maxValue ?? 'auto'}
-                                tooltip={customTooltip}
-                                colorBy="indexValue" />
+                        <div>
+                            <div id={titleAsId} className="bg-white">
+                                <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
+                                <div className="h-80">
+                                    <ResponsiveBar
+                                        data={data}
+                                        keys={['average']}
+                                        indexBy="hackathonTitle"
+                                        valueFormat=">-.2f"
+                                        margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+                                        layers={[
+                                            'grid',
+                                            'axes',
+                                            'bars',
+                                            'markers',
+                                            'legends',
+                                            'annotations',
+                                            ({bars, yScale}) => errorBars(bars, yScale)
+                                        ]}
+                                        maxValue={maxValue ?? 'auto'}
+                                        tooltip={customTooltip}
+                                        colorBy="indexValue" />
+                                </div>
+                                {emptyHackathons?.map(hackathon =>
+                                    <Alert severity="info" className="mb-2">Your filter combination "{hackathon.hackathonTitle}" did not return answers for this question.</Alert>
+                                )}
+                            </div>
                         </div>
-                        {emptyHackathons?.map(hackathon =>
-                            <Alert severity="info" className="mb-2">Your filter combination "{hackathon.hackathonTitle}" did not return answers for this question.</Alert>
-                        )}
                     </CardContent>
                     <CardActions>
-                        <Button onClick={() => setDistributionOpen(true)}>See value distribution</Button>
+                        <Button variant="outlined" onClick={() => setDistributionOpen(true)}>See value distribution</Button>
+                        <Button onClick={() => analysisService.saveQuestionAsImage(titleAsId)}>Save chart as image</Button>
                     </CardActions>
                 </Card>
                 <SimpleDistributionDialog

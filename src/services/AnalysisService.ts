@@ -1,6 +1,8 @@
 import type { Analysis, AnalysisMeasure, AnalysisSectionType, AnalysisSubQuestion, MappedAnalysisSection, StatisticalValues } from '../models/Analysis';
 import type { FilterCombination } from '../models/FilterCombination';
 import { httpService } from './HttpService';
+import domtoimage from 'dom-to-image-more';
+import { saveAs } from 'file-saver';
 
 /** Service for fetching the analysis data and working with the data */
 class AnalysisService {
@@ -104,6 +106,14 @@ class AnalysisService {
             }
             return amount;
         }, 0);
+    }
+
+    saveQuestionAsImage(questionTitle: string) {
+        const chartElement = document.getElementById(questionTitle);
+        console.log(chartElement)
+        domtoimage.toBlob(chartElement).then((blob: Blob) => {
+            saveAs(blob, `${questionTitle}.png`);
+        });
     }
 }
 

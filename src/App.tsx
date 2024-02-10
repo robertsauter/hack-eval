@@ -63,7 +63,7 @@ export default function App() {
           }
         </Toolbar>
       </AppBar>
-      <div className="mt-16">
+      <div className="mt-16 pb-2">
         <Outlet />
       </div>
     </>
