@@ -56,7 +56,10 @@ export default function App() {
               </div>
               <Button className="text-white border-white" onClick={userService.logout}>Logout</Button>
             </>
-            : <Typography>HackEval</Typography>
+            : <div className="flex items-center">
+                <Code />
+                <Typography>HackEval</Typography>
+              </div>
           }
         </Toolbar>
       </AppBar>

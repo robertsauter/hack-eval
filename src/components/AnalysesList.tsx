@@ -130,8 +130,6 @@ export function AnalysesList() {
     };
 
     useEffect(() => {
-        getAnalyses();
-
         setFiltersSubscription(filtersService.filtersUpdated$.subscribe((newFilters) => {
             getAnalyses(newFilters);
         }));
