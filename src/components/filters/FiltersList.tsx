@@ -88,7 +88,8 @@ export function FiltersList() {
                 variant="outlined"
                 endIcon={<Add />}
                 onClick={addFilter}
-                className="mb-5">
+                className="mb-5"
+                disabled={filters.length > 2}>
                 Add filter
             </Button>
             <Button

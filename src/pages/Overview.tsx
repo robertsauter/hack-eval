@@ -74,8 +74,9 @@ export function Overview() {
                         {hackathons.map((hackathon) =>
                             <HackathonCard
                                 hackathon={hackathon}
-                                selectEvent={addOrRemoveSelectedHackathon}
+                                onSelect={addOrRemoveSelectedHackathon}
                                 deleteEvent={getHackathons}
+                                selectedAmount={selectedHackathonIds.length}
                                 key={hackathon.id} />
                         )}
                     </div>
