@@ -1,4 +1,4 @@
-import { Alert, Card, CardActionArea, CardContent, IconButton, Snackbar, Typography } from '@mui/material';
+import { Alert, Card, CardActionArea, CardContent, Checkbox, IconButton, Snackbar, Typography } from '@mui/material';
 import { HackathonInformation } from '../models/HackathonInformation';
 import { useState } from 'react';
 import { Delete } from '@mui/icons-material';
@@ -44,14 +44,18 @@ export function HackathonCard(props: {
     };
 
     return <>
-        <Card className="flex flex-col justify-between">
+        <Card className={`flex flex-col justify-between ${selected ? 'outline outline-2 outline-blue-500' : ''}`}>
             <CardContent className="relative">
-                <div className="flex items-center justify-between mb-2">
-                    <Typography className="font-bold">{ hackathon.title }</Typography>
+                <div className="flex mb-2 items-center justify-between">
+                    <Checkbox
+                        checked={selected}
+                        onClick={select}
+                        disabled={!selected && selectedAmount > 2} />
                     <IconButton onClick={removeHackathon}>
                         <Delete></Delete>
                     </IconButton>
                 </div>
+                <Typography className="font-bold">{ hackathon.title }</Typography>    
                 <div className="grid grid-cols-2">
                     <Typography variant="body2" className="font-bold">Incentives:</Typography>
                     <Typography variant="body2">{ hackathon.incentives }</Typography>
@@ -75,11 +79,6 @@ export function HackathonCard(props: {
                     <Typography variant="body2">{ hackathon.link }</Typography>
                 </div>
             </CardContent>
-            <CardActionArea onClick={select} disabled={!selected && selectedAmount > 2}>
-                <div className={`flex justify-center items-center p-2 ${selected ? 'bg-green-500' : 'bg-blue-500'}`}>
-                    <Typography color="white">Select</Typography>
-                </div>
-            </CardActionArea>
         </Card>
         <Snackbar
             open={deleteErrorShown}
