@@ -5,7 +5,7 @@ import { hackathonService } from '../services/HackathonService';
 import { State } from '../lib/AsyncState';
 import { HackathonInformation } from '../models/HackathonInformation';
 import { HackathonCard } from '../components/HackathonCard';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Add } from '@mui/icons-material';
 
 export function Overview() {
@@ -82,7 +82,7 @@ export function Overview() {
                     : <></>
                 }
             </Container>
-            <RouterLink to={`/analysis/${selectedHackathonIds.join(',')}`}>
+            <Link to={`/analysis/${selectedHackathonIds.join(',')}`}>
                 <Fab
                     className="fixed bottom-5 right-5"
                     variant="extended"
@@ -90,7 +90,7 @@ export function Overview() {
                     disabled={selectedHackathonIds.length === 0}>
                     See analysis
                 </Fab>
-            </RouterLink>
+            </Link>
             <UploadHackathonDialog
                 open={isDialogOpen}
                 onClose={() => setIsDialogOpen(false)}

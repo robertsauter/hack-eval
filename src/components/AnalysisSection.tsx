@@ -4,11 +4,24 @@ import type { MappedAnalysisSection } from '../models/Analysis';
 import { BarChart } from './charts/BarChart';
 import { RadarChart } from './charts/RadarChart';
 import { PieChartList } from './charts/PieChartList';
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
+import { Subscription } from 'rxjs';
+import { filtersService } from '../services/FiltersService';
 
-export const AnalysisSection = memo((props: { section: MappedAnalysisSection, filtersOpen: boolean }) => {
+export const AnalysisSection = memo((props: { section: MappedAnalysisSection }) => {
 
-    const { section, filtersOpen } = props;
+    const { section } = props;
+
+    const [filtersOpen, setFiltersOpen] = useState(false);
+    const [filtersOpenSubscription, setFiltersOpenSubscription] = useState<Subscription>();
+
+    useEffect(() => {
+        setFiltersOpenSubscription(filtersService.filtersOpen$.subscribe((open) => setFiltersOpen(open)));
+
+        return () => {
+            filtersOpenSubscription?.unsubscribe();
+        };
+    }, []);
 
     return <Accordion>
         <AccordionSummary expandIcon={<ExpandMore />}>

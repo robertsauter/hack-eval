@@ -11,6 +11,8 @@ class FiltersService {
     /** Can be used to listen for when the filters have been updated */
     filtersUpdated$ = new Subject<FilterCombination[]>();
 
+    filtersOpen$ = new Subject<boolean>();
+
     /** Save a filter combination */
     saveFilterCombination(filter: FilterCombination) {
         return httpService.post('/filters', { body: filter }, true);
@@ -34,6 +36,10 @@ class FiltersService {
     /** Emit a filters updated event */
     emitFiltersUpdated(filters: FilterCombination[]) {
         this.filtersUpdated$.next(filters);
+    }
+
+    emitToggleFilters(open: boolean) {
+        this.filtersOpen$.next(open);
     }
 }
 
