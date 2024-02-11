@@ -11,6 +11,7 @@ type BarChartData = {
     average: number;
     deviation: number;
     participants: number;
+    reliability?: number;
 };
 
 export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
@@ -19,12 +20,18 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
 
     const [distributionOpen, setDistributionOpen] = useState(false);
 
-    const data = question.values?.map((hackathon) => ({
-        hackathonTitle: hackathon.hackathonTitle,
-        average: hackathon.statisticalValues?.average ?? 0,
-        deviation: hackathon.statisticalValues?.deviation ?? 0,
-        participants: hackathon.statisticalValues?.participants ?? 0
-    }));
+    const data = question.values?.map((hackathon) => {
+        const mappedData: BarChartData = {
+            hackathonTitle: hackathon.hackathonTitle,
+            average: hackathon.statisticalValues?.average ?? 0,
+            deviation: hackathon.statisticalValues?.deviation ?? 0,
+            participants: hackathon.statisticalValues?.participants ?? 0
+        };
+        if(question.question_type === 'score_question') {
+            mappedData.reliability = hackathon.statisticalValues?.cronbach_alpha ?? 0;
+        }
+        return mappedData;
+    });
 
     const emptyHackathons = analysisService.getEmptyAnalysesFromQuestion(question.values ?? []);
     const hackathonsAmount = analysisService.getAmountOfNonEmptyAnalysesFromQuestion(question.values ?? []);
@@ -68,8 +75,8 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
 
     /** Create a custom tooltip */
     const customTooltip = (props: BarTooltipProps<BarChartData>) => {
-        const roundedAverage = props.data.average > 0 ? (Math.round(props.data.average * 100) / 100).toFixed(2) : 0;
-        const roundedDeviation = props.data.deviation > 0 ? (Math.round(props.data.deviation * 100) / 100).toFixed(2) : 0;
+        const roundedAverage = analysisService.roundValue(props.data.average, 2);
+        const roundedDeviation = analysisService.roundValue(props.data.deviation, 2);
         return <div className="p-2 bg-white shadow-md rounded-md">
             <div className="flex items-center">
                 <div className="w-3 h-3 mr-2" style={{backgroundColor: props.color}}></div>
@@ -78,10 +85,17 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
             <div className="grid grid-cols-3 gap-x-2">
                 <Typography className="col-span-2">Average:</Typography>
                 <Typography>{roundedAverage}</Typography>
-                <Typography className="col-span-2">Standard deviation:</Typography>
-                <Typography>{roundedDeviation}</Typography>
                 <Typography className="col-span-2">Answers:</Typography>
                 <Typography>{props.data.participants}</Typography>
+                <Typography className="col-span-2">Standard deviation:</Typography>
+                <Typography>{roundedDeviation}</Typography>
+                {props.data.reliability
+                    ? <>
+                        <Typography className="col-span-2">Reliability:</Typography>
+                        <Typography>{analysisService.roundValue(props.data.reliability, 2)}</Typography>
+                    </>
+                    : <></>
+                }
             </div>
         </div>;
     };

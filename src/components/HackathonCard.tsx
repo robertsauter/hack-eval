@@ -1,4 +1,4 @@
-import { Alert, Card, CardActionArea, CardContent, Checkbox, IconButton, Snackbar, Typography } from '@mui/material';
+import { Alert, Card, CardContent, Checkbox, IconButton, Snackbar, Typography } from '@mui/material';
 import { HackathonInformation } from '../models/HackathonInformation';
 import { useState } from 'react';
 import { Delete } from '@mui/icons-material';

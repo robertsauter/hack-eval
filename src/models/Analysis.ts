@@ -5,6 +5,7 @@ export type StatisticalValues = {
     average?: number;
     deviation?: number;
     distribution: Record<string, number>;
+    cronbach_alpha?: number;
 };
 
 export type AnalysisSubQuestion = {
