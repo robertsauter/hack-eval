@@ -161,8 +161,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     className="mb-5"
                     variant="outlined"
                     label="Incentives">
-                    <MenuItem value="collaboration">Collaboration</MenuItem>
-                    <MenuItem value="competition">Competition</MenuItem>
+                    <MenuItem value="cooperative">Cooperative</MenuItem>
+                    <MenuItem value="competitive">Competitive</MenuItem>
                 </Select>
             </FormControl>
             <FormControl fullWidth required>
@@ -173,8 +173,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     className="mb-5"
                     variant="outlined"
                     label="Venue">
-                    <MenuItem value="in-person">In-person</MenuItem>
-                    <MenuItem value="virtual">Virtual</MenuItem>
+                    <MenuItem value="in person">In person</MenuItem>
+                    <MenuItem value="online">Online</MenuItem>
                     <MenuItem value="hybrid">Hybrid</MenuItem>
                 </Select>
             </FormControl>
