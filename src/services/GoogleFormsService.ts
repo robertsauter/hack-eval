@@ -20,16 +20,18 @@ class GoogleFormsService {
 
     /** Load google client */
     initialize() {
-        //Scope defines which data of a google account can be accessed by the application
-        this.googleClient = google.accounts.oauth2.initTokenClient({
-            client_id: this.#CLIENT_ID,
-            scope: 'https://www.googleapis.com/auth/forms.body.readonly https://www.googleapis.com/auth/forms.responses.readonly',
-            callback: (token: Token) => {
-                //As soon as the token is received, make a request to get the survey responses
-                window.sessionStorage.setItem('google_access_token', JSON.stringify(token));
-                this.getSurvey(token);
-            }
-        });
+        if(google) {
+            //Scope defines which data of a google account can be accessed by the application
+            this.googleClient = google.accounts.oauth2.initTokenClient({
+                client_id: this.#CLIENT_ID,
+                scope: 'https://www.googleapis.com/auth/forms.body.readonly https://www.googleapis.com/auth/forms.responses.readonly',
+                callback: (token: Token) => {
+                    //As soon as the token is received, make a request to get the survey responses
+                    window.sessionStorage.setItem('google_access_token', JSON.stringify(token));
+                    this.getSurvey(token);
+                }
+            });
+        }
     }
 
     /** Set the form id */
