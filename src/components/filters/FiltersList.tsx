@@ -1,15 +1,16 @@
 import { Add } from '@mui/icons-material';
 import { Button, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Filter } from './Filter';
 import type { FilterCombination } from '../../models/FilterCombination';
 import { MouseEvent } from 'react';
 import { FilterPresetDialog } from './FilterPresetDialog';
 import { filtersService } from '../../services/FiltersService';
+import { useSearchParams } from 'react-router-dom';
 
-export function FiltersList(props: { onUpdateFilters?: (newFilters: FilterCombination[]) => void }) {
+export function FiltersList() {
 
-    const { onUpdateFilters } = props;
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [filters, setFilters] = useState<FilterCombination[]>([]);
     const [dialogFilterIndex, setDialogFilterIndex] = useState(0);
@@ -18,7 +19,7 @@ export function FiltersList(props: { onUpdateFilters?: (newFilters: FilterCombin
     /** Add a new filter combination to the list */
     const addFilter = () => {
         const indexes = filters.map((filter) => filter.index ? filter.index : 0);
-        const highest = indexes.sort((a, b) => a - b).pop() || 0;
+        const highest = indexes.sort((a, b) => a - b).pop() ?? 0;
         setFilters([...filters, {
             name: '',
             index: highest + 1,
@@ -50,11 +51,24 @@ export function FiltersList(props: { onUpdateFilters?: (newFilters: FilterCombin
 
     /** Notify other parts of the application, when the filters have been updated */
     const handleUpdateClick = () => {
-        if(onUpdateFilters) {
-            onUpdateFilters(filters);
-        }
         filtersService.emitFiltersUpdated(filters);
     };
+
+    useEffect(() => {
+        const urlFilters = JSON.parse(searchParams.get('filters') ?? '[]') as FilterCombination[];
+        const filterWithoutNameExists = urlFilters.find((filter) => filter.name === '');
+        setFilters(urlFilters);
+        if(!filterWithoutNameExists) {
+            filtersService.emitFiltersUpdated(urlFilters);
+        }
+        else {
+            filtersService.emitFiltersUpdated([]);
+        }
+    }, []);
+
+    useEffect(() => {
+        setSearchParams({ filters: JSON.stringify(filters) }, { replace: true });
+    }, [filters]);
 
     return <>
         <div className="p-5">
@@ -74,7 +88,8 @@ export function FiltersList(props: { onUpdateFilters?: (newFilters: FilterCombin
                 variant="outlined"
                 endIcon={<Add />}
                 onClick={addFilter}
-                className="mb-5">
+                className="mb-5"
+                disabled={filters.length > 2}>
                 Add filter
             </Button>
             <Button

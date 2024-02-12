@@ -52,8 +52,8 @@ export const GroupDistributionDialog = memo((props: {
                                 ? <Card key={hackathon.hackathonTitle}>
                                     <CardContent>
                                         <Typography className="text-center font-bold">{hackathon.hackathonTitle}</Typography>
-                                        <Typography>Answers: {hackathon.statisticalValues?.participants || 0}</Typography>
-                                        <Typography>Standard deviation: {roundValue(hackathon.statisticalValues?.deviation || 0)}</Typography>
+                                        <Typography>Answers: {hackathon.statisticalValues?.participants ?? 0}</Typography>
+                                        <Typography>Standard deviation: {roundValue(hackathon.statisticalValues?.deviation ?? 0)}</Typography>
                                         <div className="h-80">
                                             <ResponsiveBar
                                                 data={mapDistribution(hackathon.statisticalValues.distribution)}

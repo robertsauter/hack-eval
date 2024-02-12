@@ -17,7 +17,7 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
     }).map((subQuestion) => {
         const mappedQuestion: Record<string, number | string> = { 'subQuestionTitle': subQuestion.title };
         subQuestion.values.forEach((value) => {
-            mappedQuestion[value.hackathonTitle] = value.statisticalValues.average || 0;
+            mappedQuestion[value.hackathonTitle] = value.statisticalValues.average ?? 0;
         });
         return mappedQuestion;
     });
@@ -32,6 +32,8 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
             values: analysisService.getEmptyAnalysesFromQuestion(subQuestion.values)
         };
     });
+
+    const titleAsId = question.title.replaceAll(' ', '').toLowerCase();
 
     /** Truncate the label, if it is too long and compute label position */
     const truncateLabel = (props: GridLabelProps) => {
@@ -51,29 +53,42 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
             ? <>
                 <Card className="flex flex-col justify-center h-full">
                     <CardContent>
-                        <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
-                        <div className="h-80">
-                            <ResponsiveRadar
-                                data={data}
-                                indexBy="subQuestionTitle"
-                                keys={titles}
-                                maxValue={5}
-                                margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                                valueFormat=">-.2f"
-                                gridShape="linear"
-                                dotColor="white"
-                                dotBorderWidth={2}
-                                dotSize={8}
-                                gridLabel={truncateLabel} />
+                        <div>
+                            <div id={titleAsId} className="bg-white">
+                                <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
+                                <div className="h-80">
+                                    <ResponsiveRadar
+                                        data={data}
+                                        indexBy="subQuestionTitle"
+                                        keys={titles}
+                                        maxValue={5}
+                                        margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+                                        valueFormat=">-.2f"
+                                        gridShape="linear"
+                                        dotColor="white"
+                                        dotBorderWidth={2}
+                                        dotSize={8}
+                                        gridLabel={truncateLabel}
+                                        legends={[{
+                                            anchor: 'bottom',
+                                            direction: 'row',
+                                            itemWidth: 100,
+                                            itemHeight: 20,
+                                            translateX: -50,
+                                            translateY: -50
+                                        }]} />
+                                </div>
+                                {emptySubQuestions?.map((subQuestion) =>
+                                    subQuestion.values.map((hackathon) =>
+                                        <Alert severity="info" className="mb-2">Your filter combination "{hackathon.hackathonTitle}" did not return answers for subquestion "{subQuestion.title}"</Alert>
+                                    )
+                                )}
+                            </div>
                         </div>
-                        {emptySubQuestions?.map((subQuestion) =>
-                            subQuestion.values.map((hackathon) =>
-                                <Alert severity="info" className="mb-2">Your filter combination "{hackathon.hackathonTitle}" did not return answers for subquestion "{subQuestion.title}"</Alert>
-                            )
-                        )}
                     </CardContent>
                     <CardActions>
-                        <Button onClick={() => setDistributionOpen(true)}>See value distribution</Button>
+                        <Button variant="outlined" onClick={() => setDistributionOpen(true)}>See value distribution</Button>
+                        <Button onClick={() => analysisService.saveQuestionAsImage(titleAsId)}>Save chart as image</Button>
                     </CardActions>
                 </Card>
                 <GroupDistributionDialog

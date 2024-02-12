@@ -1,20 +1,27 @@
-import { Alert, Card, CardActionArea, CardContent, IconButton, Snackbar, Typography } from '@mui/material';
+import { Alert, Card, CardContent, Checkbox, IconButton, Snackbar, Typography } from '@mui/material';
 import { HackathonInformation } from '../models/HackathonInformation';
 import { useState } from 'react';
 import { Delete } from '@mui/icons-material';
 import { hackathonService } from '../services/HackathonService';
 
-export function HackathonCard(props: { hackathon: HackathonInformation, selectEvent: (id: string, selected: boolean) => void, deleteEvent: () => void }) {
-    const { hackathon, selectEvent, deleteEvent } = props;
+export function HackathonCard(props: {
+    hackathon: HackathonInformation,
+    onSelect: (id: string, selected: boolean) => void,
+    deleteEvent: () => void,
+    selectedAmount: number
+}) {
+    const { hackathon, onSelect, deleteEvent, selectedAmount } = props;
 
     const [selected, setSelected] = useState(false);
     const [deleteErrorShown, setDeleteErrorShown] = useState(false);
 
     /** Mark a hackathon as selected */
     const select = () => {
-        const newValue = !selected;
-        setSelected(newValue);
-        selectEvent(hackathon.id || '', newValue);
+        if(selectedAmount < 3 || (selectedAmount > 2 && selected)) {
+            const newValue = !selected;
+            setSelected(newValue);
+            onSelect(hackathon.id ?? '', newValue);
+        }
     };
 
     /** Delete a hackathon */
@@ -37,14 +44,18 @@ export function HackathonCard(props: { hackathon: HackathonInformation, selectEv
     };
 
     return <>
-        <Card className="flex flex-col justify-between">
+        <Card className={`flex flex-col justify-between ${selected ? 'outline outline-2 outline-blue-500' : ''}`}>
             <CardContent className="relative">
-                <div className="flex items-center justify-between mb-2">
-                    <Typography className="font-bold">{ hackathon.title }</Typography>
+                <div className="flex mb-2 items-center justify-between">
+                    <Checkbox
+                        checked={selected}
+                        onClick={select}
+                        disabled={!selected && selectedAmount > 2} />
                     <IconButton onClick={removeHackathon}>
                         <Delete></Delete>
                     </IconButton>
                 </div>
+                <Typography className="font-bold">{ hackathon.title }</Typography>    
                 <div className="grid grid-cols-2">
                     <Typography variant="body2" className="font-bold">Incentives:</Typography>
                     <Typography variant="body2">{ hackathon.incentives }</Typography>
@@ -68,11 +79,6 @@ export function HackathonCard(props: { hackathon: HackathonInformation, selectEv
                     <Typography variant="body2">{ hackathon.link }</Typography>
                 </div>
             </CardContent>
-            <CardActionArea onClick={select}>
-                <div className={`flex justify-center items-center p-2 ${selected ? 'bg-green-500' : 'bg-blue-500'}`}>
-                    <Typography color="white">Select</Typography>
-                </div>
-            </CardActionArea>
         </Card>
         <Snackbar
             open={deleteErrorShown}

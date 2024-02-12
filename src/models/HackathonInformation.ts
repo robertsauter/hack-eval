@@ -2,8 +2,8 @@ type HackathonType = 'prototype' | 'conceptual' | 'analysis' | 'education' | 'co
 
 export type HackathonInformation = {
     title: string;
-    incentives: 'collaboration' | 'competition';
-    venue: 'in-person' | 'virtual' | 'hybrid';
+    incentives: 'cooperative' | 'competitive';
+    venue: 'in person' | 'online' | 'hybrid';
     size: 'small' | 'medium' | 'large';
     types: HackathonType[];
     id?: string;

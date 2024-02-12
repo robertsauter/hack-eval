@@ -1,5 +1,5 @@
 import { TextField, Button, Container, Typography, Alert, Fade, CircularProgress } from '@mui/material';
-import { Link as RouterLink, Form as RouterForm, redirect } from 'react-router-dom';
+import { Link, Form as RouterForm, redirect } from 'react-router-dom';
 import { userService } from '../services/UserService';
 import { useEffect, useState } from 'react';
 import { Subscription } from 'rxjs';
@@ -75,9 +75,9 @@ export default function Login() {
             </RouterForm>
             <div className="flex items-center justify-end">
                 <Typography className="mr-2">Don't have an account yet?</Typography>
-                <RouterLink to={'/register'}>
+                <Link to={'/register'}>
                     <Typography>Register</Typography>
-                </RouterLink>
+                </Link>
             </div>
         </Container>
     );

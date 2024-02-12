@@ -1,6 +1,8 @@
 import type { Analysis, AnalysisMeasure, AnalysisSectionType, AnalysisSubQuestion, MappedAnalysisSection, StatisticalValues } from '../models/Analysis';
 import type { FilterCombination } from '../models/FilterCombination';
 import { httpService } from './HttpService';
+import domtoimage from 'dom-to-image-more';
+import { saveAs } from 'file-saver';
 
 /** Service for fetching the analysis data and working with the data */
 class AnalysisService {
@@ -104,6 +106,19 @@ class AnalysisService {
             }
             return amount;
         }, 0);
+    }
+
+    /** Download a chart as image */
+    saveQuestionAsImage(questionTitle: string) {
+        const chartElement = document.getElementById(questionTitle);
+        domtoimage.toBlob(chartElement).then((blob: Blob) => {
+            saveAs(blob, `${questionTitle}.png`);
+        });
+    }
+
+    /** Round a value to a specified decimal */
+    roundValue(value: number, decimals: number) {
+        return value > 0 ? (Math.round(value * 100) / 100).toFixed(decimals) : 0;
     }
 }
 

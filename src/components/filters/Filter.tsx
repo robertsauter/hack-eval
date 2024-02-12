@@ -89,8 +89,8 @@ export function Filter(props: {
                         multiple
                         onChange={(e) => updateFilters(e, 'incentives')}
                         renderValue={renderChips}>
-                        <MenuItem value="collaboration">Collaboration</MenuItem>
-                        <MenuItem value="competition">Competition</MenuItem>
+                        <MenuItem value="cooperative">Cooperative</MenuItem>
+                        <MenuItem value="competitive">Competitive</MenuItem>
                     </Select>
                 </FormControl>
                 <FormControl fullWidth>
@@ -105,8 +105,8 @@ export function Filter(props: {
                         multiple
                         onChange={(e) => updateFilters(e, 'venue')}
                         renderValue={renderChips}>
-                        <MenuItem value="in-person">In-person</MenuItem>
-                        <MenuItem value="virtual">Virtual</MenuItem>
+                        <MenuItem value="in person">In person</MenuItem>
+                        <MenuItem value="online">Online</MenuItem>
                         <MenuItem value="hybrid">Hybrid</MenuItem>
                     </Select>
                 </FormControl>
