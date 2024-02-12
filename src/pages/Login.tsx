@@ -1,6 +1,6 @@
 import { TextField, Button, Container, Typography, Alert, Fade, CircularProgress } from '@mui/material';
 import { Link, Form as RouterForm, redirect } from 'react-router-dom';
-import { userService } from '../services/UserService';
+import { userService } from '../services/userService';
 import { useEffect, useState } from 'react';
 import { Subscription } from 'rxjs';
 import { asyncLoginState } from '../lib/AsyncState';

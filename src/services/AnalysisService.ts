@@ -1,7 +1,7 @@
 import type { Analysis, AnalysisMeasure, AnalysisSectionType, AnalysisSubQuestion, MappedAnalysisSection, StatisticalValues } from '../models/Analysis';
 import type { FilterCombination } from '../models/FilterCombination';
 import { httpService } from './HttpService';
-import domtoimage from 'dom-to-image-more';
+import domtoimage from 'dom-to-image';
 import { saveAs } from 'file-saver';
 
 /** Service for fetching the analysis data and working with the data */
@@ -110,7 +110,7 @@ class AnalysisService {
 
     /** Download a chart as image */
     saveQuestionAsImage(questionTitle: string) {
-        const chartElement = document.getElementById(questionTitle);
+        const chartElement = document.getElementById(questionTitle) as HTMLElement;
         domtoimage.toBlob(chartElement).then((blob: Blob) => {
             saveAs(blob, `${questionTitle}.png`);
         });

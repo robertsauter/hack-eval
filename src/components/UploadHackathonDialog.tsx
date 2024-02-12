@@ -23,15 +23,15 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
 
     /** Reset all form values */
     const resetForm = () => {
-        const form = document.getElementById('HackathonForm') as HTMLFormElement;
-        form.elements['title'].value = '';
-        form.elements['incentives'].value = '';
-        form.elements['venue'].value = '';
-        form.elements['size'].value = '';
-        form.elements['link'].value = '';
-        const id = form.elements['id'];
+        const elements = (document.getElementById('HackathonForm') as HTMLFormElement).elements;
+        (elements.namedItem('title') as HTMLInputElement).value = '';
+        (elements.namedItem('incentives') as HTMLInputElement).value = '';
+        (elements.namedItem('venue') as HTMLInputElement).value = '';
+        (elements.namedItem('size') as HTMLInputElement).value = '';
+        (elements.namedItem('link') as HTMLInputElement).value = '';
+        const id = elements.namedItem('id');
         if(id) {
-            form.elements['id'].value = '';
+            (id as HTMLInputElement).value = '';
         }
         setTypes([]);
         setFile(undefined);

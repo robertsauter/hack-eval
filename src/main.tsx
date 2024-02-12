@@ -12,7 +12,7 @@ import Register from './pages/Register.tsx';
 import { action as registerAction } from './pages/Register.tsx';
 import { action as loginAction } from './pages/Login.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { userService } from './services/UserService.ts';
+import { userService } from './services/userService.ts';
 import { Analyses } from './pages/Analyses.tsx';
 
 const rootElement = document.getElementById('root');
