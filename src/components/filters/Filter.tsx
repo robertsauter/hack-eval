@@ -89,7 +89,7 @@ export function Filter(props: {
                         multiple
                         onChange={(e) => updateFilters(e, 'incentives')}
                         renderValue={renderChips}>
-                        <MenuItem value="cooperative">Collaborative</MenuItem>
+                        <MenuItem value="cooperative">Cooperative</MenuItem>
                         <MenuItem value="competitive">Competitive</MenuItem>
                     </Select>
                 </FormControl>
