@@ -64,7 +64,8 @@ export function AnalysesList() {
         {
             sectionTitle: 'Community measure',
             questions: [
-                'Do people identify with the community?'
+                'Do people identify with the community?',
+                'To what extent do you agree with the following statements about your relationship with the community?'
             ]
         },
         {
@@ -72,19 +73,14 @@ export function AnalysesList() {
             questions: [
                 'How do you feel about your OVERALL EXPERIENCE participating in this hackathon?',
                 'Do you plan to participate in a similar event in the future?',
-                'How likely would you recommend a similar hackathon to a friend or colleague?',
-                'Please rate how SATISFIED you were with the following sessions.',
-                'Please rate how USEFUL you found the following sessions.',
-                'Please rate how ENJOYABLE you found the following sessions.'
+                'How likely would you recommend a similar hackathon to a friend or colleague?'
             ]
         },
         {
             sectionTitle: 'Individual programming experience',
             questions: [
                 'How many years of programming experience do you have?',
-                'Referring back to the people you collaborated with at this hackathon, how do you estimate your programming experience compared to them?',
-                'To what extend do you agree with the following statements about your ABILITY to use these technologies?',
-                'To what extend do you agree with the following statements about your LEVEL OF COMFORT using these technologies?'
+                'Referring back to the people you collaborated with at this hackathon, how do you estimate your programming experience compared to them?'
             ]
         },
         {
@@ -101,15 +97,15 @@ export function AnalysesList() {
     /** Load analyses for a filter combination */
     const getAnalyses = async (filters: FilterCombination[] = []) => {
         const missingName = filters.find((filter) => filter.name === '');
-        if(missingName) {
+        if (missingName) {
             setMissingNameErrorShown(true);
         }
         else {
             setAnalysisState('loading');
-            if(ids) {
+            if (ids) {
                 const response = await analysisService.getAnalyses(ids, filters);
 
-                if(response.ok) {
+                if (response.ok) {
                     const analyses = await response.json();
                     setEmptyAnalyses(analyses.filter((analysis: Analysis) => !analysis.results.length));
                     const nonEmptyAnalyses = analyses.filter((analysis: Analysis) => analysis.results.length);
@@ -124,8 +120,8 @@ export function AnalysesList() {
         }
     };
 
-     /** Close missing name error message */
-     const handleCloseMissingNameError = () => {
+    /** Close missing name error message */
+    const handleCloseMissingNameError = () => {
         setMissingNameErrorShown(false);
     };
 
@@ -144,22 +140,22 @@ export function AnalysesList() {
             ? <div className="flex items-center justify-center p-10">
                 <CircularProgress />
             </div>
-        : analysisState === 'error'
-            ? <div className="flex items-center justify-center p-10">
-                <Alert severity="error">Analysis could not be loaded.</Alert>
-            </div>
-        : analysisState === 'success'
-            ? numberOfAnalyses > 1
-                ? <>
-                    {emptyAnalyses.map((analysis) =>
-                        <Alert className="mb-2" severity="warning">We could not find any hackathons, that match your filter combination <b>{analysis.title}</b>. Please consider changing this filter combination.</Alert>
-                    )}
-                    {filteredAnalyses.map((section) =>
-                        <AnalysisSection section={section} key={section.sectionTitle} />
-                    )}
-                </>
-                : <Alert severity="warning">We could not find any hackathons, that match your filter combinations. Please consider changing or deleting your filter combinations.</Alert>
-            : <></>
+            : analysisState === 'error'
+                ? <div className="flex items-center justify-center p-10">
+                    <Alert severity="error">Analysis could not be loaded.</Alert>
+                </div>
+                : analysisState === 'success'
+                    ? numberOfAnalyses > 1
+                        ? <>
+                            {emptyAnalyses.map((analysis) =>
+                                <Alert className="mb-2" severity="warning">We could not find any hackathons, that match your filter combination <b>{analysis.title}</b>. Please consider changing this filter combination.</Alert>
+                            )}
+                            {filteredAnalyses.map((section) =>
+                                <AnalysisSection section={section} key={section.sectionTitle} />
+                            )}
+                        </>
+                        : <Alert severity="warning">We could not find any hackathons, that match your filter combinations. Please consider changing or deleting your filter combinations.</Alert>
+                    : <></>
         }
         <Snackbar
             open={missingNameErrorShown}

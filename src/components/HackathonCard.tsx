@@ -17,7 +17,7 @@ export function HackathonCard(props: {
 
     /** Mark a hackathon as selected */
     const select = () => {
-        if(selectedAmount < 3 || (selectedAmount > 2 && selected)) {
+        if (selectedAmount < 3 || (selectedAmount > 2 && selected)) {
             const newValue = !selected;
             setSelected(newValue);
             onSelect(hackathon.id ?? '', newValue);
@@ -26,10 +26,10 @@ export function HackathonCard(props: {
 
     /** Delete a hackathon */
     const removeHackathon = async () => {
-        if(hackathon.id) {
+        if (hackathon.id) {
             const response = await hackathonService.removeHackathon(hackathon.id);
 
-            if(response.ok) {
+            if (response.ok) {
                 deleteEvent();
             }
             else {
@@ -44,7 +44,7 @@ export function HackathonCard(props: {
     };
 
     return <>
-        <Card className={`flex flex-col justify-between ${selected ? 'outline outline-2 outline-blue-500' : ''}`}>
+        <Card className={`flex flex-col justify-between ${selected ? 'outline outline-2 outline-[#2196f3]' : ''}`}>
             <CardContent className="relative">
                 <div className="flex mb-2 items-center justify-between">
                     <Checkbox
@@ -55,28 +55,28 @@ export function HackathonCard(props: {
                         <Delete></Delete>
                     </IconButton>
                 </div>
-                <Typography className="font-bold">{ hackathon.title }</Typography>    
+                <Typography className="font-bold">{hackathon.title}</Typography>
                 <div className="grid grid-cols-2">
                     <Typography variant="body2" className="font-bold">Incentives:</Typography>
-                    <Typography variant="body2">{ hackathon.incentives }</Typography>
+                    <Typography variant="body2">{hackathon.incentives}</Typography>
                 </div>
                 <div className="grid grid-cols-2">
                     <Typography variant="body2" className="font-bold">Venue:</Typography>
-                    <Typography variant="body2">{ hackathon.venue }</Typography>
+                    <Typography variant="body2">{hackathon.venue}</Typography>
                 </div>
                 <div className="grid grid-cols-2">
                     <Typography variant="body2" className="font-bold">Size:</Typography>
-                    <Typography variant="body2">{ hackathon.size }</Typography>
+                    <Typography variant="body2">{hackathon.size}</Typography>
                 </div>
                 <div className="grid grid-cols-2">
                     <Typography variant="body2" className="font-bold">Types:</Typography>
                     {hackathon.types.map((type) =>
-                        <Typography variant="body2" className="col-start-2" key={type}>{ type }</Typography>
+                        <Typography variant="body2" className="col-start-2" key={type}>{type}</Typography>
                     )}
                 </div>
                 <div className="grid grid-cols-2">
                     <Typography variant="body2" className="font-bold">Link:</Typography>
-                    <Typography variant="body2">{ hackathon.link }</Typography>
+                    <Typography variant="body2">{hackathon.link}</Typography>
                 </div>
             </CardContent>
         </Card>

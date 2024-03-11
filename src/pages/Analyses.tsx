@@ -33,7 +33,7 @@ export function Analyses() {
 
     return <>
         <div className={filtersOpen
-            ? 'pt-5 px-10 sm:pl-20 md:pl-40 sm:pr-[13rem] md:pr-[19rem] lg:pr-[26rem] xl:pr-[31rem]'
+            ? 'pt-5 px-10 sm:pl-20 md:pl-40 sm:pr-[14rem] md:pr-[20rem] lg:pr-[27rem] xl:pr-[32rem]'
             : 'pt-5 px-10 sm:px-20 md:px-40'
         }>
             <Typography variant="h4" className="font-bold mb-5">Analyses</Typography>

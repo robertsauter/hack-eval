@@ -32,7 +32,7 @@ export const AnalysisSection = memo((props: { section: MappedAnalysisSection }) 
             : 'grid grid-cols-1 xl:grid-cols-2 gap-2'
         }>
             {section.questions.map((question) => {
-                switch(question.question_type) {
+                switch (question.question_type) {
                     case 'single_question':
                     case 'score_question':
                         return <BarChart question={question} key={question.title} />;

@@ -11,10 +11,10 @@ export async function action(action: { request: Request, params: {} }) {
     asyncLoginState.setLoading();
     const formData = await action.request.formData();
     const response = await userService.login(formData);
-    if(response.ok) {
+    if (response.ok) {
         return redirect('/');
     }
-    else if(response.status === 401) {
+    else if (response.status === 401) {
         asyncLoginState.setError('Username or password could not be found.');
         return null;
     }
@@ -30,7 +30,7 @@ export default function Login() {
     useEffect(() => {
         setLoginStateSubscription(asyncLoginState.stateChanges$.subscribe((stateChange) => {
             setLoginState(stateChange.state);
-            if(stateChange.state === 'error' && stateChange.message) {
+            if (stateChange.state === 'error' && stateChange.message) {
                 setErrorMessage(stateChange.message);
             }
         }));
