@@ -17,7 +17,7 @@ type AnalysisMeasureInformation = {
     title: string;
     question_type: 'single_question' | 'group_question' | 'score_question' | 'category_question';
     answer_type: 'string_to_int' | 'int' | 'string';
-    answers: Record<string, string | number> | string[]
+    answers: Record<string, string | number> | string[];
 };
 
 export type AnalysisMeasure = AnalysisMeasureInformation & {
@@ -33,8 +33,8 @@ export type MappedAnalysisSubquestion = {
     title: string;
     values: {
         hackathonTitle: string;
-        statisticalValues : StatisticalValues;
-    }[]
+        statisticalValues: StatisticalValues;
+    }[];
 };
 
 export type MappedAnalysisQuestion = AnalysisMeasureInformation & {
@@ -42,7 +42,7 @@ export type MappedAnalysisQuestion = AnalysisMeasureInformation & {
         hackathonTitle: string;
         statisticalValues?: StatisticalValues;
     }[],
-    subQuestions?: MappedAnalysisSubquestion[]
+    subQuestions?: MappedAnalysisSubquestion[];
 };
 
 export type AnalysisSectionType = {
