@@ -1,7 +1,8 @@
-import { GridLabelProps, ResponsiveRadar } from '@nivo/radar';
+import { GridLabelProps, RadarSliceTooltipProps, ResponsiveRadar } from '@nivo/radar';
 import { MappedAnalysisQuestion } from '../../models/Analysis';
 import { memo } from 'react';
 import { analysisService } from '../../services/AnalysisService';
+import { Typography } from '@mui/material';
 
 export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => {
 
@@ -35,6 +36,27 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
         </g>;
     };
 
+    /** Custom tooltip for a group of the radar charts */
+    const customTooltip = (props: RadarSliceTooltipProps) => {
+        return <div className="p-2 bg-white shadow-md rounded-md">
+            {props.data.map((hackathon) => {
+                const subQuestion = question.subQuestions?.find((subQuestion) => subQuestion.title === props.index);
+                const statisticalValues = subQuestion?.values.find((hack) => hack.hackathonTitle === hackathon.id)?.statisticalValues;
+                return <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                        <div className="w-3 h-3" style={{ backgroundColor: hackathon.color }}></div>
+                        <Typography>{hackathon.id}</Typography>
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <Typography>M={hackathon.formattedValue}</Typography>
+                        <Typography>N={statisticalValues?.participants}</Typography>
+                        <Typography>SD={analysisService.roundValue(statisticalValues?.deviation ?? 0, 2)}</Typography>
+                    </div>
+                </div>
+            })}
+        </div>;
+    }
+
     return data
         ? <div className="h-80">
             <ResponsiveRadar
@@ -44,6 +66,7 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
                 maxValue={5}
                 margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
                 valueFormat=">-.2f"
+                sliceTooltip={customTooltip}
                 gridShape="linear"
                 dotColor="white"
                 dotBorderWidth={2}

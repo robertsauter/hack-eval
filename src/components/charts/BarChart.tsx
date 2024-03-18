@@ -1,5 +1,5 @@
 import { BarTooltipProps, ComputedBarDatum, ResponsiveBar } from '@nivo/bar';
-import { AnyScale } from '@nivo/scales'
+import { AnyScale } from '@nivo/scales';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { Typography } from '@mui/material';
 import { memo } from 'react';

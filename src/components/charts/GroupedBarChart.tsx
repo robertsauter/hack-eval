@@ -1,7 +1,8 @@
-import { ResponsiveBar } from '@nivo/bar';
+import { BarTooltipProps, ResponsiveBar } from '@nivo/bar';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { memo } from 'react';
 import { Typography } from '@mui/material';
+import { analysisService } from '../../services/AnalysisService';
 
 export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }) => {
 
@@ -32,6 +33,27 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
         </div>;
     };
 
+    /** Create custom tooltip for a subquestion of a hackathon */
+    const customTooltip = (props: BarTooltipProps<Record<string, string | number>>) => {
+        const subQuestion = question.subQuestions?.find((subQuestion) => subQuestion.title === props.id);
+        const statisticalValues = subQuestion?.values.find((hackathon) => hackathon.hackathonTitle === props.data['hackathonTitle'])?.statisticalValues;
+        return <div className="p-2 bg-white shadow-md rounded-md">
+            <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3" style={{ backgroundColor: props.color }}></div>
+                    <Typography>{props.id}</Typography>
+                </div>
+                <div className="flex items-center gap-1">
+                    <Typography>M={props.formattedValue}</Typography>
+                    <Typography>N={statisticalValues?.participants}</Typography>
+                    <Typography>SD={analysisService.roundValue(statisticalValues?.deviation ?? 0, 2)}</Typography>
+                </div>
+            </div>
+        </div>;
+    };
+
+    //TODO: Add error bars
+
     return data
         ? <>
             <div className="h-80">
@@ -42,7 +64,8 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
                     valueFormat=">-.2f"
                     margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
                     maxValue={maxValue ?? 'auto'}
-                    groupMode="grouped" />
+                    groupMode="grouped"
+                    tooltip={customTooltip} />
             </div>
             {customLegend()}
         </>
