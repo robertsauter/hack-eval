@@ -38,17 +38,13 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
         const subQuestion = question.subQuestions?.find((subQuestion) => subQuestion.title === props.id);
         const statisticalValues = subQuestion?.values.find((hackathon) => hackathon.hackathonTitle === props.data['hackathonTitle'])?.statisticalValues;
         return <div className="p-2 bg-white shadow-md rounded-md">
-            <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                    <div className="w-3 h-3" style={{ backgroundColor: props.color }}></div>
-                    <Typography>{props.id}</Typography>
-                </div>
-                <div className="flex items-center gap-1">
-                    <Typography>M={props.formattedValue}</Typography>
-                    <Typography>N={statisticalValues?.participants}</Typography>
-                    <Typography>SD={analysisService.roundValue(statisticalValues?.deviation ?? 0, 2)}</Typography>
-                </div>
+            <div className="flex items-center gap-2">
+                <div className="w-3 h-3" style={{ backgroundColor: props.color }}></div>
+                <Typography className="font-bold">{props.id}</Typography>
             </div>
+            <Typography>M={props.formattedValue}</Typography>
+            <Typography>N={statisticalValues?.participants}</Typography>
+            <Typography>SD={analysisService.roundValue(statisticalValues?.deviation ?? 0, 2)}</Typography>
         </div>;
     };
 

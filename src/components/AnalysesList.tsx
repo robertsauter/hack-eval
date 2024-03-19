@@ -148,7 +148,12 @@ export function AnalysesList() {
                     ? numberOfAnalyses > 1
                         ? <>
                             {emptyAnalyses.map((analysis) =>
-                                <Alert className="mb-2" severity="warning">We could not find any hackathons, that match your filter combination <b>{analysis.title}</b>. Please consider changing this filter combination.</Alert>
+                                <Alert
+                                    className="mb-2"
+                                    severity="warning"
+                                    key={analysis.title}>
+                                    We could not find any hackathons, that match your filter combination <b>{analysis.title}</b>. Please consider changing this filter combination.
+                                </Alert>
                             )}
                             {filteredAnalyses.map((section) =>
                                 <AnalysisSection section={section} key={section.sectionTitle} />

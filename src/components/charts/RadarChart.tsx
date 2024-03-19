@@ -45,7 +45,7 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
                 return <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3" style={{ backgroundColor: hackathon.color }}></div>
-                        <Typography>{hackathon.id}</Typography>
+                        <Typography className="font-bold">{hackathon.id}</Typography>
                     </div>
                     <div className="flex items-center gap-1">
                         <Typography>M={hackathon.formattedValue}</Typography>

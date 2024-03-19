@@ -35,19 +35,19 @@ export const AnalysisSection = memo((props: { section: MappedAnalysisSection }) 
         }>
             {section.questions.map((question) => {
                 if (question.question_type === 'single_question' && question.answer_type === 'int') {
-                    return <SingleFreeValueQuestion question={question} />
+                    return <SingleFreeValueQuestion question={question} key={question.title} />
                 }
                 else if (question.question_type === 'single_question') {
-                    return <SingleQuestion question={question} />;
+                    return <SingleQuestion question={question} key={question.title} />;
                 }
                 else if (question.question_type === 'score_question') {
-                    return <ScoreQuestion question={question} />
+                    return <ScoreQuestion question={question} key={question.title} />
                 }
                 else if (question.question_type === 'group_question') {
-                    return <GroupQuestion question={question} />
+                    return <GroupQuestion question={question} key={question.title} />
                 }
                 else {
-                    return <CategoryQuestion question={question} />
+                    return <CategoryQuestion question={question} key={question.title} />
                 }
             })}
         </AccordionDetails>

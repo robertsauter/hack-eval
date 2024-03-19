@@ -49,8 +49,8 @@ export const ScatterPlot = memo((props: { question: MappedAnalysisQuestion }) =>
                 <div className="w-3 h-3" style={{ backgroundColor: props.node.color }}></div>
                 <Typography className="font-bold">{props.node.serieId}:</Typography>
             </div>
-            <Typography>Answer: {props.node.formattedX}</Typography>
-            <Typography>Amount of answers: {props.node.formattedY}</Typography>
+            <Typography>Value={props.node.formattedX}</Typography>
+            <Typography>n={props.node.yValue}</Typography>
         </div>;
     };
 

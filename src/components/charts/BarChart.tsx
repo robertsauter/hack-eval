@@ -71,26 +71,25 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
     const customTooltip = (props: BarTooltipProps<BarChartData>) => {
         const roundedAverage = analysisService.roundValue(props.data.average, 2);
         const roundedDeviation = analysisService.roundValue(props.data.deviation, 2);
+        const reliability = props.data.reliability;
+        let reliabilityColor;
+        if (reliability) {
+            if (reliability < 0.6) reliabilityColor = '#d32f2f';
+            else if (reliability < 0.7) reliabilityColor = '#ed6c02';
+            else reliabilityColor = '#2e7d32';
+        }
         return <div className="p-2 bg-white shadow-md rounded-md">
             <div className="flex items-center">
                 <div className="w-3 h-3 mr-2" style={{ backgroundColor: props.color }}></div>
                 <Typography className="font-bold">{props.data.hackathonTitle}</Typography>
             </div>
-            <div className="grid grid-cols-3 gap-x-2">
-                <Typography className="col-span-2">Average:</Typography>
-                <Typography>{roundedAverage}</Typography>
-                <Typography className="col-span-2">Answers:</Typography>
-                <Typography>{props.data.participants}</Typography>
-                <Typography className="col-span-2">Standard deviation:</Typography>
-                <Typography>{roundedDeviation}</Typography>
-                {props.data.reliability
-                    ? <>
-                        <Typography className="col-span-2">Reliability:</Typography>
-                        <Typography>{analysisService.roundValue(props.data.reliability, 2)}</Typography>
-                    </>
-                    : <></>
-                }
-            </div>
+            <Typography>M={roundedAverage}</Typography>
+            <Typography>N={props.data.participants}</Typography>
+            <Typography>SD={roundedDeviation}</Typography>
+            {props.data.reliability
+                ? <Typography className="col-span-2" color={reliabilityColor}>Cronbach's &alpha;={analysisService.roundValue(reliability ?? 0, 2)}</Typography>
+                : <></>
+            }
         </div>;
     };
 

@@ -41,8 +41,8 @@ export const PieChart = memo((props: { question: MappedAnalysisQuestion }) => {
     const customTooltip = (props: PieTooltipProps<PieChartData>) => {
         return <div className="p-2 bg-white shadow-md rounded-md flex items-center gap-2">
             <div className="w-3 h-3" style={{ backgroundColor: props.datum.color }}></div>
-            <Typography>{props.datum.data.label}:</Typography>
-            <Typography className="font-bold">{props.datum.data.value}</Typography>
+            <Typography className="font-bold">{props.datum.data.label}:</Typography>
+            <Typography>{props.datum.data.value}</Typography>
         </div>;
     };
 
