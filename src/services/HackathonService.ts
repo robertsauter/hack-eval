@@ -18,8 +18,10 @@ class HackathonService {
         formData.append('venue', information.venue);
         formData.append('size', information.size);
         formData.append('types', information.types.join(','));
+        formData.append('start', information.start.toISOString());
+        formData.append('end', information.end.toISOString());
         formData.append('file', file);
-        if(information.link) {
+        if (information.link) {
             formData.append('link', information.link);
         }
         return httpService.post('/hackathons/csv', { body: formData });
