@@ -38,14 +38,15 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
 
     /** Custom tooltip for a group of the radar charts */
     const customTooltip = (props: RadarSliceTooltipProps) => {
-        return <div className="p-2 bg-white shadow-md rounded-md">
+        const subQuestion = question.subQuestions?.find((subQuestion) => subQuestion.title === props.index);
+        return <div className="p-2 bg-white shadow-md rounded-md max-w-xs">
+            <Typography className="font-bold">{subQuestion?.title}</Typography>
             {props.data.map((hackathon) => {
-                const subQuestion = question.subQuestions?.find((subQuestion) => subQuestion.title === props.index);
                 const statisticalValues = subQuestion?.values.find((hack) => hack.hackathonTitle === hackathon.id)?.statisticalValues;
                 return <div key={`radarChartTooltip${hackathon.id}`} className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                        <div className="w-3 h-3" style={{ backgroundColor: hackathon.color }}></div>
-                        <Typography className="font-bold">{hackathon.id}</Typography>
+                        <div className="min-w-[1rem] h-4" style={{ backgroundColor: hackathon.color }}></div>
+                        <Typography>{hackathon.id}</Typography>
                     </div>
                     <div className="flex items-center gap-1">
                         <Typography>M={hackathon.formattedValue}</Typography>

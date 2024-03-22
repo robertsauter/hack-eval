@@ -80,9 +80,9 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
             else if (reliability < 0.7) reliabilityColor = '#ed6c02';
             else reliabilityColor = '#2e7d32';
         }
-        return <div className="p-2 bg-white shadow-md rounded-md">
+        return <div className="p-2 bg-white shadow-md rounded-md max-w-xs">
             <div className="flex items-center">
-                <div className="w-3 h-3 mr-2" style={{ backgroundColor: props.color }}></div>
+                <div className="min-w-[1rem] h-4 mr-2" style={{ backgroundColor: props.color }}></div>
                 <Typography className="font-bold">{props.data.hackathonTitle}</Typography>
             </div>
             <Typography>M={roundedAverage}</Typography>

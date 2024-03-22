@@ -48,7 +48,7 @@ export const ScatterPlot = memo((props: { question: MappedAnalysisQuestion }) =>
     const scatterPlotTooltip = (props: ScatterPlotTooltipProps<ScatterPlotData>) => {
         return <div className="p-2 bg-white shadow-md rounded-md">
             <div className="flex items-center gap-2">
-                <div className="w-3 h-3" style={{ backgroundColor: props.node.color }}></div>
+                <div className="min-w-[1rem] h-4" style={{ backgroundColor: props.node.color }}></div>
                 <Typography className="font-bold">{props.node.serieId}:</Typography>
             </div>
             <Typography>Value={props.node.formattedX}</Typography>

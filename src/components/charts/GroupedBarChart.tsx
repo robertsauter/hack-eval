@@ -22,7 +22,7 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
 
     const maxValue = question.answers ? Math.max(...Object.values(question.answers).map((answer) => +answer)) : null;
     const subQuestionTitles = question.subQuestions?.map((subQuestion) => subQuestion.title);
-    const colors = ['#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb', '#97e3d5', '#e8c1a0', '#f47560', '#f1e15b'];
+    const colors = ['#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb', '#97e3d5', '#e8c1a0', '#f47560', '#f1e15b', '#e8a838'];
 
     /** Create a custom legend */
     const customLegend = () => {
@@ -39,9 +39,9 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
     const customTooltip = (props: BarTooltipProps<Record<string, string | number>>) => {
         const subQuestion = question.subQuestions?.find((subQuestion) => subQuestion.title === props.id);
         const statisticalValues = subQuestion?.values.find((hackathon) => hackathon.hackathonTitle === props.data['hackathonTitle'])?.statisticalValues;
-        return <div className="p-2 bg-white shadow-md rounded-md">
+        return <div className="p-2 bg-white shadow-md rounded-md max-w-xs">
             <div className="flex items-center gap-2">
-                <div className="w-3 h-3" style={{ backgroundColor: props.color }}></div>
+                <div className="h-4 min-w-[1rem]" style={{ backgroundColor: props.color }}></div>
                 <Typography className="font-bold">{props.id}</Typography>
             </div>
             <Typography>M={props.formattedValue}</Typography>
