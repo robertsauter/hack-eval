@@ -26,11 +26,13 @@ export const PieChart = memo((props: { question: MappedAnalysisQuestion }) => {
             });
             return {
                 hackathonTitle: hackathon.hackathonTitle,
+                participants: hackathon.statisticalValues?.participants,
                 statisticalValues: values
             };
         }
         return {
             hackathonTitle: hackathon.hackathonTitle,
+            participants: hackathon.statisticalValues?.participants,
             statisticalValues: []
         }
     });
@@ -51,7 +53,7 @@ export const PieChart = memo((props: { question: MappedAnalysisQuestion }) => {
         const typedAnswers = question.answers as string[];
         return <div className="flex items-center gap-x-8 gap-y-2 flex-wrap justify-center">{typedAnswers.map((answer, i) =>
             <div key={`pieChartLegend${i}`} className="flex items-center">
-                <div className="w-3 h-3 mr-1" style={{ backgroundColor: colors[i] }}></div>
+                <div className="w-4 h-4 mr-1" style={{ backgroundColor: colors[i] }}></div>
                 <Typography className="text-xs">{answer}</Typography>
             </div>
         )}
@@ -63,7 +65,7 @@ export const PieChart = memo((props: { question: MappedAnalysisQuestion }) => {
             <div className="grid grid-cols-2 gap-2">
                 {data.map((hackathon) =>
                     <div key={hackathon.hackathonTitle} className={hackathon.statisticalValues.length ? 'h-80' : 'flex items-center justify-center flex-col'}>
-                        <Typography className="text-center">{hackathon.hackathonTitle}</Typography>
+                        <Typography className="text-center">{`${hackathon.hackathonTitle} (N=${hackathon.participants})`}</Typography>
                         {hackathon.statisticalValues.length
                             ? <ResponsivePie
                                 data={hackathon.statisticalValues}

@@ -4,6 +4,7 @@ import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { Typography } from '@mui/material';
 import { memo } from 'react';
 import { analysisService } from '../../services/AnalysisService';
+import { AxisTickProps } from '@nivo/axes';
 
 type BarChartData = {
     hackathonTitle: string;
@@ -94,6 +95,17 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
         </div>;
     };
 
+    /** Create a custom tick, that includes the participants amount */
+    const customTick = (props: AxisTickProps<any>) => {
+        const participants = data?.find((hackathon) => props.value === hackathon.hackathonTitle)?.participants;
+        const label = `${props.value} (N=${participants})`;
+        const translateTextX = -((label.length * 5.5) / 2);
+        return <g transform={`translate(${props.x}, ${props.y})`}>
+            <line x1={0} x2={0} y1={0} y2={5} stroke="DimGray" strokeWidth={1} />
+            <text x={translateTextX} y={20} fontSize={11}>{label}</text>
+        </g>;
+    };
+
     return data
         ? <div className="h-80">
             <ResponsiveBar
@@ -111,6 +123,7 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
                     'annotations',
                     ({ bars, yScale }) => errorBars(bars, yScale)
                 ]}
+                axisBottom={{ renderTick: customTick }}
                 maxValue={maxValue ?? 'auto'}
                 tooltip={customTooltip}
                 colorBy="indexValue" />

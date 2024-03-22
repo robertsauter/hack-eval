@@ -30,6 +30,8 @@ export const ScatterPlot = memo((props: { question: MappedAnalysisQuestion }) =>
         }
     });
 
+    const colors = ['#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb', '#97e3d5', '#e8c1a0', '#f47560', '#f1e15b'];
+
     const maxValue = question.values?.reduce((maxOverall, hackathon) => {
         const distribution = hackathon.statisticalValues?.distribution as Record<string, number>;
         const maxInDistribution = Math.max(...Object.keys(distribution).map((key) => +key));
@@ -54,33 +56,40 @@ export const ScatterPlot = memo((props: { question: MappedAnalysisQuestion }) =>
         </div>;
     };
 
+    /** Create a custom legend */
+    const customLegend = () => {
+        return <div className="flex items-center justify-center gap-x-8 gap-y-2 flex-wrap">{question.values?.map((hackathon, i) =>
+            <div key={`scatterPlotLegend${i}`} className="flex items-center">
+                <div className="w-4 h-4 mr-1" style={{ backgroundColor: colors[i] }}></div>
+                <Typography className="text-xs">{`${hackathon.hackathonTitle} (N=${hackathon.statisticalValues?.participants})`}</Typography>
+            </div>
+        )}
+        </div>;
+    };
+
     return data
-        ? <div className="h-80">
-            <ResponsiveScatterPlot
-                data={data}
-                xScale={{ type: 'linear', min: 0, max: maxValue }}
-                xFormat=">-.2f"
-                yScale={{ type: 'linear', min: 0, max: highestAnswersAmount }}
-                yFormat=">-.2f"
-                margin={{ top: 50, right: 50, bottom: 75, left: 50 }}
-                axisBottom={{
-                    legend: 'Answer',
-                    legendPosition: 'middle',
-                    legendOffset: 40
-                }}
-                axisLeft={{
-                    legend: 'Amount of answers',
-                    legendPosition: 'middle',
-                    legendOffset: -40
-                }}
-                tooltip={scatterPlotTooltip}
-                legends={[{
-                    anchor: 'bottom',
-                    direction: 'row',
-                    itemWidth: 100,
-                    itemHeight: 20,
-                    translateY: 75
-                }]} />
-        </div>
+        ? <>
+            <div className="h-80">
+                <ResponsiveScatterPlot
+                    data={data}
+                    xScale={{ type: 'linear', min: 0, max: maxValue }}
+                    xFormat=">-.2f"
+                    yScale={{ type: 'linear', min: 0, max: highestAnswersAmount }}
+                    yFormat=">-.2f"
+                    margin={{ top: 50, right: 50, bottom: 65, left: 50 }}
+                    axisBottom={{
+                        legend: 'Answer',
+                        legendPosition: 'middle',
+                        legendOffset: 40
+                    }}
+                    axisLeft={{
+                        legend: 'Amount of answers',
+                        legendPosition: 'middle',
+                        legendOffset: -40
+                    }}
+                    tooltip={scatterPlotTooltip} />
+            </div>
+            {customLegend()}
+        </>
         : <></>;
 });

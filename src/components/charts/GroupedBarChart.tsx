@@ -4,6 +4,7 @@ import { memo } from 'react';
 import { Typography } from '@mui/material';
 import { analysisService } from '../../services/AnalysisService';
 import { AnyScale } from '@nivo/scales';
+import { AxisTickProps } from '@nivo/axes';
 
 export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }) => {
 
@@ -27,7 +28,7 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
     const customLegend = () => {
         return <div className="flex items-center justify-center gap-x-8 gap-y-2 flex-wrap">{question.subQuestions?.map((subQuestion, i) =>
             <div key={`groupedBarChartLegend${i}`} className="flex items-center">
-                <div className="w-3 h-3 mr-1" style={{ backgroundColor: colors[i] }}></div>
+                <div className="w-4 h-4 mr-1" style={{ backgroundColor: colors[i] }}></div>
                 <Typography className="text-xs">{subQuestion.title}</Typography>
             </div>
         )}
@@ -85,6 +86,20 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
         });
     };
 
+    /** Create a custom tick, that includes the participants amount (only for score questions) */
+    const customTick = (props: AxisTickProps<any>) => {
+        let participants;
+        if (question.question_type === 'score_question') {
+            participants = question.values?.find((hackathon) => hackathon.hackathonTitle === props.value)?.statisticalValues?.participants;
+        }
+        const label = participants ? `${props.value} (N=${participants})` : props.value;
+        const translateTextX = -((label.length * 5.5) / 2);
+        return <g transform={`translate(${props.x}, ${props.y})`}>
+            <line x1={0} x2={0} y1={0} y2={5} stroke="DimGray" strokeWidth={1} />
+            <text x={translateTextX} y={20} fontSize={11}>{label}</text>
+        </g>;
+    };
+
     return data
         ? <>
             <div className="h-80">
@@ -97,6 +112,7 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
                     maxValue={maxValue ?? 'auto'}
                     groupMode="grouped"
                     tooltip={customTooltip}
+                    axisBottom={{ renderTick: customTick }}
                     layers={[
                         'grid',
                         'axes',
