@@ -36,6 +36,21 @@ class HackathonService {
     removeHackathon(id: string) {
         return httpService.delete(`/hackathons/${id}`, {});
     }
+
+    /** Get all hackathon data of the logged in user as a csv string */
+    getHackathonData() {
+        return httpService.get('/hackathons/aggregated', {});
+    }
+
+    /** Process a csv string, create a csv file and download it */
+    downloadCsvStringAsFile(csvString: string) {
+        const file = new Blob([csvString], { type: 'text/csv' });
+        const downloadUrl = window.URL.createObjectURL(file);
+        const downloadLink = document.getElementById('DownloadLink');
+        downloadLink?.setAttribute('href', downloadUrl);
+        downloadLink?.click();
+        return Promise.resolve();
+    }
 }
 
 export const hackathonService = new HackathonService();
