@@ -1,8 +1,9 @@
-import { BarTooltipProps, ResponsiveBar } from '@nivo/bar';
+import { BarTooltipProps, ComputedBarDatum, ResponsiveBar } from '@nivo/bar';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { memo } from 'react';
 import { Typography } from '@mui/material';
 import { analysisService } from '../../services/AnalysisService';
+import { AnyScale } from '@nivo/scales';
 
 export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }) => {
 
@@ -25,7 +26,7 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
     /** Create a custom legend */
     const customLegend = () => {
         return <div className="flex items-center justify-center gap-x-8 gap-y-2 flex-wrap">{question.subQuestions?.map((subQuestion, i) =>
-            <div className="flex items-center">
+            <div key={`groupedBarChartLegend${i}`} className="flex items-center">
                 <div className="w-3 h-3 mr-1" style={{ backgroundColor: colors[i] }}></div>
                 <Typography className="text-xs">{subQuestion.title}</Typography>
             </div>
@@ -48,7 +49,41 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
         </div>;
     };
 
-    //TODO: Add error bars
+    /** Create error bars for every bar of the chart */
+    const errorBars = (bars: readonly ComputedBarDatum<Record<string, string | number>>[], yScale: AnyScale) => {
+        return bars.map((bar) => {
+            const hackathonTitle = bar.data.data['hackathonTitle'];
+            const subQuestionTitle = bar.data.id;
+            const deviation = question.subQuestions
+                ?.find((subQuestion) => subQuestion.title === subQuestionTitle)
+                ?.values.find((hackathon) => hackathon.hackathonTitle === hackathonTitle)
+                ?.statisticalValues.deviation;
+            const xTop = bar.x + bar.width / 2;
+            const xBottom = bar.x + bar.width / 2;
+            const yTop = yScale((bar.data.value ?? 0) + (deviation ?? 0));
+            const yBottom = yScale((bar.data.value ?? 0) - (deviation ?? 0));
+            return <g key={`errorBar${hackathonTitle}${subQuestionTitle}`}>
+                <line
+                    x1={xTop - 5}
+                    y1={yTop}
+                    x2={xTop + 5}
+                    y2={yTop}
+                    stroke="black" />
+                <line
+                    x1={xTop}
+                    y1={yTop}
+                    x2={xBottom}
+                    y2={yBottom}
+                    stroke="black" />
+                <line
+                    x1={xBottom - 5}
+                    y1={yBottom}
+                    x2={xBottom + 5}
+                    y2={yBottom}
+                    stroke="black" />
+            </g>
+        });
+    };
 
     return data
         ? <>
@@ -61,7 +96,16 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
                     margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
                     maxValue={maxValue ?? 'auto'}
                     groupMode="grouped"
-                    tooltip={customTooltip} />
+                    tooltip={customTooltip}
+                    layers={[
+                        'grid',
+                        'axes',
+                        'bars',
+                        'markers',
+                        'legends',
+                        'annotations',
+                        ({ bars, yScale }) => errorBars(bars, yScale)
+                    ]} />
             </div>
             {customLegend()}
         </>

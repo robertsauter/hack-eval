@@ -50,7 +50,7 @@ export const PieChart = memo((props: { question: MappedAnalysisQuestion }) => {
     const customLegend = () => {
         const typedAnswers = question.answers as string[];
         return <div className="flex items-center gap-x-8 gap-y-2 flex-wrap justify-center">{typedAnswers.map((answer, i) =>
-            <div className="flex items-center">
+            <div key={`pieChartLegend${i}`} className="flex items-center">
                 <div className="w-3 h-3 mr-1" style={{ backgroundColor: colors[i] }}></div>
                 <Typography className="text-xs">{answer}</Typography>
             </div>

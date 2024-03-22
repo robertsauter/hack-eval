@@ -42,7 +42,7 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
             {props.data.map((hackathon) => {
                 const subQuestion = question.subQuestions?.find((subQuestion) => subQuestion.title === props.index);
                 const statisticalValues = subQuestion?.values.find((hack) => hack.hackathonTitle === hackathon.id)?.statisticalValues;
-                return <div className="flex items-center justify-between gap-2">
+                return <div key={`radarChartTooltip${hackathon.id}`} className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3" style={{ backgroundColor: hackathon.color }}></div>
                         <Typography className="font-bold">{hackathon.id}</Typography>

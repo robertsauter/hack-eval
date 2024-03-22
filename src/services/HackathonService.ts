@@ -42,7 +42,7 @@ class HackathonService {
         return httpService.get('/hackathons/aggregated/csv', {});
     }
 
-    /** Process a csv string, create a csv file and download it */
+    /** Process a csv string, create a csv file and download it. Returns a promise, so we can wait for execution of this method elsewhere */
     downloadCsvStringAsFile(csvString: string) {
         const file = new Blob([csvString], { type: 'text/csv' });
         const downloadUrl = window.URL.createObjectURL(file);

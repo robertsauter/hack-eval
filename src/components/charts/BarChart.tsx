@@ -71,9 +71,10 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
     const customTooltip = (props: BarTooltipProps<BarChartData>) => {
         const roundedAverage = analysisService.roundValue(props.data.average, 2);
         const roundedDeviation = analysisService.roundValue(props.data.deviation, 2);
-        const reliability = props.data.reliability;
+        let reliability;
         let reliabilityColor;
-        if (reliability) {
+        if (question.question_type === 'score_question') {
+            reliability = props.data.reliability ?? 0;
             if (reliability < 0.6) reliabilityColor = '#d32f2f';
             else if (reliability < 0.7) reliabilityColor = '#ed6c02';
             else reliabilityColor = '#2e7d32';
@@ -86,8 +87,8 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
             <Typography>M={roundedAverage}</Typography>
             <Typography>N={props.data.participants}</Typography>
             <Typography>SD={roundedDeviation}</Typography>
-            {props.data.reliability
-                ? <Typography className="col-span-2" color={reliabilityColor}>Cronbach's &alpha;={analysisService.roundValue(reliability ?? 0, 2)}</Typography>
+            {reliability !== undefined
+                ? <Typography className="col-span-2" color={reliabilityColor}>Cronbach's &alpha;={analysisService.roundValue(reliability, 2)}</Typography>
                 : <></>
             }
         </div>;
