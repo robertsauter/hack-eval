@@ -39,7 +39,7 @@ class HackathonService {
 
     /** Get all hackathon data of the logged in user as a csv string */
     getHackathonData() {
-        return httpService.get('/hackathons/aggregated', {});
+        return httpService.get('/hackathons/aggregated/csv', {});
     }
 
     /** Process a csv string, create a csv file and download it */
