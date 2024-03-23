@@ -4,9 +4,9 @@ import { UploadHackathonDialog } from '../components/UploadHackathonDialog';
 import { hackathonService } from '../services/HackathonService';
 import { State } from '../lib/AsyncState';
 import { HackathonInformation } from '../models/HackathonInformation';
-import { HackathonCard } from '../components/HackathonCard';
 import { Link } from 'react-router-dom';
 import { Add, Download } from '@mui/icons-material';
+import { HackathonsTable } from '../components/HackathonsTable';
 
 export function Overview() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -33,17 +33,6 @@ export function Overview() {
         }
         else {
             setHackathonsState('error');
-        }
-    };
-
-    /** Update the list of selected hackathon ids */
-    const addOrRemoveSelectedHackathon = (id: string, selected: boolean) => {
-        if (selected) {
-            setSelectedHackathonIds([...selectedHackathonIds, id]);
-        }
-        else {
-            const filteredHackathonIds = selectedHackathonIds.filter((hackathonId) => hackathonId !== id);
-            setSelectedHackathonIds(filteredHackathonIds);
         }
     };
 
@@ -103,16 +92,7 @@ export function Overview() {
                             <Alert severity="error">Hackathons could not be loaded.</Alert>
                         </div>
                         : hackathonsState === 'success'
-                            ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                                {hackathons.map((hackathon) =>
-                                    <HackathonCard
-                                        hackathon={hackathon}
-                                        onSelect={addOrRemoveSelectedHackathon}
-                                        deleteEvent={getHackathons}
-                                        selectedAmount={selectedHackathonIds.length}
-                                        key={hackathon.id} />
-                                )}
-                            </div>
+                            ? <HackathonsTable hackathons={hackathons} onDelete={getHackathons} />
                             : <></>
                 }
             </Container>
