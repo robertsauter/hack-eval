@@ -1,12 +1,14 @@
 import { ExpandMore } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 import type { MappedAnalysisSection } from '../models/Analysis';
-import { BarChart } from './charts/BarChart';
-import { RadarChart } from './charts/RadarChart';
-import { PieChartList } from './charts/PieChartList';
 import { memo, useEffect, useState } from 'react';
 import { Subscription } from 'rxjs';
 import { filtersService } from '../services/FiltersService';
+import { SingleFreeValueQuestion } from './questions/SingleFreeValueQuestion';
+import { SingleQuestion } from './questions/SingleQuestion';
+import { ScoreQuestion } from './questions/ScoreQuestion';
+import { GroupQuestion } from './questions/GroupQuestion';
+import { CategoryQuestion } from './questions/CategoryQuestion';
 
 export const AnalysisSection = memo((props: { section: MappedAnalysisSection }) => {
 
@@ -32,16 +34,20 @@ export const AnalysisSection = memo((props: { section: MappedAnalysisSection }) 
             : 'grid grid-cols-1 xl:grid-cols-2 gap-2'
         }>
             {section.questions.map((question) => {
-                switch(question.question_type) {
-                    case 'single_question':
-                    case 'score_question':
-                        return <BarChart question={question} key={question.title} />;
-                    case 'category_question':
-                        return <PieChartList
-                            question={question}
-                            key={question.title} />;
-                    case 'group_question':
-                        return question.subQuestions?.length ? <RadarChart question={question} key={question.title} /> : <></>;
+                if (question.question_type === 'single_question' && question.answer_type === 'int') {
+                    return <SingleFreeValueQuestion question={question} key={question.title} />
+                }
+                else if (question.question_type === 'single_question') {
+                    return <SingleQuestion question={question} key={question.title} />;
+                }
+                else if (question.question_type === 'score_question') {
+                    return <ScoreQuestion question={question} key={question.title} />
+                }
+                else if (question.question_type === 'group_question') {
+                    return <GroupQuestion question={question} key={question.title} />
+                }
+                else {
+                    return <CategoryQuestion question={question} key={question.title} />
                 }
             })}
         </AccordionDetails>

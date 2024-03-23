@@ -21,12 +21,12 @@ class FiltersService {
 
     /** Get all filter combinations of the currently logged in user */
     getFiltersOfLoggedInUser() {
-        return httpService.get('/filters', {});
+        return httpService.get('/filters');
     }
 
     /** Delete a preset from the database */
     deleteFilterCombination(id: string) {
-        return httpService.delete(`/filters/${id}`, {});
+        return httpService.delete(`/filters/${id}`);
     }
 
     /** Emit a preset saved event */

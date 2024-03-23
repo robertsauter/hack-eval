@@ -14,6 +14,8 @@ import { action as loginAction } from './pages/Login.tsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { userService } from './services/userService.ts';
 import { Analyses } from './pages/Analyses.tsx';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const rootElement = document.getElementById('root');
 
@@ -74,11 +76,12 @@ const router = createBrowserRouter([
   }
 ]);
 
-//Add React strict mode later again
 ReactDOM.createRoot(rootElement!).render(
-  <StyledEngineProvider>
-    <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
-  </StyledEngineProvider>
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <StyledEngineProvider>
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </LocalizationProvider>
 );

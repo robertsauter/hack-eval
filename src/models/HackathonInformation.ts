@@ -6,6 +6,8 @@ export type HackathonInformation = {
     venue: 'in person' | 'online' | 'hybrid';
     size: 'small' | 'medium' | 'large';
     types: HackathonType[];
+    start: Date;
+    end: Date;
     id?: string;
     link?: string;
 };

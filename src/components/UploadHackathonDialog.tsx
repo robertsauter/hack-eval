@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import type { State } from '../lib/AsyncState';
 import { Delete, FileUpload, InsertDriveFile } from '@mui/icons-material';
 import { RawHackathon } from '../models/RawHackathon';
+import { DatePicker } from '@mui/x-date-pickers';
 
 export function UploadHackathonDialog(props: { open: boolean, onClose: () => void, onSuccess: () => void }) {
     const { open, onClose, onSuccess } = props;
@@ -28,9 +29,11 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         (elements.namedItem('incentives') as HTMLInputElement).value = '';
         (elements.namedItem('venue') as HTMLInputElement).value = '';
         (elements.namedItem('size') as HTMLInputElement).value = '';
+        (elements.namedItem('start') as HTMLInputElement).value = '';
+        (elements.namedItem('end') as HTMLInputElement).value = '';
         (elements.namedItem('link') as HTMLInputElement).value = '';
         const id = elements.namedItem('id');
-        if(id) {
+        if (id) {
             (id as HTMLInputElement).value = '';
         }
         setTypes([]);
@@ -47,6 +50,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             venue: formData.get('venue') as HackathonInformation['venue'],
             size: formData.get('size') as HackathonInformation['size'],
             types: (formData.get('types') as string).split(',') as HackathonInformation['types'],
+            start: new Date(formData.get('start') as string),
+            end: new Date(formData.get('end') as string),
             link: formData.get('link') as string
         };
     };
@@ -54,7 +59,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     /** Try to get the survey, when an access token is still saved or request a new token */
     const requestSurvey = () => {
         const googleAccessToken = window.sessionStorage.getItem('google_access_token');
-        if(googleAccessToken) {
+        if (googleAccessToken) {
             googleFormsService.getSurvey(JSON.parse(googleAccessToken));
         }
         else {
@@ -64,7 +69,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
 
     /** React to the upload response */
     const handleUploadResponse = (response: Response) => {
-        if(response.ok) {
+        if (response.ok) {
             setUploadState('success');
             onClose();
             onSuccess();
@@ -77,7 +82,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
 
     /** Send CSV file to backend */
     const uploadCsv = async () => {
-        if(!file) {
+        if (!file) {
             setFileError(true);
         }
         else {
@@ -90,7 +95,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
 
     /** Upload from Google Forms */
     const uploadGoogle = async (resultsData: Partial<RawHackathon>) => {
-        if(resultsData && resultsData.results) {
+        if (resultsData && resultsData.results) {
             setUploadState('loading');
             const values = getValuesOfForm();
             const response = await hackathonService.uploadHackathonGoogle({
@@ -105,7 +110,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     /** Handle the upload of a hackathon */
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if(uploadFrom === 'forms') {
+        if (uploadFrom === 'forms') {
             requestSurvey();
         }
         else {
@@ -120,8 +125,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
 
     const handleFileUpload = (e: ChangeEvent) => {
         const files = (e.target as HTMLInputElement).files;
-        if(files) {
-            if(files[0].name.split('.').pop() !== 'csv') {
+        if (files) {
+            if (files[0].name.split('.').pop() !== 'csv') {
                 setFile(undefined);
                 setFileError(true);
             }
@@ -219,6 +224,14 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     <MenuItem value="ideation">Ideation focused</MenuItem>
                 </Select>
             </FormControl>
+            <DatePicker
+                className="mb-5 w-full"
+                label="Start date"
+                name="start" />
+            <DatePicker
+                className="mb-5 w-full"
+                label="End date"
+                name="end" />
             <TextField
                 name="link"
                 className="mb-5"

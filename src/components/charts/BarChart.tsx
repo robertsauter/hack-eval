@@ -1,10 +1,10 @@
 import { BarTooltipProps, ComputedBarDatum, ResponsiveBar } from '@nivo/bar';
-import { AnyScale } from '@nivo/scales'
+import { AnyScale } from '@nivo/scales';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
-import { Alert, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
-import { memo, useState } from 'react';
-import { SimpleDistributionDialog } from './SimpleDistributionDialog';
+import { Typography } from '@mui/material';
+import { memo } from 'react';
 import { analysisService } from '../../services/AnalysisService';
+import { AxisTickProps } from '@nivo/axes';
 
 type BarChartData = {
     hackathonTitle: string;
@@ -18,8 +18,6 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
 
     const { question } = props;
 
-    const [distributionOpen, setDistributionOpen] = useState(false);
-
     const data = question.values?.map((hackathon) => {
         const mappedData: BarChartData = {
             hackathonTitle: hackathon.hackathonTitle,
@@ -27,16 +25,13 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
             deviation: hackathon.statisticalValues?.deviation ?? 0,
             participants: hackathon.statisticalValues?.participants ?? 0
         };
-        if(question.question_type === 'score_question') {
+        if (question.question_type === 'score_question') {
             mappedData.reliability = hackathon.statisticalValues?.cronbach_alpha ?? 0;
         }
         return mappedData;
     });
 
-    const emptyHackathons = analysisService.getEmptyAnalysesFromQuestion(question.values ?? []);
-    const hackathonsAmount = analysisService.getAmountOfNonEmptyAnalysesFromQuestion(question.values ?? []);
     const maxValue = question.answers ? Math.max(...Object.values(question.answers).map((answer) => +answer)) : null;
-    const titleAsId = question.title.replaceAll(' ', '').toLowerCase();
 
     /** Create error bars for every bar */
     const errorBars = (bars: readonly ComputedBarDatum<BarChartData>[], yScale: AnyScale) => {
@@ -77,78 +72,61 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
     const customTooltip = (props: BarTooltipProps<BarChartData>) => {
         const roundedAverage = analysisService.roundValue(props.data.average, 2);
         const roundedDeviation = analysisService.roundValue(props.data.deviation, 2);
-        return <div className="p-2 bg-white shadow-md rounded-md">
+        let reliability;
+        let reliabilityColor;
+        if (question.question_type === 'score_question') {
+            reliability = props.data.reliability ?? 0;
+            if (reliability < 0.6) reliabilityColor = '#d32f2f';
+            else if (reliability < 0.7) reliabilityColor = '#ed6c02';
+            else reliabilityColor = '#2e7d32';
+        }
+        return <div className="p-2 bg-white shadow-md rounded-md max-w-xs">
             <div className="flex items-center">
-                <div className="w-3 h-3 mr-2" style={{backgroundColor: props.color}}></div>
+                <div className="min-w-[1rem] h-4 mr-2" style={{ backgroundColor: props.color }}></div>
                 <Typography className="font-bold">{props.data.hackathonTitle}</Typography>
             </div>
-            <div className="grid grid-cols-3 gap-x-2">
-                <Typography className="col-span-2">Average:</Typography>
-                <Typography>{roundedAverage}</Typography>
-                <Typography className="col-span-2">Answers:</Typography>
-                <Typography>{props.data.participants}</Typography>
-                <Typography className="col-span-2">Standard deviation:</Typography>
-                <Typography>{roundedDeviation}</Typography>
-                {props.data.reliability
-                    ? <>
-                        <Typography className="col-span-2">Reliability:</Typography>
-                        <Typography>{analysisService.roundValue(props.data.reliability, 2)}</Typography>
-                    </>
-                    : <></>
-                }
-            </div>
+            <Typography>M={roundedAverage}</Typography>
+            <Typography>N={props.data.participants}</Typography>
+            <Typography>SD={roundedDeviation}</Typography>
+            {reliability !== undefined
+                ? <Typography className="col-span-2" color={reliabilityColor}>Cronbach's &alpha;={analysisService.roundValue(reliability, 2)}</Typography>
+                : <></>
+            }
         </div>;
     };
 
+    /** Create a custom tick, that includes the participants amount */
+    const customTick = (props: AxisTickProps<any>) => {
+        const participants = data?.find((hackathon) => props.value === hackathon.hackathonTitle)?.participants;
+        const label = `${props.value} (N=${participants})`;
+        const translateTextX = -((label.length * 5.5) / 2);
+        return <g transform={`translate(${props.x}, ${props.y})`}>
+            <line x1={0} x2={0} y1={0} y2={5} stroke="DimGray" strokeWidth={1} />
+            <text x={translateTextX} y={20} fontSize={11}>{label}</text>
+        </g>;
+    };
+
     return data
-        ? hackathonsAmount > 1
-            ? <>
-                <Card className="flex flex-col justify-center h-full">
-                    <CardContent>
-                        <div>
-                            <div id={titleAsId} className="bg-white">
-                                <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
-                                <div className="h-80">
-                                    <ResponsiveBar
-                                        data={data}
-                                        keys={['average']}
-                                        indexBy="hackathonTitle"
-                                        valueFormat=">-.2f"
-                                        margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                                        layers={[
-                                            'grid',
-                                            'axes',
-                                            'bars',
-                                            'markers',
-                                            'legends',
-                                            'annotations',
-                                            ({bars, yScale}) => errorBars(bars, yScale)
-                                        ]}
-                                        maxValue={maxValue ?? 'auto'}
-                                        tooltip={customTooltip}
-                                        colorBy="indexValue" />
-                                </div>
-                                {emptyHackathons?.map(hackathon =>
-                                    <Alert severity="info" className="mb-2">Your filter combination "{hackathon.hackathonTitle}" did not return answers for this question.</Alert>
-                                )}
-                            </div>
-                        </div>
-                    </CardContent>
-                    <CardActions>
-                        <Button variant="outlined" onClick={() => setDistributionOpen(true)}>See value distribution</Button>
-                        <Button onClick={() => analysisService.saveQuestionAsImage(titleAsId)}>Save chart as image</Button>
-                    </CardActions>
-                </Card>
-                <SimpleDistributionDialog
-                    open={distributionOpen}
-                    onClose={() => setDistributionOpen(false)}
-                    question={question} />
-            </>
-            : <Card>
-                <CardContent>
-                    <Typography className="text-center mb-2">{question.title}</Typography>
-                    <Alert severity="info">Your filter combinations did not return answers for this question.</Alert>
-                </CardContent>
-            </Card>
+        ? <div className="h-80">
+            <ResponsiveBar
+                data={data}
+                keys={['average']}
+                indexBy="hackathonTitle"
+                valueFormat=">-.2f"
+                margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+                layers={[
+                    'grid',
+                    'axes',
+                    'bars',
+                    'markers',
+                    'legends',
+                    'annotations',
+                    ({ bars, yScale }) => errorBars(bars, yScale)
+                ]}
+                axisBottom={{ renderTick: customTick }}
+                maxValue={maxValue ?? 'auto'}
+                tooltip={customTooltip}
+                colorBy="indexValue" />
+        </div>
         : <></>;
-})
+});

@@ -20,29 +20,29 @@ class HttpService {
     }
 
     /** A GET request to a relative URL, starting from the base URL */
-    get(relativeUrl: string, options: RequestOptions, defaultContentType?: boolean): Promise<Response> {
+    get(relativeUrl: string, options: RequestOptions = {}, defaultContentType?: boolean): Promise<Response> {
         let processedOptions = this.#addTokenToRequest(relativeUrl, options);
-        if(defaultContentType) {
+        if (defaultContentType) {
             processedOptions = this.#setDefaultContentType(processedOptions);
         }
         return this.#doRequest(relativeUrl, processedOptions);
     }
 
     /** A POST request to a relative URL, starting from the base URL */
-    post(relativeUrl: string, options: RequestOptions, defaultContentType?: boolean): Promise<Response> {
+    post(relativeUrl: string, options: RequestOptions = {}, defaultContentType?: boolean): Promise<Response> {
         let processedOptions = this.#addTokenToRequest(relativeUrl, options);
         processedOptions.method = 'POST';
-        if(defaultContentType) {
+        if (defaultContentType) {
             processedOptions = this.#setDefaultContentType(processedOptions);
         }
         return this.#doRequest(relativeUrl, processedOptions);
     }
 
     /** A POST request to a relative URL, starting from the base URL */
-    delete(relativeUrl: string, options: RequestOptions, defaultContentType?: boolean): Promise<Response> {
+    delete(relativeUrl: string, options: RequestOptions = {}, defaultContentType?: boolean): Promise<Response> {
         let processedOptions = this.#addTokenToRequest(relativeUrl, options);
         processedOptions.method = 'DELETE';
-        if(defaultContentType) {
+        if (defaultContentType) {
             processedOptions = this.#setDefaultContentType(processedOptions);
         }
         return this.#doRequest(relativeUrl, processedOptions);
@@ -53,7 +53,7 @@ class HttpService {
         try {
             return await fetch(`${this.#BASE_URL}${relativeUrl}`, options)
         }
-        catch(error) {
+        catch (error) {
             const response = new Response(null, { status: 500 });
             return Promise.resolve(response);
         }
@@ -71,7 +71,7 @@ class HttpService {
     #addTokenToRequest(relativeUrl: string, options: RequestOptions): RequestOptions {
         const token = localStorage.getItem('access_token');
         const isUrlInBlacklist = this.#ADD_TOKEN_BLACKLIST.find((url) => relativeUrl === url);
-        if(!isUrlInBlacklist && token) {
+        if (!isUrlInBlacklist && token) {
             const parsedToken: Token = JSON.parse(token);
             const headers = new Headers(options.headers);
             headers.append('Authorization', `Bearer ${parsedToken.access_token}`);
