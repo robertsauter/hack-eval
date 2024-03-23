@@ -89,11 +89,12 @@ export function Filter(props: {
                 <Typography className="font-bold">{filter.name !== '' ? filter.name : `Filter ${filter.index}`}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-                <Button variant="outlined" onClick={() => onOpenDialog(filter)}>Presets</Button>
-                <div className="flex justify-end mb-2">
-                    <IconButton onClick={saveFilter}><Save /></IconButton>
-                    <IconButton onClick={(e) => onDeleteFilter(e, filter)}><Delete /></IconButton>
-                </div>
+                <Button
+                    variant="outlined"
+                    onClick={() => onOpenDialog(filter)}
+                    className="mb-5">
+                    My filters
+                </Button>
                 <TextField
                     name="name"
                     className="mb-5"
@@ -182,12 +183,29 @@ export function Filter(props: {
                     checked={filter.onlyOwn}
                     onChange={(e) => updateFilters(e, 'onlyOwn')} />
                 <Alert
-                    severity={hackathonsAmountError ? 'error' : 'info'}>
+                    severity={hackathonsAmountError ? 'error' : 'info'}
+                    className="mb-5">
                     {hackathonsAmountError
                         ? 'Hackathons amount could not be loaded'
                         : `${hackathonsAmount} hackathons match these criteria`
                     }
                 </Alert>
+                <div className="flex">
+                    <Button
+                        className="w-1/2"
+                        onClick={saveFilter}
+                        endIcon={<Save />}
+                        color="secondary">
+                        Save
+                    </Button>
+                    <Button
+                        className="w-1/2"
+                        onClick={(e) => onDeleteFilter(e, filter)}
+                        endIcon={<Delete />}
+                        color="warning">
+                        Remove
+                    </Button>
+                </div>
             </AccordionDetails>
         </Accordion>
         <Snackbar

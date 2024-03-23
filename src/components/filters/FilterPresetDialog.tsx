@@ -75,36 +75,39 @@ export function FilterPresetDialog(props: {
 
     return <>
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-            <DialogTitle className="font-bold">Select a filter preset</DialogTitle>
+            <DialogTitle className="font-bold">Select a filter</DialogTitle>
             {filterState === 'success'
                 ? <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 p-5">
-                    {filters.map((filter) =>
-                        <Card key={filter.id} className="flex flex-col justify-between">
-                            <CardContent>
-                                <div className="flex items-center justify-between mb-2">
-                                    <Typography className="font-bold">{filter.name}</Typography>
-                                    <IconButton onClick={() => deletePreset(filter)}>
-                                        <Delete></Delete>
-                                    </IconButton>
-                                </div>
-                                <div className="grid grid-cols-2">
-                                    <Typography variant="body2" className="font-bold">Incentives:</Typography>
-                                    <Typography variant="body2">{filter.incentives.join(', ')}</Typography>
-                                    <Typography variant="body2" className="font-bold">Venues:</Typography>
-                                    <Typography variant="body2">{filter.venue.join(', ')}</Typography>
-                                    <Typography variant="body2" className="font-bold">Sizes:</Typography>
-                                    <Typography variant="body2">{filter.size.join(', ')}</Typography>
-                                    <Typography variant="body2" className="font-bold">Types:</Typography>
-                                    <Typography variant="body2">{filter.types.join(', ')}</Typography>
-                                    <Typography variant="body2" className="font-bold">Only my hackathons:</Typography>
-                                    <Typography variant="body2">{filter.onlyOwn ? 'Yes' : 'No'}</Typography>
-                                </div>
-                            </CardContent>
-                            <CardActions>
-                                <Button variant="contained" onClick={() => selectFilter(filter)}>Select</Button>
-                            </CardActions>
-                        </Card>
-                    )}
+                    {filters.length
+                        ? filters.map((filter) =>
+                            <Card key={filter.id} className="flex flex-col justify-between">
+                                <CardContent>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <Typography className="font-bold">{filter.name}</Typography>
+                                        <IconButton onClick={() => deletePreset(filter)}>
+                                            <Delete></Delete>
+                                        </IconButton>
+                                    </div>
+                                    <div className="grid grid-cols-2">
+                                        <Typography variant="body2" className="font-bold">Incentives:</Typography>
+                                        <Typography variant="body2">{filter.incentives.join(', ')}</Typography>
+                                        <Typography variant="body2" className="font-bold">Venues:</Typography>
+                                        <Typography variant="body2">{filter.venue.join(', ')}</Typography>
+                                        <Typography variant="body2" className="font-bold">Sizes:</Typography>
+                                        <Typography variant="body2">{filter.size.join(', ')}</Typography>
+                                        <Typography variant="body2" className="font-bold">Types:</Typography>
+                                        <Typography variant="body2">{filter.types.join(', ')}</Typography>
+                                        <Typography variant="body2" className="font-bold">Only my hackathons:</Typography>
+                                        <Typography variant="body2">{filter.onlyOwn ? 'Yes' : 'No'}</Typography>
+                                    </div>
+                                </CardContent>
+                                <CardActions>
+                                    <Button variant="contained" onClick={() => selectFilter(filter)}>Select</Button>
+                                </CardActions>
+                            </Card>
+                        )
+                        : <Typography>You did not save any filters yet.</Typography>
+                    }
                 </div>
                 : filterState === 'loading'
                     ? <div className="flex items-center justify-center p-10">
