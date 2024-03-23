@@ -5,7 +5,7 @@ import type { Token } from '../models/Token';
 class HttpService {
 
     /** The base URL will be added to all outgoing requests */
-    readonly #BASE_URL = 'http://localhost:8000';
+    readonly #BASE_URL = 'https://hack-eval-api.onrender.com';
 
     /** All relative URLs, where no token should be sent */
     readonly #ADD_TOKEN_BLACKLIST = [
@@ -20,7 +20,7 @@ class HttpService {
     }
 
     /** A GET request to a relative URL, starting from the base URL */
-    get(relativeUrl: string, options: RequestOptions, defaultContentType?: boolean): Promise<Response> {
+    get(relativeUrl: string, options: RequestOptions = {}, defaultContentType?: boolean): Promise<Response> {
         let processedOptions = this.#addTokenToRequest(relativeUrl, options);
         if (defaultContentType) {
             processedOptions = this.#setDefaultContentType(processedOptions);
@@ -29,7 +29,7 @@ class HttpService {
     }
 
     /** A POST request to a relative URL, starting from the base URL */
-    post(relativeUrl: string, options: RequestOptions, defaultContentType?: boolean): Promise<Response> {
+    post(relativeUrl: string, options: RequestOptions = {}, defaultContentType?: boolean): Promise<Response> {
         let processedOptions = this.#addTokenToRequest(relativeUrl, options);
         processedOptions.method = 'POST';
         if (defaultContentType) {
@@ -39,7 +39,7 @@ class HttpService {
     }
 
     /** A POST request to a relative URL, starting from the base URL */
-    delete(relativeUrl: string, options: RequestOptions, defaultContentType?: boolean): Promise<Response> {
+    delete(relativeUrl: string, options: RequestOptions = {}, defaultContentType?: boolean): Promise<Response> {
         let processedOptions = this.#addTokenToRequest(relativeUrl, options);
         processedOptions.method = 'DELETE';
         if (defaultContentType) {

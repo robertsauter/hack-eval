@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { Alert, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import { BarChart } from '../charts/BarChart';
@@ -15,11 +15,20 @@ export const ScoreQuestion = memo((props: { question: MappedAnalysisQuestion }) 
     const hackathonsAmount = analysisService.getAmountOfNonEmptyAnalysesFromQuestion(question.values ?? []);
     const emptyHackathons = analysisService.getEmptyAnalysesFromQuestion(question.values ?? []);
 
+    /** Create a string with the first and last answer option */
+    const scale = useMemo(() => {
+        if (question.answer_type === 'string_to_int') {
+            const answers = Object.keys(question.answers);
+            return `(${answers[0]} - ${answers[answers.length - 1]})`;
+        }
+    }, [question.answers, question.answer_type]);
+
     return hackathonsAmount > 1
         ? <Card>
             <CardContent>
                 <div id={titleAsId} className="bg-white">
                     <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
+                    <Typography variant="body2" className="text-center mb-2">{scale}</Typography>
                     {mode === 'score'
                         ? <BarChart question={question} />
                         : <GroupedBarChart question={question} />

@@ -1,8 +1,9 @@
 import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, Chip, FormControl, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
 import type { FilterCombination } from '../../models/FilterCombination';
 import { Delete, ExpandMore, Save } from '@mui/icons-material';
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import { filtersService } from '../../services/FiltersService';
+import { hackathonService } from '../../services/HackathonService';
 
 export function Filter(props: {
     filter: FilterCombination,
@@ -15,30 +16,46 @@ export function Filter(props: {
 
     const [saveSuccessShown, setSaveSuccessShown] = useState(false);
     const [saveErrorShown, setSaveErrorShown] = useState(false);
+    const [hackathonsAmount, setHackathonsAmount] = useState(0);
+    const [hackathonsAmountError, setHackathonsAmountError] = useState(false);
 
     /** Return a list of chip components */
     const renderChips = (selected: string[]) => {
-        return <div className="flex gap-1">
-            {selected.map((value) =>
-                <Chip key={value} label={value} />
+        return <div className="flex gap-1 items-center flex-wrap">
+            {selected.map((value, i) =>
+                <><Chip key={value} label={value} />{i === selected.length - 1 ? '' : 'or'}</>
             )}
         </div>;
     };
 
     /** Update the filter combination with a new value for one of the filters */
-    const updateFilters = (e: any, fieldName: 'name' | 'incentives' | 'venue' | 'size' | 'types') => {
+    const updateFilters = async (e: any, fieldName: 'name' | 'incentives' | 'venue' | 'size' | 'types') => {
         const newFilter = {
             ...filter
         };
         newFilter[fieldName] = e.target.value;
         onSetFilter(newFilter);
+        getHackathonsAmount(newFilter);
+    };
+
+    /** Get the amount of hackathons given a filter combination */
+    const getHackathonsAmount = async (filter: FilterCombination) => {
+        setHackathonsAmountError(false);
+        const response = await hackathonService.getHackathonsAmount(filter);
+
+        if (response.ok) {
+            setHackathonsAmount(await response.json());
+        }
+        else {
+            setHackathonsAmountError(true);
+        }
     };
 
     /** Save the current filter combination */
     const saveFilter = async () => {
         const response = await filtersService.saveFilterCombination(filter);
 
-        if(response.ok) {
+        if (response.ok) {
             filtersService.emitFilterSaved(filter);
             setSaveSuccessShown(true);
         }
@@ -57,6 +74,10 @@ export function Filter(props: {
         setSaveErrorShown(false);
     };
 
+    useEffect(() => {
+        getHackathonsAmount(filter);
+    }, []);
+
     return <>
         <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
@@ -69,20 +90,20 @@ export function Filter(props: {
                     <IconButton onClick={(e) => onDeleteFilter(e, filter)}><Delete /></IconButton>
                 </div>
                 <TextField
-                        name="name"
-                        className="mb-5"
-                        fullWidth
-                        variant="outlined"
-                        value={filter.name}
-                        onChange={(e) => updateFilters(e, 'name')}
-                        label="Name"
-                        required />
+                    name="name"
+                    className="mb-5"
+                    fullWidth
+                    variant="outlined"
+                    value={filter.name}
+                    onChange={(e) => updateFilters(e, 'name')}
+                    label="Name"
+                    required />
                 <FormControl fullWidth>
                     <InputLabel id="incentives">Incentives</InputLabel>
                     <Select
                         name="incentives"
                         labelId="incentives"
-                        className="mb-5"
+                        className="mb-1"
                         variant="outlined"
                         label="Incentives"
                         value={filter.incentives}
@@ -93,12 +114,13 @@ export function Filter(props: {
                         <MenuItem value="competitive">Competitive</MenuItem>
                     </Select>
                 </FormControl>
+                <Typography variant="body2" className="text-center mb-1">and</Typography>
                 <FormControl fullWidth>
                     <InputLabel id="venue">Venue</InputLabel>
                     <Select
                         name="venue"
                         labelId="venue"
-                        className="mb-5"
+                        className="mb-1"
                         variant="outlined"
                         label="Venue"
                         value={filter.venue}
@@ -110,12 +132,13 @@ export function Filter(props: {
                         <MenuItem value="hybrid">Hybrid</MenuItem>
                     </Select>
                 </FormControl>
+                <Typography variant="body2" className="text-center mb-1">and</Typography>
                 <FormControl fullWidth>
                     <InputLabel id="size">Size of your hackathon</InputLabel>
                     <Select
                         name="size"
                         labelId="size"
-                        className="mb-5"
+                        className="mb-1"
                         variant="outlined"
                         label="Size of your hackathon"
                         value={filter.size}
@@ -127,12 +150,13 @@ export function Filter(props: {
                         <MenuItem value="large">Large (more than 150 participants)</MenuItem>
                     </Select>
                 </FormControl>
+                <Typography variant="body2" className="text-center mb-1">and</Typography>
                 <FormControl fullWidth>
                     <InputLabel id="types">Type</InputLabel>
                     <Select
                         name="types"
                         labelId="types"
-                        className="mb-5"
+                        className="mb-2"
                         fullWidth
                         required
                         multiple
@@ -149,6 +173,13 @@ export function Filter(props: {
                         <MenuItem value="ideation">Ideation focused</MenuItem>
                     </Select>
                 </FormControl>
+                <Alert
+                    severity={hackathonsAmountError ? 'error' : 'info'}>
+                    {hackathonsAmountError
+                        ? 'Hackathons amount could not be loaded'
+                        : `${hackathonsAmount} hackathons match these criteria`
+                    }
+                </Alert>
             </AccordionDetails>
         </Accordion>
         <Snackbar

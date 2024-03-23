@@ -84,4 +84,4 @@ export const PieChart = memo((props: { question: MappedAnalysisQuestion }) => {
             {customLegend()}
         </>
         : <></>;
-})
+});

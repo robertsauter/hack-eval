@@ -1,3 +1,4 @@
+import { FilterCombination } from "../models/FilterCombination";
 import { HackathonInformation } from "../models/HackathonInformation";
 import type { RawHackathon } from "../models/RawHackathon";
 import { httpService } from "./HttpService";
@@ -29,17 +30,17 @@ class HackathonService {
 
     /** Load all uploaded hackathons of the logged in user */
     getHackathonsOfLoggedInUser() {
-        return httpService.get('/hackathons', {});
+        return httpService.get('/hackathons');
     }
 
     /** Remove the hackathon with the given id */
     removeHackathon(id: string) {
-        return httpService.delete(`/hackathons/${id}`, {});
+        return httpService.delete(`/hackathons/${id}`);
     }
 
     /** Get all hackathon data of the logged in user as a csv string */
     getHackathonData() {
-        return httpService.get('/hackathons/aggregated/csv', {});
+        return httpService.get('/hackathons/aggregated/csv');
     }
 
     /** Process a csv string, create a csv file and download it. Returns a promise, so we can wait for execution of this method elsewhere */
@@ -50,6 +51,11 @@ class HackathonService {
         downloadLink?.setAttribute('href', downloadUrl);
         downloadLink?.click();
         return Promise.resolve();
+    }
+
+    /** Get the amount of hackathons, that match the given filter combination */
+    getHackathonsAmount(filter: FilterCombination) {
+        return httpService.get(`/hackathons/amount?raw_filter=${JSON.stringify(filter)}`);
     }
 }
 

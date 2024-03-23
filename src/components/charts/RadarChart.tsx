@@ -83,4 +83,4 @@ export const RadarChart = memo((props: { question: MappedAnalysisQuestion }) => 
                 }]} />
         </div>
         : <></>;
-})
+});

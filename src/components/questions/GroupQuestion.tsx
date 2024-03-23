@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { Alert, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import { analysisService } from '../../services/AnalysisService';
@@ -25,11 +25,17 @@ export const GroupQuestion = memo((props: { question: MappedAnalysisQuestion }) 
         return amount + subQuestionAmount;
     }, 0);
 
+    const scale = useMemo(() => {
+        const answers = Object.keys(question.answers);
+        return `(${answers[0]} - ${answers[answers.length - 1]})`;
+    }, [question.answers]);
+
     return hackathonsAmount && hackathonsAmount > 1
         ? <Card>
             <CardContent>
                 <div id={titleAsId} className="bg-white">
-                    <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
+                    <Typography className="text-center font-bold">{question.title}</Typography>
+                    <Typography variant="body2" className="text-center mb-2">{scale}</Typography>
                     {mode === 'radar'
                         ? <RadarChart question={question} />
                         : <GroupedBarChart question={question} />

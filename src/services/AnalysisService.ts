@@ -68,7 +68,7 @@ class AnalysisService {
             size: filter.size,
             types: filter.types
         }));
-        return httpService.get(`/analyses?hackathons=${ids}&filters=${JSON.stringify(requestFilters)}`, {});
+        return httpService.get(`/analyses?hackathons=${ids}&filters=${JSON.stringify(requestFilters)}`);
     }
 
     /** Filter analysis data for specific questions */
