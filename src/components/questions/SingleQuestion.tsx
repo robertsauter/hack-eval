@@ -22,7 +22,7 @@ export const SingleQuestion = memo((props: { question: MappedAnalysisQuestion })
             <CardContent>
                 <div id={titleAsId} className="bg-white">
                     <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
-                    <Typography variant="body2" className="text-center mb-2">{scale}</Typography>
+                    <Typography variant="body2" className="text-center mb-2">{scale()}</Typography>
                     <BarChart question={question} />
                     {emptyHackathons?.map(hackathon =>
                         <Alert severity="info" className="mb-2">Your filter combination "{hackathon.hackathonTitle}" did not return answers for this question.</Alert>

@@ -28,7 +28,7 @@ export const ScoreQuestion = memo((props: { question: MappedAnalysisQuestion }) 
             <CardContent>
                 <div id={titleAsId} className="bg-white">
                     <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
-                    <Typography variant="body2" className="text-center mb-2">{scale}</Typography>
+                    <Typography variant="body2" className="text-center mb-2">{scale()}</Typography>
                     {mode === 'score'
                         ? <BarChart question={question} />
                         : <GroupedBarChart question={question} />

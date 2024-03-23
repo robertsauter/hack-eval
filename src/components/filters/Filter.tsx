@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, Chip, FormControl, FormControlLabel, IconButton, InputLabel, MenuItem, Select, Snackbar, Switch, TextField, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, Chip, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Snackbar, Switch, TextField, Typography } from '@mui/material';
 import type { FilterCombination } from '../../models/FilterCombination';
 import { Delete, ExpandMore, Save } from '@mui/icons-material';
 import { MouseEvent, useEffect, useState } from 'react';
