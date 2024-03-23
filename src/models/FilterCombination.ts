@@ -8,4 +8,5 @@ export type FilterCombination = {
     venue: HackathonInformation['venue'][];
     size: HackathonInformation['size'][];
     types: HackathonInformation['types'];
+    onlyOwn: boolean;
 };

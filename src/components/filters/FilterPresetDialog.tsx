@@ -25,7 +25,7 @@ export function FilterPresetDialog(props: {
         setFilterState('loading');
         const response = await filtersService.getFiltersOfLoggedInUser();
 
-        if(response.ok) {
+        if (response.ok) {
             setFilters(await response.json());
             setFilterState('success');
         }
@@ -36,17 +36,17 @@ export function FilterPresetDialog(props: {
 
     /** Select a filter and close the dialog */
     const selectFilter = (filter: FilterCombination) => {
-        const filterWithIndex = {...filter, index}
+        const filterWithIndex = { ...filter, index }
         onSelect(filterWithIndex);
         onClose();
     };
 
     /** Delete a filter preset */
     const deletePreset = async (filter: FilterCombination) => {
-        if(filter.id) {
+        if (filter.id) {
             const response = await filtersService.deleteFilterCombination(filter.id);
 
-            if(response.ok) {
+            if (response.ok) {
                 getFilters();
             }
             else {
@@ -96,6 +96,8 @@ export function FilterPresetDialog(props: {
                                     <Typography variant="body2">{filter.size.join(', ')}</Typography>
                                     <Typography variant="body2" className="font-bold">Types:</Typography>
                                     <Typography variant="body2">{filter.types.join(', ')}</Typography>
+                                    <Typography variant="body2" className="font-bold">Only my hackathons:</Typography>
+                                    <Typography variant="body2">{filter.onlyOwn ? 'Yes' : 'No'}</Typography>
                                 </div>
                             </CardContent>
                             <CardActions>
@@ -104,15 +106,15 @@ export function FilterPresetDialog(props: {
                         </Card>
                     )}
                 </div>
-            : filterState === 'loading'
-                ? <div className="flex items-center justify-center p-10">
-                    <CircularProgress />
-                </div>
-            : filterState === 'error'
-                ? <div className="flex items-center justify-center p-10">
-                    <Alert severity="error">Filter presets could not be loaded.</Alert>
-                </div>
-                : <></>
+                : filterState === 'loading'
+                    ? <div className="flex items-center justify-center p-10">
+                        <CircularProgress />
+                    </div>
+                    : filterState === 'error'
+                        ? <div className="flex items-center justify-center p-10">
+                            <Alert severity="error">Filter presets could not be loaded.</Alert>
+                        </div>
+                        : <></>
             }
         </Dialog>
         <Snackbar

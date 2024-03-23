@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, Chip, FormControl, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, Chip, FormControl, FormControlLabel, IconButton, InputLabel, MenuItem, Select, Snackbar, Switch, TextField, Typography } from '@mui/material';
 import type { FilterCombination } from '../../models/FilterCombination';
 import { Delete, ExpandMore, Save } from '@mui/icons-material';
 import { MouseEvent, useEffect, useState } from 'react';
@@ -29,11 +29,16 @@ export function Filter(props: {
     };
 
     /** Update the filter combination with a new value for one of the filters */
-    const updateFilters = async (e: any, fieldName: 'name' | 'incentives' | 'venue' | 'size' | 'types') => {
+    const updateFilters = async (e: any, fieldName: 'name' | 'incentives' | 'venue' | 'size' | 'types' | 'onlyOwn') => {
         const newFilter = {
             ...filter
         };
-        newFilter[fieldName] = e.target.value;
+        if (fieldName === 'onlyOwn') {
+            newFilter.onlyOwn = e.target.checked;
+        }
+        else {
+            newFilter[fieldName] = e.target.value;
+        }
         onSetFilter(newFilter);
         getHackathonsAmount(newFilter);
     };
@@ -103,7 +108,7 @@ export function Filter(props: {
                     <Select
                         name="incentives"
                         labelId="incentives"
-                        className="mb-1"
+                        className="mb-5"
                         variant="outlined"
                         label="Incentives"
                         value={filter.incentives}
@@ -114,13 +119,12 @@ export function Filter(props: {
                         <MenuItem value="competitive">Competitive</MenuItem>
                     </Select>
                 </FormControl>
-                <Typography variant="body2" className="text-center mb-1">and</Typography>
                 <FormControl fullWidth>
                     <InputLabel id="venue">Venue</InputLabel>
                     <Select
                         name="venue"
                         labelId="venue"
-                        className="mb-1"
+                        className="mb-5"
                         variant="outlined"
                         label="Venue"
                         value={filter.venue}
@@ -132,13 +136,12 @@ export function Filter(props: {
                         <MenuItem value="hybrid">Hybrid</MenuItem>
                     </Select>
                 </FormControl>
-                <Typography variant="body2" className="text-center mb-1">and</Typography>
                 <FormControl fullWidth>
                     <InputLabel id="size">Size of your hackathon</InputLabel>
                     <Select
                         name="size"
                         labelId="size"
-                        className="mb-1"
+                        className="mb-5"
                         variant="outlined"
                         label="Size of your hackathon"
                         value={filter.size}
@@ -150,13 +153,12 @@ export function Filter(props: {
                         <MenuItem value="large">Large (more than 150 participants)</MenuItem>
                     </Select>
                 </FormControl>
-                <Typography variant="body2" className="text-center mb-1">and</Typography>
                 <FormControl fullWidth>
                     <InputLabel id="types">Type</InputLabel>
                     <Select
                         name="types"
                         labelId="types"
-                        className="mb-2"
+                        className="mb-5"
                         fullWidth
                         required
                         multiple
@@ -173,6 +175,12 @@ export function Filter(props: {
                         <MenuItem value="ideation">Ideation focused</MenuItem>
                     </Select>
                 </FormControl>
+                <FormControlLabel
+                    control={<Switch />}
+                    label="Only my hackathons"
+                    className="mb-5 ml-0"
+                    checked={filter.onlyOwn}
+                    onChange={(e) => updateFilters(e, 'onlyOwn')} />
                 <Alert
                     severity={hackathonsAmountError ? 'error' : 'info'}>
                     {hackathonsAmountError

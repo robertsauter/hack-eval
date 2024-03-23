@@ -203,7 +203,6 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     labelId="types"
                     className="mb-5"
                     fullWidth
-                    required
                     multiple
                     variant="outlined"
                     label="Types"
@@ -227,11 +226,21 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             <DatePicker
                 className="mb-5 w-full"
                 label="Start date"
-                name="start" />
+                name="start"
+                slotProps={{
+                    textField: {
+                        required: true
+                    }
+                }} />
             <DatePicker
                 className="mb-5 w-full"
                 label="End date"
-                name="end" />
+                name="end"
+                slotProps={{
+                    textField: {
+                        required: true
+                    }
+                }} />
             <TextField
                 name="link"
                 className="mb-5"
