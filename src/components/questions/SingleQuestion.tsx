@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { Alert, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import { BarChart } from '../charts/BarChart';
@@ -12,10 +12,10 @@ export const SingleQuestion = memo((props: { question: MappedAnalysisQuestion })
     const hackathonsAmount = analysisService.getAmountOfNonEmptyAnalysesFromQuestion(question.values ?? []);
     const emptyHackathons = analysisService.getEmptyAnalysesFromQuestion(question.values ?? []);
 
-    const scale = useMemo(() => {
+    const scale = () => {
         const answers = Object.keys(question.answers);
         return `(${answers[0]} - ${answers[answers.length - 1]})`;
-    }, [question.answers]);
+    };
 
     return hackathonsAmount > 1
         ? <Card>

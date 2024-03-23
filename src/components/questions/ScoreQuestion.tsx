@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from 'react';
+import { memo, useState } from 'react';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { Alert, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import { BarChart } from '../charts/BarChart';
@@ -16,12 +16,12 @@ export const ScoreQuestion = memo((props: { question: MappedAnalysisQuestion }) 
     const emptyHackathons = analysisService.getEmptyAnalysesFromQuestion(question.values ?? []);
 
     /** Create a string with the first and last answer option */
-    const scale = useMemo(() => {
+    const scale = () => {
         if (question.answer_type === 'string_to_int') {
             const answers = Object.keys(question.answers);
             return `(${answers[0]} - ${answers[answers.length - 1]})`;
         }
-    }, [question.answers, question.answer_type]);
+    };
 
     return hackathonsAmount > 1
         ? <Card>

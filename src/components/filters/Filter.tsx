@@ -89,12 +89,14 @@ export function Filter(props: {
                 <Typography className="font-bold">{filter.name !== '' ? filter.name : `Filter ${filter.index}`}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-                <Button
-                    variant="outlined"
-                    onClick={() => onOpenDialog(filter)}
-                    className="mb-5">
-                    My filters
-                </Button>
+                <div className="flex justify-end">
+                    <Button
+                        variant="outlined"
+                        onClick={() => onOpenDialog(filter)}
+                        className="mb-5">
+                        My filters
+                    </Button>
+                </div>
                 <TextField
                     name="name"
                     className="mb-5"
