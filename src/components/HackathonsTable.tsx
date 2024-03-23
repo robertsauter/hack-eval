@@ -1,9 +1,10 @@
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowParams } from '@mui/x-data-grid';
 import { HackathonInformation } from '../models/HackathonInformation';
 import { Alert, Snackbar } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import { Analytics, Delete } from '@mui/icons-material';
 import { useState } from 'react';
 import { hackathonService } from '../services/HackathonService';
+import { Link } from 'react-router-dom';
 
 type HackathonRow = {
     id: string;
@@ -25,40 +26,54 @@ export function HackathonsTable(props: { hackathons: HackathonInformation[], onD
     const columns: GridColDef<HackathonRow>[] = [
         {
             field: 'title',
-            headerName: 'Title'
+            headerName: 'Title',
+            flex: 1
         },
         {
             field: 'start',
             headerName: 'Start date',
-            type: 'date'
+            type: 'date',
+            flex: 1
         },
         {
             field: 'end',
             headerName: 'End date',
-            type: 'date'
+            type: 'date',
+            flex: 1
         },
         {
             field: 'incentives',
-            headerName: 'Incentives'
+            headerName: 'Incentives',
+            flex: 1
         },
         {
             field: 'venue',
-            headerName: 'Venue'
+            headerName: 'Venue',
+            flex: 1
         },
         {
             field: 'size',
-            headerName: 'Size'
+            headerName: 'Size',
+            flex: 1
         },
         {
             field: 'types',
-            headerName: 'Types'
+            headerName: 'Types',
+            flex: 1.5
         },
         {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
+            flex: 1,
             getActions: (params: GridRowParams<HackathonRow>) => {
                 return [
+                    <Link to={`/analysis/${params.row.id}`}>
+                        <GridActionsCellItem
+                            icon={<Analytics />}
+                            label="Analysis"
+                            color="secondary" />
+                    </Link>,
                     <GridActionsCellItem
                         icon={<Delete />}
                         label="Delete"
@@ -100,7 +115,6 @@ export function HackathonsTable(props: { hackathons: HackathonInformation[], onD
         <DataGrid
             columns={columns}
             rows={rows}
-            autosizeOnMount
             disableRowSelectionOnClick
             initialState={{
                 pagination: {

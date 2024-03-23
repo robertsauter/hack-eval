@@ -62,7 +62,7 @@ export function Overview() {
 
     return (
         <>
-            <Container className="pt-5" maxWidth="md">
+            <Container className="pt-5" maxWidth="xl">
                 <div className="mb-10 flex justify-between items-center">
                     <Typography variant="h4" className="font-bold">Your hackathons</Typography>
                     <div className="flex items-center justify-end gap-2">
@@ -96,15 +96,6 @@ export function Overview() {
                             : <></>
                 }
             </Container>
-            <Link to={`/analysis/${selectedHackathonIds.join(',')}`}>
-                <Fab
-                    className="fixed bottom-5 right-5"
-                    variant="extended"
-                    color="primary"
-                    disabled={selectedHackathonIds.length === 0}>
-                    See analysis
-                </Fab>
-            </Link>
             <UploadHackathonDialog
                 open={isDialogOpen}
                 onClose={() => setIsDialogOpen(false)}
