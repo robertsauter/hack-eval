@@ -1,9 +1,10 @@
 import { memo, useState } from 'react';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
-import { Alert, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
+import { Alert, Card, CardActions, CardContent, IconButton, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material';
 import { analysisService } from '../../services/AnalysisService';
 import { GroupedBarChart } from '../charts/GroupedBarChart';
 import { RadarChart } from '../charts/RadarChart';
+import { Download, Radar, StackedBarChart } from '@mui/icons-material';
 
 export const GroupQuestion = memo((props: { question: MappedAnalysisQuestion }) => {
 
@@ -47,14 +48,24 @@ export const GroupQuestion = memo((props: { question: MappedAnalysisQuestion }) 
                     )}
                 </div>
             </CardContent>
-            <CardActions>
-                <Button variant="outlined" onClick={() => setMode(mode === 'radar' ? 'bar' : 'radar')}>
-                    {mode === 'bar'
-                        ? 'Show as radar chart'
-                        : 'Show as bar chart'
-                    }
-                </Button>
-                <Button onClick={() => analysisService.saveQuestionAsImage(titleAsId)}>Save chart as image</Button>
+            <CardActions className="flex justify-between">
+                <Tooltip title="Download as image" placement="top" arrow>
+                    <IconButton onClick={() => analysisService.saveQuestionAsImage(titleAsId)} color="primary">
+                        <Download />
+                    </IconButton>
+                </Tooltip>
+                <ToggleButtonGroup
+                    value={mode}
+                    onChange={(e, newMode) => setMode(newMode)}
+                    exclusive
+                    color="primary">
+                    <Tooltip title="Display as radar chart" placement="top" arrow>
+                        <ToggleButton value="radar"><Radar /></ToggleButton>
+                    </Tooltip>
+                    <Tooltip title="Display as grouped bar chart" placement="top" arrow>
+                        <ToggleButton value="bar"><StackedBarChart /></ToggleButton>
+                    </Tooltip>
+                </ToggleButtonGroup>
             </CardActions>
         </Card>
         : <Card>

@@ -270,7 +270,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                             variant="outlined"
                             label="Google Forms ID of your survey"
                             onInput={handleIdChange} />
-                        <Tooltip title="You can find the ID of your survey in the URL">
+                        <Tooltip title="You can find the ID of your survey in the URL" placement="top" arrow>
                             <HelpIcon></HelpIcon>
                         </Tooltip>
                     </div>
@@ -318,5 +318,5 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 <Alert severity="error" className="mb-5">{errorMessage}</Alert>
             </Fade>
         </form>
-    </Dialog>
-};
+    </Dialog>;
+}

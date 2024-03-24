@@ -195,16 +195,15 @@ export function Filter(props: {
                 <div className="flex">
                     <Button
                         className="w-1/2"
-                        onClick={saveFilter}
-                        endIcon={<Save />}
-                        color="secondary">
-                        Save
-                    </Button>
-                    <Button
-                        className="w-1/2"
                         onClick={(e) => onDeleteFilter(e, filter)}
                         endIcon={<Delete />}>
                         Remove
+                    </Button>
+                    <Button
+                        className="w-1/2"
+                        onClick={saveFilter}
+                        endIcon={<Save />}>
+                        Save
                     </Button>
                 </div>
             </AccordionDetails>

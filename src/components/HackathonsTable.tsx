@@ -69,11 +69,11 @@ export function HackathonsTable(props: { hackathons: HackathonInformation[], onD
             getActions: (params: GridRowParams<HackathonRow>) => {
                 return [
                     <Link to={`/analysis/${params.row.id}`}>
-                        <Tooltip title="Open analysis for this hackathon">
+                        <Tooltip title="Open analysis for this hackathon" placement="top" arrow>
                             <GridActionsCellItem
                                 icon={<Analytics />}
                                 label="Analysis"
-                                color="secondary" />
+                                color="primary" />
                         </Tooltip>
                     </Link>,
                     <GridActionsCellItem

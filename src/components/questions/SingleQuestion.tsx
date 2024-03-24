@@ -1,8 +1,9 @@
 import { memo } from 'react';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
-import { Alert, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
+import { Alert, Card, CardActions, CardContent, IconButton, Tooltip, Typography } from '@mui/material';
 import { BarChart } from '../charts/BarChart';
 import { analysisService } from '../../services/AnalysisService';
+import { Download } from '@mui/icons-material';
 
 export const SingleQuestion = memo((props: { question: MappedAnalysisQuestion }) => {
 
@@ -30,7 +31,11 @@ export const SingleQuestion = memo((props: { question: MappedAnalysisQuestion })
                 </div>
             </CardContent>
             <CardActions>
-                <Button onClick={() => analysisService.saveQuestionAsImage(titleAsId)}>Save chart as image</Button>
+                <Tooltip title="Download as image" placement="top" arrow>
+                    <IconButton onClick={() => analysisService.saveQuestionAsImage(titleAsId)} color="primary">
+                        <Download />
+                    </IconButton>
+                </Tooltip>
             </CardActions>
         </Card>
         : <Card>
