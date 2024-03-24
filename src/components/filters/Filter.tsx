@@ -203,8 +203,7 @@ export function Filter(props: {
                     <Button
                         className="w-1/2"
                         onClick={(e) => onDeleteFilter(e, filter)}
-                        endIcon={<Delete />}
-                        color="warning">
+                        endIcon={<Delete />}>
                         Remove
                     </Button>
                 </div>

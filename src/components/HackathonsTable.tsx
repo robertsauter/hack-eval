@@ -1,6 +1,6 @@
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowParams } from '@mui/x-data-grid';
 import { HackathonInformation } from '../models/HackathonInformation';
-import { Alert, Snackbar } from '@mui/material';
+import { Alert, Snackbar, Tooltip } from '@mui/material';
 import { Analytics, Delete } from '@mui/icons-material';
 import { useState } from 'react';
 import { hackathonService } from '../services/HackathonService';
@@ -69,10 +69,12 @@ export function HackathonsTable(props: { hackathons: HackathonInformation[], onD
             getActions: (params: GridRowParams<HackathonRow>) => {
                 return [
                     <Link to={`/analysis/${params.row.id}`}>
-                        <GridActionsCellItem
-                            icon={<Analytics />}
-                            label="Analysis"
-                            color="secondary" />
+                        <Tooltip title="Open analysis for this hackathon">
+                            <GridActionsCellItem
+                                icon={<Analytics />}
+                                label="Analysis"
+                                color="secondary" />
+                        </Tooltip>
                     </Link>,
                     <GridActionsCellItem
                         icon={<Delete />}
@@ -91,7 +93,7 @@ export function HackathonsTable(props: { hackathons: HackathonInformation[], onD
         incentives: hackathon.incentives,
         venue: hackathon.venue,
         size: hackathon.size,
-        types: hackathon.types.join(',')
+        types: hackathon.types.join(', ')
     }));
 
     /** Delete a hackathon */

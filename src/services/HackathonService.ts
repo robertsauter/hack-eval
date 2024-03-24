@@ -44,13 +44,13 @@ class HackathonService {
     }
 
     /** Process a csv string, create a csv file and download it. Returns a promise, so we can wait for execution of this method elsewhere */
-    downloadCsvStringAsFile(csvString: string) {
+    async downloadCsvStringAsFile(csvString: string) {
         const file = new Blob([csvString], { type: 'text/csv' });
         const downloadUrl = window.URL.createObjectURL(file);
         const downloadLink = document.getElementById('DownloadLink');
         downloadLink?.setAttribute('href', downloadUrl);
         downloadLink?.click();
-        return Promise.resolve();
+        return;
     }
 
     /** Get the amount of hackathons, that match the given filter combination */
