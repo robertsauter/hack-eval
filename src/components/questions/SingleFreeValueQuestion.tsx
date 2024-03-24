@@ -38,7 +38,7 @@ export const SingleFreeValueQuestion = memo((props: { question: MappedAnalysisQu
                 </Tooltip>
                 <ToggleButtonGroup
                     value={mode}
-                    onChange={(e, newMode) => setMode(newMode)}
+                    onChange={(e: any) => setMode(e.currentTarget.value)}
                     exclusive
                     color="primary">
                     <Tooltip title="Display as bar chart" placement="top" arrow>

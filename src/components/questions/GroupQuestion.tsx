@@ -56,7 +56,7 @@ export const GroupQuestion = memo((props: { question: MappedAnalysisQuestion }) 
                 </Tooltip>
                 <ToggleButtonGroup
                     value={mode}
-                    onChange={(e, newMode) => setMode(newMode)}
+                    onChange={(e: any) => setMode(e.currentTarget.value)}
                     exclusive
                     color="primary">
                     <Tooltip title="Display as radar chart" placement="top" arrow>

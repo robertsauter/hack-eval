@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { MappedAnalysisQuestion } from '../../models/Analysis';
 import { memo } from 'react';
 import { analysisService } from '../../services/AnalysisService';
