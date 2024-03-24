@@ -17,10 +17,9 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const [uploadFrom, setUploadFrom] = useState<'forms' | 'csv'>('forms');
     const [fileError, setFileError] = useState(false);
     const [types, setTypes] = useState<HackathonInformation['types']>([]);
-
     const [resultsSubscription, setResultsSubscription] = useState<Subscription>();
-
     const [uploadState, setUploadState] = useState<State>('initial');
+    const [errorMessage, setErrorMessage] = useState('');
 
     /** Reset all form values */
     const resetForm = () => {
@@ -41,19 +40,9 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     };
 
     /** Get all hackathon values of the form */
-    const getValuesOfForm = (): HackathonInformation => {
+    const getValuesOfForm = (): FormData => {
         const form = document.getElementById('HackathonForm') as HTMLFormElement;
-        const formData = new FormData(form);
-        return {
-            title: formData.get('title') as string,
-            incentives: formData.get('incentives') as HackathonInformation['incentives'],
-            venue: formData.get('venue') as HackathonInformation['venue'],
-            size: formData.get('size') as HackathonInformation['size'],
-            types: (formData.get('types') as string).split(',') as HackathonInformation['types'],
-            start: new Date(formData.get('start') as string),
-            end: new Date(formData.get('end') as string),
-            link: formData.get('link') as string
-        };
+        return new FormData(form);
     };
 
     /** Try to get the survey, when an access token is still saved or request a new token */
@@ -76,6 +65,12 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             resetForm();
         }
         else {
+            if (response.status === 409) {
+                setErrorMessage('A hackathon with the same title and date already exists');
+            }
+            else {
+                setErrorMessage('Upload failed');
+            }
             setUploadState('error');
         }
     };
@@ -87,8 +82,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
         else {
             setUploadState('loading');
-            const values = getValuesOfForm();
-            const response = await hackathonService.uploadHackathonCsv(values, file);
+            const formData = getValuesOfForm();
+            const response = await hackathonService.uploadHackathonCsv(formData);
             handleUploadResponse(response);
         }
     };
@@ -97,12 +92,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const uploadGoogle = async (resultsData: Partial<RawHackathon>) => {
         if (resultsData && resultsData.results) {
             setUploadState('loading');
-            const values = getValuesOfForm();
-            const response = await hackathonService.uploadHackathonGoogle({
-                ...values,
-                survey: resultsData.survey,
-                results: resultsData.results
-            });
+            const formData = getValuesOfForm();
+            const response = await hackathonService.uploadHackathonGoogle(formData, resultsData.results, resultsData.survey);
             handleUploadResponse(response);
         }
     };
@@ -320,8 +311,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 }
             </Button>
             <Fade in={uploadState === 'error'} unmountOnExit>
-                <Alert severity="error" className="mb-5">Upload failed</Alert>
+                <Alert severity="error" className="mb-5">{errorMessage}</Alert>
             </Fade>
         </form>
     </Dialog>
-}
+};
