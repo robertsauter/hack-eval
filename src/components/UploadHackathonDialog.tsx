@@ -17,7 +17,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const [uploadFrom, setUploadFrom] = useState<'forms' | 'csv'>('forms');
     const [fileError, setFileError] = useState(false);
     const [types, setTypes] = useState<HackathonInformation['types']>([]);
-    const [resultsSubscription, setResultsSubscription] = useState<Subscription>();
+    const [subscriptions] = useState<Subscription[]>([]);
     const [uploadState, setUploadState] = useState<State>('initial');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -130,12 +130,16 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
 
     useEffect(() => {
         //Every time new survey results are received, send the hackathon to the backend
-        setResultsSubscription(
-            googleFormsService.surveyResults$.subscribe((resultsData) => uploadGoogle(resultsData))
-        );
-        //Unsubscribe, when the component is destroyed
+        const resultsSubscription = googleFormsService.surveyResults$.subscribe((resultsData) => uploadGoogle(resultsData));
+        subscriptions.push(resultsSubscription);
+        const resultsErrorSubscription = googleFormsService.getResponsesError$.subscribe(() => {
+            setUploadState('error');
+            setErrorMessage('Your survey could not be loaded from Google forms');
+        });
+        subscriptions.push(resultsErrorSubscription);
+        //Unsubscribe from all subscriptions, when the component is destroyed
         return () => {
-            resultsSubscription?.unsubscribe();
+            subscriptions.forEach((subscription) => subscription.unsubscribe());
         }
     }, []);
 
