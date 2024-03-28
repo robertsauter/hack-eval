@@ -20,7 +20,6 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
         return mappedData;
     });
 
-    const maxValue = question.answers ? Math.max(...Object.values(question.answers).map((answer) => +answer)) : null;
     const subQuestionTitles = question.subQuestions?.map((subQuestion) => subQuestion.title);
     const colors = ['#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb', '#97e3d5', '#e8c1a0', '#f47560', '#f1e15b', '#e8a838'];
 
@@ -109,10 +108,10 @@ export const GroupedBarChart = memo((props: { question: MappedAnalysisQuestion }
                     indexBy="hackathonTitle"
                     valueFormat=">-.2f"
                     margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                    maxValue={maxValue ?? 'auto'}
                     groupMode="grouped"
                     tooltip={customTooltip}
                     axisBottom={{ renderTick: customTick }}
+                    maxValue={5}
                     layers={[
                         'grid',
                         'axes',
