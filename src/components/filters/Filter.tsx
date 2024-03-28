@@ -157,7 +157,7 @@ export function Filter(props: {
                     </Select>
                 </FormControl>
                 <FormControl fullWidth>
-                    <InputLabel id="types">Type</InputLabel>
+                    <InputLabel id="types">Focus</InputLabel>
                     <Select
                         name="types"
                         labelId="types"
@@ -166,7 +166,7 @@ export function Filter(props: {
                         required
                         multiple
                         variant="outlined"
-                        label="Types"
+                        label="Focus"
                         value={filter.types}
                         onChange={(e) => updateFilters(e, 'types')}
                         renderValue={renderChips}>

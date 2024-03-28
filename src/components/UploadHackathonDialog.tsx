@@ -191,7 +191,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 </Select>
             </FormControl>
             <FormControl fullWidth required>
-                <InputLabel id="types">Types</InputLabel>
+                <InputLabel id="types">Focus</InputLabel>
                 <Select
                     name="types"
                     labelId="types"
@@ -199,7 +199,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     fullWidth
                     multiple
                     variant="outlined"
-                    label="Types"
+                    label="Focus"
                     value={types}
                     onChange={(e) => setTypes(e.target.value as HackathonInformation['types'])}
                     renderValue={(selected: string[]) =>

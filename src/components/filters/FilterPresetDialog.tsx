@@ -95,7 +95,7 @@ export function FilterPresetDialog(props: {
                                         <Typography variant="body2">{filter.venue.join(', ')}</Typography>
                                         <Typography variant="body2" className="font-bold">Sizes:</Typography>
                                         <Typography variant="body2">{filter.size.join(', ')}</Typography>
-                                        <Typography variant="body2" className="font-bold">Types:</Typography>
+                                        <Typography variant="body2" className="font-bold">Focus:</Typography>
                                         <Typography variant="body2">{filter.types.join(', ')}</Typography>
                                         <Typography variant="body2" className="font-bold">Only my hackathons:</Typography>
                                         <Typography variant="body2">{filter.onlyOwn ? 'Yes' : 'No'}</Typography>

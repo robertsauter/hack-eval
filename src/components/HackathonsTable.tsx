@@ -58,7 +58,7 @@ export function HackathonsTable(props: { hackathons: HackathonInformation[], onD
         },
         {
             field: 'types',
-            headerName: 'Types',
+            headerName: 'Focus',
             flex: 1.5
         },
         {
