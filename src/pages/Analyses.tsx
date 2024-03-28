@@ -42,18 +42,7 @@ export function Analyses() {
         <Drawer
             open={filtersOpen}
             anchor="right"
-            variant="persistent"
-            className="hidden sm:block">
-            {drawer}
-        </Drawer>
-        <Drawer
-            open={filtersOpen}
-            anchor="right"
-            variant="temporary"
-            className="block sm:hidden"
-            ModalProps={{
-                keepMounted: true
-            }}>
+            variant="persistent">
             {drawer}
         </Drawer>
         {!filtersOpen
