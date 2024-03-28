@@ -6,7 +6,7 @@ import { hackathonService } from '../services/HackathonService';
 import type { HackathonInformation } from '../models/HackathonInformation';
 import { Subscription } from 'rxjs';
 import type { State } from '../lib/AsyncState';
-import { Delete, FileUpload, InsertDriveFile } from '@mui/icons-material';
+import { Close, Delete, FileUpload, InsertDriveFile } from '@mui/icons-material';
 import { RawHackathon } from '../models/RawHackathon';
 import { DatePicker } from '@mui/x-date-pickers';
 
@@ -143,6 +143,9 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     }, []);
 
     return <Dialog onClose={onClose} open={open} fullWidth maxWidth="sm">
+        <IconButton className="absolute top-2 right-2" onClick={onClose}>
+            <Close />
+        </IconButton>
         <DialogTitle className="font-bold">Upload a new hackathon</DialogTitle>
         <form onSubmit={handleSubmit} id="HackathonForm" className="pb-6 px-6">
             <TextField
