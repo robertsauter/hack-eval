@@ -218,7 +218,7 @@ export function Filter(props: {
                 severity="success"
                 sx={{ width: '100%' }}
                 onClose={handleCloseSaveSuccess}>
-                Filter was saved as preset
+                Filter was saved
             </Alert>
         </Snackbar>
         <Snackbar
@@ -230,7 +230,7 @@ export function Filter(props: {
                 severity="error"
                 sx={{ width: '100%' }}
                 onClose={handleCloseSaveError}>
-                Filter could not be saved as preset
+                Filter could not be saved
             </Alert>
         </Snackbar>
     </>;
