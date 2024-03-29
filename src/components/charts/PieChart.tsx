@@ -76,7 +76,7 @@ export const PieChart = memo((props: { question: MappedAnalysisQuestion }) => {
                             ? <ResponsivePie
                                 data={hackathon.statisticalValues}
                                 margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                                valueFormat={(value) => `${value} (${computePercentage(hackathon.participants ?? 1, value)})%`}
+                                valueFormat={(value) => `${value} (${computePercentage(hackathon.participants ?? 1, value)}%)`}
                                 activeOuterRadiusOffset={4}
                                 cornerRadius={4}
                                 arcLabelsSkipAngle={5}
