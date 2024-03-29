@@ -2,6 +2,7 @@ import { PieTooltipProps, ResponsivePie } from '@nivo/pie';
 import type { MappedAnalysisQuestion } from '../../models/Analysis';
 import { Alert, Typography } from '@mui/material';
 import { memo } from 'react';
+import { analysisService } from '../../services/AnalysisService';
 
 type PieChartData = {
     id: string;
@@ -40,11 +41,11 @@ export const PieChart = memo((props: { question: MappedAnalysisQuestion }) => {
     const colors = ['#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb', '#97e3d5', '#e8c1a0', '#f47560', '#f1e15b'];
 
     /** Create a custom tooltip */
-    const customTooltip = (props: PieTooltipProps<PieChartData>) => {
+    const customTooltip = (props: PieTooltipProps<PieChartData>, participants: number) => {
         return <div className="p-2 bg-white shadow-md rounded-md flex items-center gap-2 max-w-xs">
             <div className="min-w-[1rem] h-4" style={{ backgroundColor: props.datum.color }}></div>
             <Typography className="font-bold">{props.datum.data.label}:</Typography>
-            <Typography>{props.datum.data.value}</Typography>
+            <Typography>{`${props.datum.data.value} (${computePercentage(participants, props.datum.data.value)}%)`}</Typography>
         </div>;
     };
 
@@ -60,6 +61,11 @@ export const PieChart = memo((props: { question: MappedAnalysisQuestion }) => {
         </div>;
     };
 
+    /** Compute the percentage of a sample of the population */
+    const computePercentage = (population: number, sampleSize: number) => {
+        return analysisService.roundValue((sampleSize / population) * 100, 0);
+    };
+
     return data
         ? <>
             <div className="grid grid-cols-2 gap-2">
@@ -70,11 +76,11 @@ export const PieChart = memo((props: { question: MappedAnalysisQuestion }) => {
                             ? <ResponsivePie
                                 data={hackathon.statisticalValues}
                                 margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                                valueFormat=">-.0f"
+                                valueFormat={(value) => `${value} (${computePercentage(hackathon.participants ?? 1, value)})%`}
                                 activeOuterRadiusOffset={4}
                                 cornerRadius={4}
                                 arcLabelsSkipAngle={5}
-                                tooltip={customTooltip}
+                                tooltip={(props) => customTooltip(props, hackathon.participants ?? 1)}
                                 enableArcLinkLabels={false} />
                             : <Alert severity="info">Your filter combination "{hackathon.hackathonTitle}" did not return answers for this question.</Alert>
                         }

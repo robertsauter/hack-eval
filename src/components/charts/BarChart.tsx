@@ -31,7 +31,15 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
         return mappedData;
     });
 
-    const maxValue = question.answers ? Math.max(...Object.values(question.answers).map((answer) => +answer)) : null;
+    const getMaxWithDeviation = () => data?.reduce((max, hackathon) => {
+        const averageWithDeviation = hackathon.average + hackathon.deviation;
+        return averageWithDeviation > max ? averageWithDeviation : max;
+    }, 0);
+
+    const getMinWithDeviation = () => data?.reduce((min, hackathon) => {
+        const averageWithDeviationSubtracted = hackathon.average - hackathon.deviation;
+        return averageWithDeviationSubtracted < min ? averageWithDeviationSubtracted : min;
+    }, 0);
 
     /** Create error bars for every bar */
     const errorBars = (bars: readonly ComputedBarDatum<BarChartData>[], yScale: AnyScale) => {
@@ -123,8 +131,13 @@ export const BarChart = memo((props: { question: MappedAnalysisQuestion }) => {
                     'annotations',
                     ({ bars, yScale }) => errorBars(bars, yScale)
                 ]}
+                valueScale={{
+                    type: 'linear',
+                    min: question.answer_type === 'int' && !(question.question_type === 'score_question') ? getMinWithDeviation() : 0,
+                    max: question.answer_type === 'int' && !(question.question_type === 'score_question') ? getMaxWithDeviation() : 5,
+                    clamp: question.answer_type === 'int' && !(question.question_type === 'score_question')
+                }}
                 axisBottom={{ renderTick: customTick }}
-                maxValue={maxValue ?? 'auto'}
                 tooltip={customTooltip}
                 colorBy="indexValue" />
         </div>

@@ -10,27 +10,29 @@ import { Subscription } from 'rxjs';
 import { filtersService } from './services/FiltersService';
 
 export default function App() {
+
   const navigate = useNavigate();
+
   const [loggedIn, setLoggedIn] = useState(false);
   const [appState, setAppState] = useState<State>('loading');
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [subscriptions] = useState<Subscription[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
   useEffect(() => {
     const accessToken: string | null = window.localStorage.getItem('access_token');
-    if(accessToken) {
+    if (accessToken) {
       userService.handleLoginSuccess(JSON.parse(accessToken));
     }
 
-    subscriptions.push(userService.loggedIn$.subscribe((logged) => {
+    const loggedInSubscription = userService.loggedIn$.subscribe((logged) => {
       setLoggedIn(logged);
-      if(!logged) {
+      if (!logged) {
         navigate('/login');
       }
       setAppState('success');
-    }));
-
-    subscriptions.push(filtersService.filtersOpen$.subscribe((open) => setFiltersOpen(open)));
+    });
+    const filtersOpenSubscription = filtersService.filtersOpen$.subscribe((open) => setFiltersOpen(open));
+    setSubscriptions([...subscriptions, loggedInSubscription, filtersOpenSubscription]);
 
     googleFormsService.initialize();
 
@@ -48,18 +50,18 @@ export default function App() {
           }`} variant="dense">
           {loggedIn
             ? <><div className="flex items-center">
-                <Code />
-                <Typography className="mr-8">HackEval</Typography>
-                <Link to="/">
-                  <Button className="text-white">Overview</Button>
-                </Link>
-              </div>
+              <Code />
+              <Typography className="mr-8">HackEval</Typography>
+              <Link to="/">
+                <Button className="text-white">Overview</Button>
+              </Link>
+            </div>
               <Button className="text-white border-white" onClick={userService.logout}>Logout</Button>
             </>
             : <div className="flex items-center">
-                <Code />
-                <Typography>HackEval</Typography>
-              </div>
+              <Code />
+              <Typography>HackEval</Typography>
+            </div>
           }
         </Toolbar>
       </AppBar>
@@ -67,9 +69,9 @@ export default function App() {
         <Outlet />
       </div>
     </>
-  : appState === 'loading'
-    ? <div className="h-screen flex justify-center items-center">
-      <CircularProgress />
-    </div>
-    : <></>;
+    : appState === 'loading'
+      ? <div className="h-screen flex justify-center items-center">
+        <CircularProgress />
+      </div>
+      : <></>;
 }

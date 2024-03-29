@@ -6,7 +6,7 @@ import { hackathonService } from '../services/HackathonService';
 import type { HackathonInformation } from '../models/HackathonInformation';
 import { Subscription } from 'rxjs';
 import type { State } from '../lib/AsyncState';
-import { Delete, FileUpload, InsertDriveFile } from '@mui/icons-material';
+import { Close, Delete, FileUpload, InsertDriveFile } from '@mui/icons-material';
 import { RawHackathon } from '../models/RawHackathon';
 import { DatePicker } from '@mui/x-date-pickers';
 
@@ -17,10 +17,9 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const [uploadFrom, setUploadFrom] = useState<'forms' | 'csv'>('forms');
     const [fileError, setFileError] = useState(false);
     const [types, setTypes] = useState<HackathonInformation['types']>([]);
-
-    const [resultsSubscription, setResultsSubscription] = useState<Subscription>();
-
+    const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
     const [uploadState, setUploadState] = useState<State>('initial');
+    const [errorMessage, setErrorMessage] = useState('');
 
     /** Reset all form values */
     const resetForm = () => {
@@ -41,19 +40,9 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     };
 
     /** Get all hackathon values of the form */
-    const getValuesOfForm = (): HackathonInformation => {
+    const getValuesOfForm = (): FormData => {
         const form = document.getElementById('HackathonForm') as HTMLFormElement;
-        const formData = new FormData(form);
-        return {
-            title: formData.get('title') as string,
-            incentives: formData.get('incentives') as HackathonInformation['incentives'],
-            venue: formData.get('venue') as HackathonInformation['venue'],
-            size: formData.get('size') as HackathonInformation['size'],
-            types: (formData.get('types') as string).split(',') as HackathonInformation['types'],
-            start: new Date(formData.get('start') as string),
-            end: new Date(formData.get('end') as string),
-            link: formData.get('link') as string
-        };
+        return new FormData(form);
     };
 
     /** Try to get the survey, when an access token is still saved or request a new token */
@@ -76,6 +65,12 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             resetForm();
         }
         else {
+            if (response.status === 409) {
+                setErrorMessage('A hackathon with the same title and date already exists');
+            }
+            else {
+                setErrorMessage('Upload failed');
+            }
             setUploadState('error');
         }
     };
@@ -87,8 +82,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
         else {
             setUploadState('loading');
-            const values = getValuesOfForm();
-            const response = await hackathonService.uploadHackathonCsv(values, file);
+            const formData = getValuesOfForm();
+            const response = await hackathonService.uploadHackathonCsv(formData);
             handleUploadResponse(response);
         }
     };
@@ -97,12 +92,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const uploadGoogle = async (resultsData: Partial<RawHackathon>) => {
         if (resultsData && resultsData.results) {
             setUploadState('loading');
-            const values = getValuesOfForm();
-            const response = await hackathonService.uploadHackathonGoogle({
-                ...values,
-                survey: resultsData.survey,
-                results: resultsData.results
-            });
+            const formData = getValuesOfForm();
+            const response = await hackathonService.uploadHackathonGoogle(formData, resultsData.results, resultsData.survey);
             handleUploadResponse(response);
         }
     };
@@ -139,16 +130,22 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
 
     useEffect(() => {
         //Every time new survey results are received, send the hackathon to the backend
-        setResultsSubscription(
-            googleFormsService.surveyResults$.subscribe((resultsData) => uploadGoogle(resultsData))
-        );
-        //Unsubscribe, when the component is destroyed
+        const resultsSubscription = googleFormsService.surveyResults$.subscribe((resultsData) => uploadGoogle(resultsData));
+        const resultsErrorSubscription = googleFormsService.getResponsesError$.subscribe(() => {
+            setUploadState('error');
+            setErrorMessage('Your survey could not be loaded from Google forms');
+        });
+        setSubscriptions([...subscriptions, resultsSubscription, resultsErrorSubscription]);
+        //Unsubscribe from all subscriptions, when the component is destroyed
         return () => {
-            resultsSubscription?.unsubscribe();
+            subscriptions.forEach((subscription) => subscription.unsubscribe());
         }
     }, []);
 
     return <Dialog onClose={onClose} open={open} fullWidth maxWidth="sm">
+        <IconButton className="absolute top-2 right-2" onClick={onClose}>
+            <Close />
+        </IconButton>
         <DialogTitle className="font-bold">Upload a new hackathon</DialogTitle>
         <form onSubmit={handleSubmit} id="HackathonForm" className="pb-6 px-6">
             <TextField
@@ -197,16 +194,15 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 </Select>
             </FormControl>
             <FormControl fullWidth required>
-                <InputLabel id="types">Types</InputLabel>
+                <InputLabel id="types">Focus</InputLabel>
                 <Select
                     name="types"
                     labelId="types"
                     className="mb-5"
                     fullWidth
-                    required
                     multiple
                     variant="outlined"
-                    label="Types"
+                    label="Focus"
                     value={types}
                     onChange={(e) => setTypes(e.target.value as HackathonInformation['types'])}
                     renderValue={(selected: string[]) =>
@@ -227,11 +223,21 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             <DatePicker
                 className="mb-5 w-full"
                 label="Start date"
-                name="start" />
+                name="start"
+                slotProps={{
+                    textField: {
+                        required: true
+                    }
+                }} />
             <DatePicker
                 className="mb-5 w-full"
                 label="End date"
-                name="end" />
+                name="end"
+                slotProps={{
+                    textField: {
+                        required: true
+                    }
+                }} />
             <TextField
                 name="link"
                 className="mb-5"
@@ -266,7 +272,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                             variant="outlined"
                             label="Google Forms ID of your survey"
                             onInput={handleIdChange} />
-                        <Tooltip title="You can find the ID of your survey in the URL">
+                        <Tooltip title="You can find the ID of your survey in the URL" placement="top" arrow>
                             <HelpIcon></HelpIcon>
                         </Tooltip>
                     </div>
@@ -311,8 +317,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 }
             </Button>
             <Fade in={uploadState === 'error'} unmountOnExit>
-                <Alert severity="error" className="mb-5">Upload failed</Alert>
+                <Alert severity="error" className="mb-5">{errorMessage}</Alert>
             </Fade>
         </form>
-    </Dialog>
+    </Dialog>;
 }

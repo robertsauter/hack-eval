@@ -127,7 +127,7 @@ class AnalysisService {
 
     /** Round a value to a specified decimal */
     roundValue(value: number, decimals: number) {
-        return value > 0 ? (Math.round(value * 100) / 100).toFixed(decimals) : 0;
+        return value > 0 ? +(Math.round(value * 100) / 100).toFixed(decimals) : 0;
     }
 }
 

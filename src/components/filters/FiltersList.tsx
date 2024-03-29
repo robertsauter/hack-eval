@@ -26,7 +26,8 @@ export function FiltersList() {
             incentives: [],
             venue: [],
             size: [],
-            types: []
+            types: [],
+            onlyOwn: false
         }]);
     };
 
@@ -43,7 +44,7 @@ export function FiltersList() {
 
     /** Open the preset dialog and set the index of the filter, where it was opened */
     const handleOpenDialog = (filter: FilterCombination) => {
-        if(filter.index) {
+        if (filter.index) {
             setDialogFilterIndex(filter.index);
             setPresetDialogOpen(true);
         }
@@ -58,7 +59,7 @@ export function FiltersList() {
         const urlFilters = JSON.parse(searchParams.get('filters') ?? '[]') as FilterCombination[];
         const filterWithoutNameExists = urlFilters.find((filter) => filter.name === '');
         setFilters(urlFilters);
-        if(!filterWithoutNameExists) {
+        if (!filterWithoutNameExists) {
             filtersService.emitFiltersUpdated(urlFilters);
         }
         else {
