@@ -27,45 +27,53 @@ export function HackathonsTable(props: { hackathons: HackathonInformation[], onD
         {
             field: 'title',
             headerName: 'Title',
-            flex: 1
+            flex: 1,
+            minWidth: 100
         },
         {
             field: 'start',
             headerName: 'Start date',
             type: 'date',
-            flex: 1
+            flex: 1,
+            minWidth: 100
         },
         {
             field: 'end',
             headerName: 'End date',
             type: 'date',
-            flex: 1
+            flex: 1,
+            minWidth: 100
         },
         {
             field: 'incentives',
             headerName: 'Incentives',
-            flex: 1
+            flex: 1,
+            minWidth: 100
         },
         {
             field: 'venue',
             headerName: 'Venue',
-            flex: 1
+            flex: 1,
+            minWidth: 80
         },
         {
             field: 'size',
             headerName: 'Size',
-            flex: 1
+            flex: 1,
+            minWidth: 80
         },
         {
             field: 'types',
             headerName: 'Focus',
-            flex: 1.5
+            flex: 1.5,
+            minWidth: 100
         },
         {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
             flex: 1,
+            minWidth: 100,
             getActions: (params: GridRowParams<HackathonRow>) => {
                 return [
                     <Link to={`/analysis/${params.row.id}`}>

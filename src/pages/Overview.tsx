@@ -61,7 +61,7 @@ export function Overview() {
         <Container className="pt-5" maxWidth="xl">
             <div className="mb-10 flex justify-between items-center">
                 <Typography variant="h4" className="font-bold">Your hackathons</Typography>
-                <div className="flex items-center justify-end gap-2">
+                <div className="flex flex-col sm:flex-row items-center justify-end gap-2">
                     <Button
                         variant="outlined"
                         onClick={downloadHackathonData}
