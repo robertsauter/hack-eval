@@ -2,7 +2,6 @@ import { TextField, Button, Container, Typography, Alert, Fade, CircularProgress
 import { Link, Form as RouterForm, redirect } from 'react-router-dom';
 import { userService } from '../services/userService';
 import { useEffect, useState } from 'react';
-import { Subscription } from 'rxjs';
 import { asyncLoginState } from '../lib/AsyncState';
 import type { State } from '../lib/AsyncState';
 
@@ -23,20 +22,19 @@ export async function action(action: { request: Request, params: {} }) {
 }
 
 export default function Login() {
-    const [loginStateSubscription, setLoginStateSubscription] = useState<Subscription>();
     const [loginState, setLoginState] = useState<State>('initial');
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        setLoginStateSubscription(asyncLoginState.stateChanges$.subscribe((stateChange) => {
+        const loginStateSubscription = asyncLoginState.stateChanges$.subscribe((stateChange) => {
             setLoginState(stateChange.state);
             if (stateChange.state === 'error' && stateChange.message) {
                 setErrorMessage(stateChange.message);
             }
-        }));
+        });
 
         return () => {
-            loginStateSubscription?.unsubscribe();
+            loginStateSubscription.unsubscribe();
         }
     }, []);
 

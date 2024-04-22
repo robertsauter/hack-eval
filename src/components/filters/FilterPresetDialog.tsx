@@ -4,7 +4,6 @@ import { filtersService } from '../../services/FiltersService';
 import type { FilterCombination } from '../../models/FilterCombination';
 import type { State } from '../../lib/AsyncState';
 import { Close, Delete } from '@mui/icons-material';
-import { Subscription } from 'rxjs';
 
 export function FilterPresetDialog(props: {
     index: number,
@@ -18,7 +17,6 @@ export function FilterPresetDialog(props: {
     const [filters, setFilters] = useState<FilterCombination[]>([]);
     const [filterState, setFilterState] = useState<State>('initial');
     const [deleteErrorShown, setDeleteErrorShown] = useState(false);
-    const [saveSubscription, setSaveSubscription] = useState<Subscription>();
 
     /** Get all filter presets */
     const getFilters = async () => {
@@ -62,14 +60,10 @@ export function FilterPresetDialog(props: {
 
     useEffect(() => {
         getFilters();
-        setSaveSubscription(
-            filtersService.filterSaved$.subscribe(() => {
-                getFilters();
-            })
-        );
+        const saveSubscription = filtersService.filterSaved$.subscribe(() => getFilters());
 
         return () => {
-            saveSubscription?.unsubscribe();
+            saveSubscription.unsubscribe();
         };
     }, []);
 

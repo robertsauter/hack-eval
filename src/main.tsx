@@ -68,7 +68,7 @@ const router = createBrowserRouter([
         loader: userService.redirectIfLoggedIn
       },
       {
-        path: '/analysis/:ids',
+        path: '/analysis/:id',
         element: <Analyses />,
         loader: userService.redirectIfNotLoggedIn
       }

@@ -14,6 +14,11 @@ class FiltersService {
     /** Can be used to listen for when the filters drawer is opened or closed */
     filtersOpen$ = new Subject<boolean>();
 
+    constructor() {
+        this.emitFilterSaved = this.emitFilterSaved.bind(this);
+        this.emitToggleFilters = this.emitToggleFilters.bind(this);
+    }
+
     /** Save a filter combination */
     saveFilterCombination(filter: FilterCombination) {
         return httpService.post('/filters', { body: filter }, true);

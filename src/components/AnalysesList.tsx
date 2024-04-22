@@ -7,16 +7,14 @@ import { Analysis, AnalysisSectionType, MappedAnalysisSection } from '../models/
 import { useEffect, useState } from 'react';
 import { State } from '../lib/AsyncState';
 import { filtersService } from '../services/FiltersService';
-import { Subscription } from 'rxjs';
 
 export function AnalysesList() {
 
-    const { ids } = useParams();
+    const { id } = useParams();
 
     const [analysisState, setAnalysisState] = useState<State>('initial');
     const [filteredAnalyses, setFilteredAnalyses] = useState<MappedAnalysisSection[]>([]);
     const [missingNameErrorShown, setMissingNameErrorShown] = useState(false);
-    const [filtersSubscription, setFiltersSubscription] = useState<Subscription>();
     const [emptyAnalyses, setEmptyAnalyses] = useState<Analysis[]>([]);
     const [numberOfAnalyses, setNumberOfAnalyses] = useState(0);
 
@@ -102,8 +100,8 @@ export function AnalysesList() {
         }
         else {
             setAnalysisState('loading');
-            if (ids) {
-                const response = await analysisService.getAnalyses(ids, filters);
+            if (id) {
+                const response = await analysisService.getAnalyses(id, filters);
 
                 if (response.ok) {
                     const analyses = await response.json();
@@ -126,12 +124,12 @@ export function AnalysesList() {
     };
 
     useEffect(() => {
-        setFiltersSubscription(filtersService.filtersUpdated$.subscribe((newFilters) => {
+        const subscription = filtersService.filtersUpdated$.subscribe((newFilters) => {
             getAnalyses(newFilters);
-        }));
+        });
 
         return () => {
-            filtersSubscription?.unsubscribe();
+            subscription.unsubscribe();
         };
     }, []);
 
