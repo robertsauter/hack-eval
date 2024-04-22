@@ -64,7 +64,7 @@ class AnalysisService {
     }
 
     /** Get analysis objects, given a list of selected hackathons and a list of filters */
-    getAnalyses(ids: string, filters: FilterCombination[] = []) {
+    getAnalyses(id: string, filters: FilterCombination[] = []) {
         const requestFilters = filters.map((filter) => ({
             name: filter.name,
             incentives: filter.incentives,
@@ -72,7 +72,7 @@ class AnalysisService {
             size: filter.size,
             types: filter.types
         }));
-        return httpService.get(`/analyses?hackathons=${ids}&filters=${JSON.stringify(requestFilters)}`);
+        return httpService.get(`/analyses?hackathon_id=${id}&filters=${JSON.stringify(requestFilters)}`);
     }
 
     /** Filter analysis data for specific questions */

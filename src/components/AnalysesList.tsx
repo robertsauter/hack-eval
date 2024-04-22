@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 
 export function AnalysesList() {
 
-    const { ids } = useParams();
+    const { id } = useParams();
 
     const [analysisState, setAnalysisState] = useState<State>('initial');
     const [filteredAnalyses, setFilteredAnalyses] = useState<MappedAnalysisSection[]>([]);
@@ -102,8 +102,8 @@ export function AnalysesList() {
         }
         else {
             setAnalysisState('loading');
-            if (ids) {
-                const response = await analysisService.getAnalyses(ids, filters);
+            if (id) {
+                const response = await analysisService.getAnalyses(id, filters);
 
                 if (response.ok) {
                     const analyses = await response.json();
