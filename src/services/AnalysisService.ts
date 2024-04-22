@@ -7,6 +7,10 @@ import { saveAs } from 'file-saver';
 /** Service for fetching the analysis data and working with the data */
 class AnalysisService {
 
+    constructor() {
+        this.getQuestionsFromAnalysis = this.getQuestionsFromAnalysis.bind(this);
+    }
+
     #mapQuestion(analyses: Analysis[], foundQuestion: AnalysisMeasure, title: string): MappedAnalysisQuestion {
         let values;
         let subQuestionValues;
