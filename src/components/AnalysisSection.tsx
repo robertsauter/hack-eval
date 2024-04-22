@@ -2,7 +2,6 @@ import { ExpandMore } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 import type { MappedAnalysisSection } from '../models/Analysis';
 import { memo, useEffect, useState } from 'react';
-import { Subscription } from 'rxjs';
 import { filtersService } from '../services/FiltersService';
 import { SingleFreeValueQuestion } from './questions/SingleFreeValueQuestion';
 import { SingleQuestion } from './questions/SingleQuestion';
@@ -15,13 +14,12 @@ export const AnalysisSection = memo((props: { section: MappedAnalysisSection }) 
     const { section } = props;
 
     const [filtersOpen, setFiltersOpen] = useState(false);
-    const [filtersOpenSubscription, setFiltersOpenSubscription] = useState<Subscription>();
 
     useEffect(() => {
-        setFiltersOpenSubscription(filtersService.filtersOpen$.subscribe((open) => setFiltersOpen(open)));
+        const filtersOpenSubscription = filtersService.filtersOpen$.subscribe((open) => setFiltersOpen(open));
 
         return () => {
-            filtersOpenSubscription?.unsubscribe();
+            filtersOpenSubscription.unsubscribe();
         };
     }, []);
 

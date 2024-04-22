@@ -4,7 +4,6 @@ import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { googleFormsService } from '../services/GoogleFormsService';
 import { hackathonService } from '../services/HackathonService';
 import type { HackathonInformation } from '../models/HackathonInformation';
-import { Subscription } from 'rxjs';
 import type { State } from '../lib/AsyncState';
 import { Close, Delete, FileUpload, InsertDriveFile } from '@mui/icons-material';
 import { RawHackathon } from '../models/RawHackathon';
@@ -17,7 +16,6 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const [uploadFrom, setUploadFrom] = useState<'forms' | 'csv'>('forms');
     const [fileError, setFileError] = useState(false);
     const [types, setTypes] = useState<HackathonInformation['types']>([]);
-    const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
     const [uploadState, setUploadState] = useState<State>('initial');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -135,7 +133,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             setUploadState('error');
             setErrorMessage('Your survey could not be loaded from Google forms');
         });
-        setSubscriptions([...subscriptions, resultsSubscription, resultsErrorSubscription]);
+        const subscriptions = [resultsSubscription, resultsErrorSubscription];
         //Unsubscribe from all subscriptions, when the component is destroyed
         return () => {
             subscriptions.forEach((subscription) => subscription.unsubscribe());

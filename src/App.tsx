@@ -6,7 +6,6 @@ import { googleFormsService } from './services/GoogleFormsService';
 import { State } from './lib/AsyncState';
 import { Link } from 'react-router-dom';
 import { Code } from '@mui/icons-material';
-import { Subscription } from 'rxjs';
 import { filtersService } from './services/FiltersService';
 
 export default function App() {
@@ -16,7 +15,6 @@ export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [appState, setAppState] = useState<State>('loading');
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
   useEffect(() => {
     const accessToken: string | null = window.localStorage.getItem('access_token');
@@ -32,7 +30,7 @@ export default function App() {
       setAppState('success');
     });
     const filtersOpenSubscription = filtersService.filtersOpen$.subscribe((open) => setFiltersOpen(open));
-    setSubscriptions([...subscriptions, loggedInSubscription, filtersOpenSubscription]);
+    const subscriptions = [loggedInSubscription, filtersOpenSubscription];
 
     googleFormsService.initialize();
 

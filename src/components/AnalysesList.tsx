@@ -7,7 +7,6 @@ import { Analysis, AnalysisSectionType, MappedAnalysisSection } from '../models/
 import { useEffect, useState } from 'react';
 import { State } from '../lib/AsyncState';
 import { filtersService } from '../services/FiltersService';
-import { Subscription } from 'rxjs';
 
 export function AnalysesList() {
 
@@ -16,7 +15,6 @@ export function AnalysesList() {
     const [analysisState, setAnalysisState] = useState<State>('initial');
     const [filteredAnalyses, setFilteredAnalyses] = useState<MappedAnalysisSection[]>([]);
     const [missingNameErrorShown, setMissingNameErrorShown] = useState(false);
-    const [filtersSubscription, setFiltersSubscription] = useState<Subscription>();
     const [emptyAnalyses, setEmptyAnalyses] = useState<Analysis[]>([]);
     const [numberOfAnalyses, setNumberOfAnalyses] = useState(0);
 
@@ -126,12 +124,12 @@ export function AnalysesList() {
     };
 
     useEffect(() => {
-        setFiltersSubscription(filtersService.filtersUpdated$.subscribe((newFilters) => {
+        const subscription = filtersService.filtersUpdated$.subscribe((newFilters) => {
             getAnalyses(newFilters);
-        }));
+        });
 
         return () => {
-            filtersSubscription?.unsubscribe();
+            subscription.unsubscribe();
         };
     }, []);
 

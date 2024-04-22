@@ -4,17 +4,16 @@ import { userService } from '../services/userService';
 import { asyncRegisterState } from '../lib/AsyncState';
 import type { State } from '../lib/AsyncState';
 import { useEffect, useState } from 'react';
-import { Subscription } from 'rxjs';
 
 /** Register a new user and redirect if successful */
 export async function action(action: { request: Request, params: {} }) {
     asyncRegisterState.setLoading();
     const formData = await action.request.formData();
     const response = await userService.register(formData);
-    if(response.ok) {
+    if (response.ok) {
         return redirect('/login');
     }
-    else if(response.status === 409) {
+    else if (response.status === 409) {
         asyncRegisterState.setError('Username is already taken.');
         return null;
     }
@@ -23,20 +22,19 @@ export async function action(action: { request: Request, params: {} }) {
 }
 
 export default function Register() {
-    const [registerStateSubscription, setRegisterStateSubscription] = useState<Subscription>();
     const [registerState, setRegisterState] = useState<State>('initial');
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        setRegisterStateSubscription(asyncRegisterState.stateChanges$.subscribe((stateChange) => {
+        const registerStateSubscription = asyncRegisterState.stateChanges$.subscribe((stateChange) => {
             setRegisterState(stateChange.state);
-            if(stateChange.state === 'error' && stateChange.message) {
+            if (stateChange.state === 'error' && stateChange.message) {
                 setErrorMessage(stateChange.message);
             }
-        }));
+        });
 
         return () => {
-            registerStateSubscription?.unsubscribe();
+            registerStateSubscription.unsubscribe();
         }
     }, []);
 
