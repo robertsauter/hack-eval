@@ -35,8 +35,8 @@ export const GroupQuestion = memo((props: { question: MappedAnalysisQuestion }) 
         ? <Card>
             <CardContent>
                 <div id={titleAsId} className="bg-white">
-                    <Typography className="text-center font-bold">{question.title}</Typography>
-                    <Typography variant="body2" className="text-center mb-2">{scale()}</Typography>
+                    <Typography className="text-center font-bold">{question.display_name}</Typography>
+                    <Typography variant="body2" className="text-center mb-2">{question.title} {scale()}</Typography>
                     {mode === 'radar'
                         ? <RadarChart question={question} />
                         : <GroupedBarChart question={question} />

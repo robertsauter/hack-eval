@@ -20,7 +20,8 @@ export const SingleFreeValueQuestion = memo((props: { question: MappedAnalysisQu
         ? <Card>
             <CardContent>
                 <div id={titleAsId} className="bg-white">
-                    <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
+                    <Typography className="text-center mb-2 font-bold">{question.display_name}</Typography>
+                    <Typography variant="body2" className="text-center mb-2">{question.title}</Typography>
                     {mode === 'bar'
                         ? <BarChart question={question} />
                         : <ScatterPlot question={question} />

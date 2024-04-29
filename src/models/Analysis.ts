@@ -15,6 +15,7 @@ export type AnalysisSubQuestion = {
 
 type AnalysisMeasureInformation = {
     title: string;
+    display_name: string;
     question_type: 'single_question' | 'group_question' | 'score_question' | 'category_question';
     answer_type: 'string_to_int' | 'int' | 'string';
     answers: Record<string, string | number> | string[];
