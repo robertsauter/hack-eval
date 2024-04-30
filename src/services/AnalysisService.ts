@@ -16,6 +16,7 @@ class AnalysisService {
         let subQuestionValues;
         const mappedQuestion: MappedAnalysisQuestion = {
             title: foundQuestion.title,
+            display_name: foundQuestion.display_name,
             answer_type: foundQuestion.answer_type,
             question_type: foundQuestion.question_type,
             answers: foundQuestion.answers

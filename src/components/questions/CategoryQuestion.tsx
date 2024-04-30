@@ -17,7 +17,8 @@ export const CategoryQuestion = memo((props: { question: MappedAnalysisQuestion 
         ? <Card>
             <CardContent>
                 <div id={titleAsId} className="bg-white">
-                    <Typography className="text-center mb-2 font-bold">{question.title}</Typography>
+                    <Typography className="text-center mb-2 font-bold">{question.display_name}</Typography>
+                    <Typography variant="body2" className="text-center mb-2">{question.title}</Typography>
                     <PieChart question={question} />
                     {emptyHackathons?.map(hackathon =>
                         <Alert severity="info" className="mb-2">Your filter combination "{hackathon.hackathonTitle}" did not return answers for this question.</Alert>
