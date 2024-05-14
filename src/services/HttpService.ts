@@ -5,7 +5,7 @@ import type { Token } from '../models/Token';
 class HttpService {
 
     /** The base URL will be added to all outgoing requests */
-    readonly #BASE_URL = 'https://hack-eval-api.onrender.com';
+    readonly #BASE_URL = 'https://hack-eval-api.onrender.com/hackpulseanalyzer';
 
     /** All relative URLs, where no token should be sent */
     readonly #ADD_TOKEN_BLACKLIST = [
@@ -38,7 +38,7 @@ class HttpService {
         return this.#doRequest(relativeUrl, processedOptions);
     }
 
-    /** A POST request to a relative URL, starting from the base URL */
+    /** A DELETE request to a relative URL, starting from the base URL */
     delete(relativeUrl: string, options: RequestOptions = {}, defaultContentType?: boolean): Promise<Response> {
         let processedOptions = this.#addTokenToRequest(relativeUrl, options);
         processedOptions.method = 'DELETE';
