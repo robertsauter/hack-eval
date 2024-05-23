@@ -71,8 +71,7 @@ class AnalysisService {
             incentives: filter.incentives,
             venue: filter.venue,
             size: filter.size,
-            types: filter.types,
-            onlyOwn: filter.onlyOwn
+            types: filter.types
         }));
         return httpService.get(`/analyses?hackathon_id=${id}&filters=${JSON.stringify(requestFilters)}`);
     }
