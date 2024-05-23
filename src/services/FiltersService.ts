@@ -17,6 +17,7 @@ class FiltersService {
     constructor() {
         this.emitFilterSaved = this.emitFilterSaved.bind(this);
         this.emitToggleFilters = this.emitToggleFilters.bind(this);
+        this.emitFiltersUpdated = this.emitFiltersUpdated.bind(this);
     }
 
     /** Save a filter combination */
