@@ -64,8 +64,8 @@ class HackathonService {
     }
 
     /** Get the amount of hackathons, that match the given filter combination */
-    getHackathonsAmount(filter: FilterCombination) {
-        return httpService.get(`/hackathons/amount?raw_filter=${JSON.stringify(filter)}`);
+    getHackathonsAmount(selectedHackathonId: string, filter: FilterCombination) {
+        return httpService.get(`/hackathons/amount?raw_filter=${JSON.stringify(filter)}&selected_hackathon_id=${selectedHackathonId}`);
     }
 }
 

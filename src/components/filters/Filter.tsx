@@ -4,6 +4,7 @@ import { Delete, ExpandMore, Save } from '@mui/icons-material';
 import { MouseEvent, useEffect, useState } from 'react';
 import { filtersService } from '../../services/FiltersService';
 import { hackathonService } from '../../services/HackathonService';
+import { useParams } from 'react-router-dom';
 
 export function Filter(props: {
     filter: FilterCombination,
@@ -11,6 +12,8 @@ export function Filter(props: {
     onSetFilter: (filter: FilterCombination) => void,
     onDeleteFilter: (e: MouseEvent<HTMLButtonElement>, filter: FilterCombination) => void
 }) {
+
+    const { id } = useParams();
 
     const { filter, onOpenDialog, onSetFilter, onDeleteFilter } = props;
 
@@ -45,14 +48,16 @@ export function Filter(props: {
 
     /** Get the amount of hackathons given a filter combination */
     const getHackathonsAmount = async (filter: FilterCombination) => {
-        setHackathonsAmountError(false);
-        const response = await hackathonService.getHackathonsAmount(filter);
+        if (id) {
+            setHackathonsAmountError(false);
+            const response = await hackathonService.getHackathonsAmount(id, filter);
 
-        if (response.ok) {
-            setHackathonsAmount(await response.json());
-        }
-        else {
-            setHackathonsAmountError(true);
+            if (response.ok) {
+                setHackathonsAmount(await response.json());
+            }
+            else {
+                setHackathonsAmountError(true);
+            }
         }
     };
 
