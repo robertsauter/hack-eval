@@ -32,9 +32,16 @@ class HackathonService {
         const startDate = new Date(formData.get('start') as string);
         startDate.setHours(12);
         formData.set('start', startDate.toISOString());
+
         const endDate = new Date(formData.get('end') as string);
         endDate.setHours(12);
         formData.set('end', endDate.toISOString());
+
+        //This is done because Firefox on Windows by default recognizes csv files as excel.
+        const file = formData.get('file') as File;
+        const typedFile = new File([file], file.name, { type: 'text/csv' });
+        formData.set('file', typedFile);
+
         return httpService.post('/hackathons/csv', { body: formData });
     }
 
