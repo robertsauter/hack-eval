@@ -47,14 +47,20 @@ export default function App() {
           : ''
           }`} variant="dense">
           {loggedIn
-            ? <><div className="flex items-center">
-              <Code />
-              <Typography className="mr-8">HackEval</Typography>
-              <Link to="/">
-                <Button className="text-white">Overview</Button>
-              </Link>
-            </div>
-              <Button className="text-white border-white" onClick={userService.logout}>Logout</Button>
+            ? <>
+              <div className="flex items-center">
+                <Code />
+                <Typography className="mr-8">HackEval</Typography>
+                <Link to="/">
+                  <Button className="text-white">Overview</Button>
+                </Link>
+              </div>
+              <div className="flex items-center gap-8">
+                <Link to="/account">
+                  <Button className="text-white">Your account</Button>
+                </Link>
+                <Button className="text-white" onClick={userService.logout}>Logout</Button>
+              </div>
             </>
             : <div className="flex items-center">
               <Code />

@@ -16,6 +16,7 @@ import { userService } from './services/userService.ts';
 import { Analyses } from './pages/Analyses.tsx';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import Account from './pages/Account.tsx';
 
 const rootElement = document.getElementById('root');
 
@@ -70,6 +71,11 @@ const router = createBrowserRouter([
       {
         path: '/analysis/:id',
         element: <Analyses />,
+        loader: userService.redirectIfNotLoggedIn
+      },
+      {
+        path: '/account',
+        element: <Account />,
         loader: userService.redirectIfNotLoggedIn
       }
     ]
