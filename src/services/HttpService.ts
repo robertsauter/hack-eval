@@ -5,7 +5,7 @@ import type { Token } from '../models/Token';
 class HttpService {
 
     /** The base URL will be added to all outgoing requests */
-    readonly #BASE_URL = 'https://demo.colaps.team/hackpulseanalyzer';
+    readonly #BASE_URL = 'http://localhost:8000/hackpulseanalyzer';
 
     /** All relative URLs, where no token should be sent */
     readonly #ADD_TOKEN_BLACKLIST = [
