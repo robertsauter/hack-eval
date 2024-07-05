@@ -92,6 +92,11 @@ class UserService {
         //Timer id is saved, so that the timer can be cleared, when a user logs out manually
         this.logoutTimerId = timerId;
     }
+
+    /** Get the currently logged in user */
+    getUser() {
+        return httpService.get('/users/current');
+    }
 }
 
 export const userService = new UserService();
