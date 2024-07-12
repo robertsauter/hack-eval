@@ -32,7 +32,8 @@ export default function App() {
     const filtersOpenSubscription = filtersService.filtersOpen$.subscribe((open) => setFiltersOpen(open));
     const subscriptions = [loggedInSubscription, filtersOpenSubscription];
 
-    googleFormsService.initialize();
+    //Google: This is the service call to initialize the token client (which can be used to open the consent screen)
+    //googleFormsService.initialize();
 
     return () => {
       subscriptions.forEach((subscription) => subscription.unsubscribe());

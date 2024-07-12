@@ -13,7 +13,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const { open, onClose, onSuccess } = props;
 
     const [file, setFile] = useState<File>();
-    const [uploadFrom, setUploadFrom] = useState<'forms' | 'csv'>('forms');
+    const [uploadFrom, setUploadFrom] = useState<'forms' | 'csv'>('csv');
     const [fileError, setFileError] = useState(false);
     const [types, setTypes] = useState<HackathonInformation['types']>([]);
     const [uploadState, setUploadState] = useState<State>('initial');
@@ -243,21 +243,23 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 variant="outlined"
                 label="Link to your hackathon" />
             <div className="mb-5">
-                <FormControl fullWidth className="mb-2">
+                {/*Google: remove hidden class to show radio buttons again*/}
+                <FormControl fullWidth className="mb-2 hidden">
                     <FormLabel id="upload-source-label">Upload source</FormLabel>
                     <RadioGroup
-                        defaultValue="forms"
+                        defaultValue="csv"
                         aria-labelledby="upload-source-label"
                         value={uploadFrom}
                         onChange={(e) => setUploadFrom(e.target.value as 'forms' | 'csv')}>
                         <FormControlLabel
-                            value="forms"
-                            control={<Radio />}
-                            label="Upload from Google Forms" />
-                        <FormControlLabel
                             value="csv"
                             control={<Radio />}
                             label="Upload as CSV file" />
+                        <FormControlLabel
+                            value="forms"
+                            control={<Radio />}
+                            label="Upload from Google Forms"
+                            disabled />
                     </RadioGroup>
                 </FormControl>
                 {uploadFrom === 'forms'
