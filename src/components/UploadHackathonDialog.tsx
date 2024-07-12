@@ -308,7 +308,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
             </div>
             <div className="flex items-center mb-5">
                 <Checkbox name="consent" required />
-                <Typography>I agree to the <Link href="/" target="_blank">terms and conditions</Link>*</Typography>
+                <Typography>I agree to the <Link href="https://hackathon-planning-kit.org/files/terms_and_conditions.pdf" target="_blank">terms and conditions</Link>*</Typography>
             </div>
             <Button
                 className="mb-5"
