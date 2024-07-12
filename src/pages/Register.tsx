@@ -40,7 +40,7 @@ export default function Register() {
 
     return (
         <Container className="pt-5" maxWidth="sm">
-            <Typography className="mb-8 text-center font-bold" variant="h4">Register</Typography>
+            <Typography className="mb-10 text-center font-bold" variant="h4">Register</Typography>
             <RouterForm method="POST" onClick={() => setRegisterState('initial')}>
                 <TextField
                     name="username"

@@ -52,7 +52,7 @@ export default function Account() {
     };
 
     return <Container className="pt-5" maxWidth="sm">
-        <Typography className="mb-16 text-center font-bold" variant="h4">Your account</Typography>
+        <Typography className="mb-10 text-center font-bold" variant="h4">Your account</Typography>
         <form id="usernameForm" onSubmit={handleUsernameSubmit}>
             <Typography className="mb-4" variant="body1">Change your username</Typography>
             <TextField

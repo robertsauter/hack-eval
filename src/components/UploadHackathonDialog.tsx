@@ -1,4 +1,4 @@
-import { Alert, Button, Chip, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Tooltip, Typography } from '@mui/material';
+import { Alert, Button, Checkbox, Chip, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, Link, MenuItem, Radio, RadioGroup, Select, TextField, Tooltip, Typography } from '@mui/material';
 import HelpIcon from '@mui/icons-material/Help';
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { googleFormsService } from '../services/GoogleFormsService';
@@ -305,6 +305,10 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                         </Fade>
                     </>
                 }
+            </div>
+            <div className="flex items-center mb-5">
+                <Checkbox name="consent" required />
+                <Typography>I agree to the <Link href="/" target="_blank">terms and conditions</Link>*</Typography>
             </div>
             <Button
                 className="mb-5"
