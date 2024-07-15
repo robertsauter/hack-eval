@@ -1,15 +1,16 @@
-import { Alert, Button, Checkbox, Chip, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, Link, MenuItem, Radio, RadioGroup, Select, TextField, Tooltip, Typography } from '@mui/material';
+import { Alert, Button, Checkbox, Chip, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, Link, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, TextField, Tooltip, Typography } from '@mui/material';
 import HelpIcon from '@mui/icons-material/Help';
-import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import { useState, useEffect, FormEvent, ChangeEvent, useLayoutEffect, useRef } from 'react';
 import { googleFormsService } from '../services/GoogleFormsService';
 import { hackathonService } from '../services/HackathonService';
-import type { HackathonInformation } from '../models/HackathonInformation';
+import type { HackathonInformation, HackathonType } from '../models/HackathonInformation';
 import type { State } from '../lib/AsyncState';
 import { Close, Delete, FileUpload, InsertDriveFile } from '@mui/icons-material';
 import { RawHackathon } from '../models/RawHackathon';
 import { DatePicker } from '@mui/x-date-pickers';
 
 export function UploadHackathonDialog(props: { open: boolean, onClose: () => void, onSuccess: () => void }) {
+
     const { open, onClose, onSuccess } = props;
 
     const [file, setFile] = useState<File>();
@@ -18,29 +19,26 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
     const [types, setTypes] = useState<HackathonInformation['types']>([]);
     const [uploadState, setUploadState] = useState<State>('initial');
     const [errorMessage, setErrorMessage] = useState('');
+    const [formValid, setFormValid] = useState(false);
+
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const formRef = useRef<HTMLFormElement | null>(null);
 
     /** Reset all form values */
     const resetForm = () => {
-        const elements = (document.getElementById('HackathonForm') as HTMLFormElement).elements;
-        (elements.namedItem('title') as HTMLInputElement).value = '';
-        (elements.namedItem('incentives') as HTMLInputElement).value = '';
-        (elements.namedItem('venue') as HTMLInputElement).value = '';
-        (elements.namedItem('size') as HTMLInputElement).value = '';
-        (elements.namedItem('start') as HTMLInputElement).value = '';
-        (elements.namedItem('end') as HTMLInputElement).value = '';
-        (elements.namedItem('link') as HTMLInputElement).value = '';
-        const id = elements.namedItem('id');
-        if (id) {
-            (id as HTMLInputElement).value = '';
+        if (formRef.current) {
+            formRef.current.reset();
+            setTypes([]);
+            setFile(undefined);
         }
-        setTypes([]);
-        setFile(undefined);
     };
 
     /** Get all hackathon values of the form */
     const getValuesOfForm = (): FormData => {
-        const form = document.getElementById('HackathonForm') as HTMLFormElement;
-        return new FormData(form);
+        if (formRef.current) {
+            return new FormData(formRef.current)
+        }
+        return new FormData();
     };
 
     /** Try to get the survey, when an access token is still saved or request a new token */
@@ -107,11 +105,13 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
     };
 
+    /** Set the inputted survey id for the google forms service to use */
     const handleIdChange = (e: FormEvent<HTMLDivElement>) => {
         const id = (e.target as HTMLInputElement).value;
         googleFormsService.setFormId(id);
     };
 
+    /** Check the upload input element and set the uploaded file */
     const handleFileUpload = (e: ChangeEvent) => {
         const files = (e.target as HTMLInputElement).files;
         if (files) {
@@ -124,6 +124,46 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 setFileError(false);
             }
         }
+    };
+
+    /** Remove the uploaded file */
+    const handleRemoveFile = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+            setFile(undefined);
+        }
+    };
+
+    /** Set the selected hackathon types */
+    const handleChangeTypes = (e: SelectChangeEvent<HackathonType[]>) => {
+        setTypes(e.target.value as HackathonInformation['types']);
+    };
+
+    /** Check the validity of all form elements to determine if the form is valid */
+    const checkValidity = () => {
+        if (formRef.current) {
+            const formElements = formRef.current.elements;
+            let valid = true;
+            for (let i = 0; i < formElements.length; i++) {
+                const element = formElements.item(i);
+                if (element?.tagName === 'INPUT') {
+                    const typedElement = element as HTMLInputElement;
+                    if (typedElement.type === 'file' && (typedElement.files?.length ?? 0) === 0) {
+                        valid = false;
+                    }
+                    else if (!typedElement.validity.valid) {
+                        valid = false;
+                    }
+                }
+            }
+            setFormValid(valid);
+        }
+    };
+
+    /** Close the dialog */
+    const handleClose = () => {
+        resetForm();
+        onClose();
     };
 
     useEffect(() => {
@@ -140,12 +180,20 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
     }, []);
 
-    return <Dialog onClose={onClose} open={open} fullWidth maxWidth="sm">
-        <IconButton className="absolute top-2 right-2" onClick={onClose}>
+    useLayoutEffect(() => {
+        checkValidity();
+    }, [types, file]);
+
+    return <Dialog onClose={handleClose} open={open} fullWidth maxWidth="sm">
+        <IconButton className="absolute top-2 right-2" onClick={handleClose}>
             <Close />
         </IconButton>
         <DialogTitle className="font-bold">Upload a new hackathon</DialogTitle>
-        <form onSubmit={handleSubmit} id="HackathonForm" className="pb-6 px-6">
+        <form
+            onSubmit={handleSubmit}
+            className="pb-6 px-6"
+            onInput={checkValidity}
+            ref={formRef}>
             <TextField
                 name="title"
                 className="mb-5"
@@ -160,7 +208,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     labelId="incentives"
                     className="mb-5"
                     variant="outlined"
-                    label="Incentives">
+                    label="Incentives"
+                    onChange={checkValidity}>
                     <MenuItem value="cooperative">Cooperative</MenuItem>
                     <MenuItem value="competitive">Competitive</MenuItem>
                 </Select>
@@ -172,7 +221,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     labelId="venue"
                     className="mb-5"
                     variant="outlined"
-                    label="Venue">
+                    label="Venue"
+                    onChange={checkValidity}>
                     <MenuItem value="in person">In person</MenuItem>
                     <MenuItem value="online">Online</MenuItem>
                     <MenuItem value="hybrid">Hybrid</MenuItem>
@@ -185,7 +235,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     labelId="size"
                     className="mb-5"
                     variant="outlined"
-                    label="Size of your hackathon">
+                    label="Size of your hackathon"
+                    onChange={checkValidity}>
                     <MenuItem value="small">Small (up to 50 participants)</MenuItem>
                     <MenuItem value="medium">Medium (up to 150 participants)</MenuItem>
                     <MenuItem value="large">Large (more than 150 participants)</MenuItem>
@@ -202,7 +253,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                     variant="outlined"
                     label="Focus"
                     value={types}
-                    onChange={(e) => setTypes(e.target.value as HackathonInformation['types'])}
+                    onChange={handleChangeTypes}
                     renderValue={(selected: string[]) =>
                         <div className="flex gap-1">
                             {selected.map((value) =>
@@ -222,6 +273,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 className="mb-5 w-full"
                 label="Start date"
                 name="start"
+                onChange={checkValidity}
                 slotProps={{
                     textField: {
                         required: true
@@ -231,6 +283,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 className="mb-5 w-full"
                 label="End date"
                 name="end"
+                onChange={checkValidity}
                 slotProps={{
                     textField: {
                         required: true
@@ -288,13 +341,14 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                                 className="hidden"
                                 name="file"
                                 accept=".csv"
+                                ref={fileInputRef}
                                 onChange={handleFileUpload} />
                         </Button>
                         {file
                             ? <div className="flex items-center justify-center gap-x-2">
                                 <InsertDriveFile></InsertDriveFile>
                                 <Typography>{file?.name}</Typography>
-                                <IconButton onClick={() => setFile(undefined)}>
+                                <IconButton onClick={handleRemoveFile}>
                                     <Delete></Delete>
                                 </IconButton>
                             </div>
@@ -314,7 +368,8 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
                 className="mb-5"
                 fullWidth
                 variant="contained"
-                type="submit">
+                type="submit"
+                disabled={!formValid}>
                 {uploadState === 'loading'
                     ? <CircularProgress className="text-white" size={'1.5rem'} />
                     : 'Upload'
