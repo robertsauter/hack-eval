@@ -1,6 +1,6 @@
 import { Alert, Button, Checkbox, Chip, CircularProgress, Dialog, DialogTitle, Fade, FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, Link, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, TextField, Tooltip, Typography } from '@mui/material';
 import HelpIcon from '@mui/icons-material/Help';
-import { useState, useEffect, FormEvent, ChangeEvent, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, FormEvent, ChangeEvent, useRef } from 'react';
 import { googleFormsService } from '../services/GoogleFormsService';
 import { hackathonService } from '../services/HackathonService';
 import type { HackathonInformation, HackathonType } from '../models/HackathonInformation';
@@ -180,7 +180,7 @@ export function UploadHackathonDialog(props: { open: boolean, onClose: () => voi
         }
     }, []);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         checkValidity();
     }, [types, file]);
 
