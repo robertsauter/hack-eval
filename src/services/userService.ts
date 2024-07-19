@@ -26,12 +26,22 @@ class UserService {
     async login(formData: FormData) {
         const response = await httpService.post('/users/login', { body: formData });
 
-        if(response.ok) {
+        if (response.ok) {
             const token: Token = await response.json();
             window.localStorage.setItem('access_token', JSON.stringify(token));
             this.handleLoginSuccess(token);
         }
         return response;
+    }
+
+    /** Update the username of the logged in user */
+    updateUsername(formData: FormData) {
+        return httpService.post('/users/username', { body: formData });
+    }
+
+    /** Update the password of the logged in user */
+    updatePassword(formData: FormData) {
+        return httpService.post('/users/password', { body: formData });
     }
 
     /** Update loggedIn subject and set expiration timer */
@@ -44,7 +54,7 @@ class UserService {
     logout() {
         window.localStorage.removeItem('access_token');
         this.loggedIn$.next(false);
-        if(this.logoutTimerId) {
+        if (this.logoutTimerId) {
             clearTimeout(this.logoutTimerId);
         }
     }
@@ -52,7 +62,7 @@ class UserService {
     /** Redirect, if user is not logged in. Can be used as a guard for pages, that should not be accessed
      * when user is not logged in. */
     redirectIfNotLoggedIn() {
-        if(!this.loggedIn$?.getValue()) {
+        if (!this.loggedIn$?.getValue()) {
             return redirect('/login');
         }
         return null;
@@ -61,7 +71,7 @@ class UserService {
     /** Redirect, if user is logged in. Can be used as a guard for pages, that should not be accessed
      * when user is logged in. */
     redirectIfLoggedIn() {
-        if(this.loggedIn$.getValue()) {
+        if (this.loggedIn$.getValue()) {
             return redirect('/');
         }
         return null;
@@ -71,7 +81,7 @@ class UserService {
     setTokenExpirationTimer(token: string) {
         //Get payload of jwt token and decode it
         const payloadEncoded = token.split('.')[1];
-        const payload: { sub: string,  exp: number } = JSON.parse(atob(payloadEncoded));
+        const payload: { sub: string, exp: number } = JSON.parse(atob(payloadEncoded));
 
         //Set timer
         const expirationTime = new Date(payload.exp * 1000).getTime() - new Date().getTime();
@@ -81,6 +91,11 @@ class UserService {
         }, expirationTime);
         //Timer id is saved, so that the timer can be cleared, when a user logs out manually
         this.logoutTimerId = timerId;
+    }
+
+    /** Get the currently logged in user */
+    getUser() {
+        return httpService.get('/users/current');
     }
 }
 

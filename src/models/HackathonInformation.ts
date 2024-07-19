@@ -1,4 +1,4 @@
-type HackathonType = 'prototype' | 'conceptual' | 'analysis' | 'education' | 'community' | 'ideation';
+export type HackathonType = 'prototype' | 'conceptual' | 'analysis' | 'education' | 'community' | 'ideation';
 
 export type HackathonInformation = {
     title: string;

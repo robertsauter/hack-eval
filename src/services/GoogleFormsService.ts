@@ -11,7 +11,9 @@ class GoogleFormsService {
     getResponsesError$ = new Subject();
 
     #formId = '';
-    readonly #CLIENT_ID = '902889481638-5vemu7jb9jngml1lscsij07flp12mbup.apps.googleusercontent.com';
+
+    //Google: fill in your google cloud console id here
+    readonly #CLIENT_ID = '';
 
     constructor() {
         this.initialize = this.initialize.bind(this);

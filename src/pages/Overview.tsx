@@ -6,6 +6,7 @@ import { State } from '../lib/AsyncState';
 import { HackathonInformation } from '../models/HackathonInformation';
 import { Add, Download } from '@mui/icons-material';
 import { HackathonsTable } from '../components/HackathonsTable';
+import { userService } from '../services/userService';
 
 export function Overview() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -13,6 +14,7 @@ export function Overview() {
     const [hackathonsState, setHackathonsState] = useState<State>('initial');
     const [downloadState, setDownloadState] = useState<State>('initial');
     const [downloadErrorShown, setDownloadErrorShown] = useState(false);
+    const [downloadShown, setDownloadShown] = useState(false);
 
     /** Reload hackathons, when a new one was successfully uploaded */
     const handleUploadSuccess = () => {
@@ -53,8 +55,20 @@ export function Overview() {
         setDownloadErrorShown(false);
     };
 
+    /** Check if the logged in user is an admin and if yes show the hackathons download */
+    const checkIfAdminUser = async () => {
+        const response = await userService.getUser();
+        if (response.ok) {
+            const user: { username: string, role?: string } = await response.json();
+            if (user.role && user.role === 'admin') {
+                setDownloadShown(true);
+            }
+        }
+    };
+
     useEffect(() => {
         getHackathons();
+        checkIfAdminUser();
     }, []);
 
     return <>
@@ -62,15 +76,18 @@ export function Overview() {
             <div className="mb-10 flex justify-between items-center">
                 <Typography variant="h4" className="font-bold">Your hackathons</Typography>
                 <div className="flex flex-col sm:flex-row items-center justify-end gap-2">
-                    <Button
-                        variant="outlined"
-                        onClick={downloadHackathonData}
-                        endIcon={<Download />}>
-                        {downloadState === 'loading'
-                            ? <CircularProgress size={'1.5rem'} />
-                            : 'Download hackathon data'
-                        }
-                    </Button>
+                    {downloadShown
+                        ? <Button
+                            variant="outlined"
+                            onClick={downloadHackathonData}
+                            endIcon={<Download />}>
+                            {downloadState === 'loading'
+                                ? <CircularProgress size={'1.5rem'} />
+                                : 'Download hackathon data'
+                            }
+                        </Button>
+                        : <></>
+                    }
                     <Button
                         variant="contained"
                         onClick={() => setIsDialogOpen(true)}

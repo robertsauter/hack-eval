@@ -13,7 +13,7 @@ export const AnalysisSection = memo((props: { section: MappedAnalysisSection }) 
 
     const { section } = props;
 
-    const [filtersOpen, setFiltersOpen] = useState(false);
+    const [filtersOpen, setFiltersOpen] = useState(true);
 
     useEffect(() => {
         const filtersOpenSubscription = filtersService.filtersOpen$.subscribe((open) => setFiltersOpen(open));
