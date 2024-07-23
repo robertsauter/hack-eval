@@ -47,46 +47,51 @@ const theme = createTheme({
   },
 });
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <App />,
+      children: [
+        {
+          index: true,
+          element: <Overview />,
+          loader: userService.redirectIfNotLoggedIn
+        },
+        {
+          path: '/login',
+          element: <Login />,
+          action: loginAction,
+          loader: userService.redirectIfLoggedIn
+        },
+        {
+          path: '/register',
+          element: <Register />,
+          action: registerAction,
+          loader: userService.redirectIfLoggedIn
+        },
+        {
+          path: '/analysis/:id',
+          element: <Analyses />,
+          loader: userService.redirectIfNotLoggedIn
+        },
+        {
+          path: '/account',
+          element: <Account />,
+          loader: userService.redirectIfNotLoggedIn
+        },
+        {
+          path: '/survey',
+          element: <Survey />,
+          loader: userService.redirectIfNotLoggedIn
+        }
+      ]
+    }
+  ],
   {
-    path: '/',
-    element: <App />,
-    children: [
-      {
-        index: true,
-        element: <Overview />,
-        loader: userService.redirectIfNotLoggedIn
-      },
-      {
-        path: '/login',
-        element: <Login />,
-        action: loginAction,
-        loader: userService.redirectIfLoggedIn
-      },
-      {
-        path: '/register',
-        element: <Register />,
-        action: registerAction,
-        loader: userService.redirectIfLoggedIn
-      },
-      {
-        path: '/analysis/:id',
-        element: <Analyses />,
-        loader: userService.redirectIfNotLoggedIn
-      },
-      {
-        path: '/account',
-        element: <Account />,
-        loader: userService.redirectIfNotLoggedIn
-      },
-      {
-        path: '/survey',
-        element: <Survey />,
-        loader: userService.redirectIfNotLoggedIn
-      }
-    ]
+    basename: '/hackpulseanalyzer'
   }
-]);
+);
 
 ReactDOM.createRoot(rootElement!).render(
   <LocalizationProvider dateAdapter={AdapterDayjs}>
